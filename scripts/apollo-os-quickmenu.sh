@@ -16,21 +16,19 @@ if [ -f "$CONFIG_FILE" ]; then
     source "$CONFIG_FILE"
 fi
 
-# Define actions
+# Define actions (v0.5.0 - without AI features)
 actions=(
-    "🔒 Lock Screen"
-    "🌙 Toggle Theme"
-    "💬 Open Chat"
-    "🔍 System Diagnostics"
-    "📊 Show Statistics"
-    "🖼️ Next Wallpaper"
-    "⚡ Power Profiles"
-    "🔄 Reload Waybar"
-    "🔄 Reload Mako"
-    "🚪 Logout"
-    "🔄 Restart WM"
-    "⏻ Shutdown"
-    "🔁 Reboot"
+    " Lock Screen"
+    " Toggle Theme"
+    " Show Statistics"
+    " Next Wallpaper"
+    " Power Profiles"
+    " Reload Waybar"
+    " Reload Mako"
+    " Logout"
+    " Restart WM"
+    " Shutdown"
+    " Reboot"
 )
 
 # Show menu
@@ -38,102 +36,85 @@ selected=$(printf '%s\n' "${actions[@]}" | rofi -dmenu -p "Apollo Quick Menu" -i
 
 # Execute selected action
 case "$selected" in
-    "🔒 Lock Screen")
-        THEME="${DEFAULT_THEME:-dark}"
-        swaylock -f -C "$HOME/.config/swaylock/apollo-os-config-${THEME}"
+    " Lock Screen")
+        # Use swaylock with black background
+        if command -v swaylock &>/dev/null; then
+            swaylock -f -c 000000
+        else
+            notify-send "Apollo OS" "swaylock not installed"
+        fi
         ;;
-    
-    "🌙 Toggle Theme")
+
+    " Toggle Theme")
         "$HOME/.local/bin/apollo-os-theme-switcher.sh" toggle
         ;;
-    
-    "💬 Open Chat")
-        "$HOME/.local/bin/apollo-os-chat.sh" &
-        ;;
-    
-    "🔍 System Diagnostics")
-        alacritty -e bash -c "$HOME/.local/bin/apollo-os-diagnose.sh 100; read -p 'Press Enter to close...'"
-        ;;
-    
-    "📊 Show Statistics")
+
+    " Show Statistics")
         "$HOME/.local/bin/apollo-os-stats.sh"
         ;;
-    
-    "🖼️ Next Wallpaper")
+
+    " Next Wallpaper")
         "$HOME/.local/bin/apollo-os-wallpaper-cycle.sh"
         ;;
-    
-    "⚡ Power Profiles")
+
+    " Power Profiles")
         # Get available profiles
-        profiles=$(powerprofilesctl list 2>/dev/null || echo "balanced")
-        selected_profile=$(echo "$profiles" | rofi -dmenu -p "Power Profile")
-        if [ -n "$selected_profile" ]; then
-            powerprofilesctl set "$selected_profile" 2>/dev/null && \
-                notify-send "Apollo OS" "Power profile: $selected_profile"
+        if command -v powerprofilesctl &>/dev/null; then
+            profiles=$(powerprofilesctl list 2>/dev/null | grep -E '^\*?\s+\w+' | sed 's/^\*\?\s*//' || echo "balanced")
+            selected_profile=$(echo "$profiles" | rofi -dmenu -p "Power Profile")
+            if [ -n "$selected_profile" ]; then
+                powerprofilesctl set "$selected_profile" 2>/dev/null && \
+                    notify-send "Apollo OS" "Power profile: $selected_profile"
+            fi
+        else
+            notify-send "Apollo OS" "Power profiles not available"
         fi
         ;;
-    
-    "🔄 Reload Waybar")
-        pkill -x waybar
+
+    " Reload Waybar")
+        pkill -x waybar 2>/dev/null || true
         sleep 0.5
-        
-        # Detect WM and load appropriate config
-        if pgrep -x niri >/dev/null; then
-            PROFILE="${DEFAULT_PROFILE:-pro}"
-            THEME="${DEFAULT_THEME:-dark}"
-            waybar -c "$HOME/.config/waybar/apollo-os-config-niri-${PROFILE}" \
-                   -s "$HOME/.config/waybar/apollo-os-style-niri-${PROFILE}-${THEME}.css" &
-        elif pgrep -x sway >/dev/null; then
-            PROFILE="${DEFAULT_PROFILE:-pro}"
-            THEME="${DEFAULT_THEME:-dark}"
-            waybar -c "$HOME/.config/waybar/apollo-os-config-sway-${PROFILE}" \
-                   -s "$HOME/.config/waybar/apollo-os-style-sway-${PROFILE}-${THEME}.css" &
-        fi
+        waybar -c "$HOME/.config/waybar/config" -s "$HOME/.config/waybar/style.css" &
         notify-send "Apollo OS" "Waybar reloaded"
         ;;
-    
-    "🔄 Reload Mako")
-        pkill -x mako
+
+    " Reload Mako")
+        pkill -x mako 2>/dev/null || true
         sleep 0.2
-        THEME="${DEFAULT_THEME:-dark}"
-        mako -c "$HOME/.config/mako/apollo-os-config-${THEME}" &
+        mako --config "$HOME/.config/mako/config" &
         notify-send "Apollo OS" "Mako reloaded"
         ;;
-    
-    "🚪 Logout")
+
+    " Logout")
         # Confirm
         confirm=$(echo -e "No\nYes" | rofi -dmenu -p "Logout?")
         if [ "$confirm" = "Yes" ]; then
             if pgrep -x niri >/dev/null; then
                 niri msg action quit
-            elif pgrep -x sway >/dev/null; then
-                swaymsg exit
             fi
         fi
         ;;
-    
-    "🔄 Restart WM")
+
+    " Restart WM")
         # Confirm
         confirm=$(echo -e "No\nYes" | rofi -dmenu -p "Restart Window Manager?")
         if [ "$confirm" = "Yes" ]; then
             if pgrep -x niri >/dev/null; then
                 niri msg action quit
                 # Note: This will exit to login manager, user needs to re-login
-            elif pgrep -x sway >/dev/null; then
-                swaymsg reload
             fi
         fi
         ;;
-    
-    "⏻ Shutdown")
+
+    " Shutdown")
         # Confirm
         confirm=$(echo -e "No\nYes" | rofi -dmenu -p "Shutdown System?")
         if [ "$confirm" = "Yes" ]; then
             systemctl poweroff
         fi
         ;;
-    
-    "🔁 Reboot")
+
+    " Reboot")
         # Confirm
         confirm=$(echo -e "No\nYes" | rofi -dmenu -p "Reboot System?")
         if [ "$confirm" = "Yes" ]; then

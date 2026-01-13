@@ -6,6 +6,9 @@
 #
 # Description: Switches between dark and light themes
 # Usage: apollo-os-theme-switcher.sh [dark|light|toggle]
+#
+# Note: v0.5.0 only supports dark theme. Light theme switching
+#       is prepared but requires additional config files.
 #####################################################################
 
 set -e
@@ -24,8 +27,6 @@ fi
 
 # Get current theme
 CURRENT_THEME="${DEFAULT_THEME:-dark}"
-CURRENT_WM="${APOLLO_WM:-niri}"
-CURRENT_PROFILE="${APOLLO_PROFILE:-pro}"
 
 # Parse argument
 ACTION="${1:-toggle}"
@@ -54,33 +55,23 @@ esac
 # Update Apollo OS config file
 sed -i "s/^DEFAULT_THEME=.*/DEFAULT_THEME=\"$NEW_THEME\"/" "$APOLLO_CONFIG"
 
-# Reload components based on current WM
+# Reload components
 reload_components() {
-    local wm="$1"
-    local profile="$2"
-    local theme="$3"
+    local theme="$1"
 
     echo "Switching to $theme theme..."
 
-    # Determine config paths
-    if [[ "$theme" == "dark" ]]; then
-        WAYBAR_CONFIG="$CONFIG_DIR/waybar/apollo-os-config-${wm}-${profile}"
-        WAYBAR_STYLE="$CONFIG_DIR/waybar/apollo-os-style-${wm}-${profile}.css"
-        MAKO_CONFIG="$CONFIG_DIR/mako/apollo-os-config-dark"
-        ROFI_THEME="$CONFIG_DIR/rofi/apollo-os-theme-dark.rasi"
-    else
-        WAYBAR_CONFIG="$CONFIG_DIR/waybar/apollo-os-config-${wm}-${profile}-light"
-        WAYBAR_STYLE="$CONFIG_DIR/waybar/apollo-os-style-${wm}-${profile}-light.css"
-        MAKO_CONFIG="$CONFIG_DIR/mako/apollo-os-config-light"
-        ROFI_THEME="$CONFIG_DIR/rofi/apollo-os-theme-light.rasi"
-    fi
+    # Config paths (v0.5.0 simplified - single config files)
+    WAYBAR_CONFIG="$CONFIG_DIR/waybar/config"
+    WAYBAR_STYLE="$CONFIG_DIR/waybar/style.css"
+    MAKO_CONFIG="$CONFIG_DIR/mako/config"
 
     # Reload Waybar
     if pgrep -x waybar >/dev/null; then
         pkill waybar
         sleep 0.5
         waybar -c "$WAYBAR_CONFIG" -s "$WAYBAR_STYLE" &
-        echo "  ✓ Waybar reloaded"
+        echo "  Waybar reloaded"
     fi
 
     # Reload Mako
@@ -88,20 +79,7 @@ reload_components() {
         pkill mako
         sleep 0.5
         mako --config "$MAKO_CONFIG" &
-        echo "  ✓ Mako reloaded"
-    fi
-
-    # Reload SwayOSD
-    if pgrep -x swayosd-server >/dev/null; then
-        pkill swayosd-server
-        sleep 0.5
-        # Set inverted GTK theme for SwayOSD
-        if [[ "$theme" == "dark" ]]; then
-            GTK_THEME="Adwaita:light" swayosd-server &
-        else
-            GTK_THEME="Adwaita:dark" swayosd-server &
-        fi
-        echo "  ✓ SwayOSD reloaded"
+        echo "  Mako reloaded"
     fi
 
     # Update GTK theme
@@ -112,20 +90,23 @@ reload_components() {
         gsettings set org.gnome.desktop.interface color-scheme 'prefer-light' 2>/dev/null || true
         gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita' 2>/dev/null || true
     fi
-    echo "  ✓ GTK theme updated"
+    echo "  GTK theme updated"
 
     # Send notification
     if command -v notify-send &>/dev/null; then
         notify-send "Apollo OS" "Theme switched to: $theme" -i preferences-color
     fi
 
-    echo "Theme switch complete! ✓"
+    echo "Theme switch complete!"
 }
 
 # Apply the theme change
-reload_components "$CURRENT_WM" "$CURRENT_PROFILE" "$NEW_THEME"
+reload_components "$NEW_THEME"
 
-# For complete theme change, suggest logout
-echo ""
-echo "Note: For a complete theme change, please log out and log back in."
-echo "Window Manager configs will be updated on next login."
+# Note about light theme
+if [[ "$NEW_THEME" == "light" ]]; then
+    echo ""
+    echo "Note: Light theme configs are not included in v0.5.0."
+    echo "GTK applications will use light theme, but Waybar/Mako"
+    echo "will continue using their current configs."
+fi

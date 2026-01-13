@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=Apollo Grid (PRO)
-Comment=i3-style Tiling - Minimal Professional Mode
-Exec=/usr/local/bin/apollo-os-wrapper-sway.sh mod dark
-Type=Application
-DesktopNames=sway

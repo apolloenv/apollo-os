@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=Apollo Orbit (GLASS)
-Comment=Scrollable Tiling - Professional Mode
-Exec=/usr/local/bin/apollo-os-wrapper-niri.sh pro dark
-Type=Application
-DesktopNames=niri

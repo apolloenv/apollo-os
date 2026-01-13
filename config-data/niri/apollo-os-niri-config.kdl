@@ -68,12 +68,12 @@ layout {
         proportion 0.85
     }
 
-    // Fensterrahmen Design (Light Theme)
+    // Fensterrahmen Design
     border {
        width 3
-       // Dunkelgrauer Rahmen für Light Theme
-       active-gradient from="rgba(60, 60, 60, 1.0)" to="rgba(80, 80, 80, 1.0)" angle=-45 relative-to="workspace-view"
-       inactive-color "rgba(200, 200, 200, 0.8)"
+       // Verlauf von Weiß zu transparentem Weiß (Schwarz-Weiß Design)
+       active-gradient from="rgba(255, 255, 255, 1.0)" to="rgba(255, 255, 255, 1.0)" angle=-45 relative-to="workspace-view"
+       inactive-color "rgba(80, 80, 80, 0.8)"
     }
     
     shadow {
@@ -123,9 +123,9 @@ window-rule {
 // -----------------------------------------------------------------------------
 // STARTUP (Programme die beim Start ausgeführt werden)
 // -----------------------------------------------------------------------------
-// HINWEIS: Die meisten Services (waybar, swaybg, swayidle, mako, swayosd)
+// HINWEIS: Die meisten Services (waybar, swaybg, swayidle, mako)
 // werden vom apollo-os-wrapper-niri.sh gestartet, um korrekte Environment-
-// Variablen und Profile-spezifische Konfigurationen zu verwenden.
+// Variablen und Konfigurationen zu verwenden.
 // Nur essentielle, nicht-konfigurierbare Services werden hier gestartet.
 spawn-at-startup "xwayland-satellite" // XWayland Unterstuetzung
 spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1" // Passwort-Dialoge
@@ -184,7 +184,7 @@ binds {
     Mod+Ctrl+Down  { set-window-height "+10%"; }
 
     // System
-    Mod+L { spawn "sh" "-c" "swaylock -f -C $SWAYLOCK_CONFIG"; } // Bildschirm sperren
+    Mod+L { spawn "swaylock" "-f" "-c" "000000"; } // Bildschirm sperren (schwarzer Hintergrund)
     Mod+Shift+E { quit; }
     Mod+Shift+R { spawn "sh" "-c" "pkill waybar; sleep 0.5; waybar -c $WAYBAR_CONFIG_FILE -s $WAYBAR_STYLE_FILE &"; } // Waybar neu laden
     

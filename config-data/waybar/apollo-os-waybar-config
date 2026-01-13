@@ -6,37 +6,20 @@
     "margin-right": 0,
     "margin-bottom": 0,
 
-    "height": 32,
+    "height": 28, /* Etwas höher für modernen Look */
     "spacing": 0,
     
-    "modules-left": ["sway/workspaces", "sway/mode"],
+    "modules-left": ["niri/workspaces"],
     "modules-center": [],
     "modules-right": ["group/drawer", "bluetooth", "network", "pulseaudio", "backlight", "battery", "clock"],
 
     /* Module Konfiguration */
 
-    "sway/workspaces": {
-        "format": "{icon}",
-        /*
+    "niri/workspaces": {
+        "format": "{index}",
         "format-icons": {
-            "focused": "APOLLO OS",
-            "default": "",
-            "urgent": ""
-        }, */
-        "disable-scroll": false
-    },
-
-    "sway/mode": {
-        "format": "<span style=\"italic\">{}</span>"
-    },
-    
-    "sway/window": {
-        "format": "{title}",
-        "max-length": 30,
-        "rewrite": {
-            "(.*) - Mozilla Firefox": "Firefox",
-            "(.*) - Visual Studio Code": "VS Code",
-            "(.*) - Nautilus": "Files"
+            "active": "",
+            "default": ""
         }
     },
 
@@ -57,10 +40,11 @@
         "format": "", 
         "tooltip": true,
         "tooltip-format": "Weitere Systembenachrichtigungen",
+        "on-click": "flatpak run com.synology.SynologyDrive"
     },
 
     "tray": {
-        "icon-size": 24,
+        "icon-size": 18,
         "spacing": 10
     },
 
@@ -77,8 +61,9 @@
         "format-charging": "󰂄   {capacity}%",
         "format-plugged": "   {capacity}%",
         "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
-        "tooltip-format": "{power}W",
-        "states": { "warning": 30, "critical": 10 }
+        "tooltip-format": "Power: {power}W\nKlick: Power Profile wechseln",
+        "states": { "warning": 30, "critical": 10 },
+        "on-click": "~/.local/bin/apollo-os-power-profile.sh"
     },
     
     "network": {
@@ -92,7 +77,7 @@
     "bluetooth": {
         "format": "",
         "format-connected": "󰂱",
-        "format-disconnected": "󰂲",
+        "format-disabled": "󰂲",
         "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
         "on-click": "blueman-manager"
     },
@@ -106,12 +91,12 @@
     
     "backlight": {
         "format": "{icon}   {percent}%",
-        "format-icons": ["", "", "", "", "", "", "", "", ""]
+        "format-icons": ["󰃞", "󰃟", "󰃠"]
     },
     
     "custom/btop": {
         "format": "󰍛",
         "tooltip": "System Monitor",
-        "on-click": "alacritty -e btop"
+        "on-click": "gnome-terminal -e btop"
     }
 }

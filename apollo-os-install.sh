@@ -1,22 +1,21 @@
 #!/bin/bash
 
 #####################################################################
-# Apollo OS - Master Installer v0.4.5
+# Apollo OS - Master Installer v0.5.0
 # Copyright © 2026 by Manuel Kraibacher
 #
 # Description: Transforms Fedora 43 Workstation into Apollo OS
 # Base: Fedora 43 Workstation (Gnome)
-# Window Managers: Niri (Scrollable Tiling) & Sway (Classic Tiling)
+# Window Manager: Niri (Scrollable Tiling)
 #
-# v0.4.5 Changes:
-# - Switch from greetd/tuigreet to GDM (stability)
-# - Plymouth spinner theme (no Fedora logo at boot)
-# - GTK dark theme support for Niri and Sway
-# - Session naming: GLASS (Waybar), PRO (minimal), DEV (standard)
+# v0.5.0 Changes:
+# - Niri-only installation (Sway removed)
+# - Simplified configuration (PRO Dark theme only)
+# - AI integration removed (Gemini/Ollama)
+# - Plymouth spinner theme with Fedora watermark
+# - GTK dark theme support for Niri
 # - Piper TTS with LUNA voice (en_GB-jenny_dioco-medium)
 # - Login greeting notification with time-based message
-# - Fixed mako config (quoted app-name)
-# - Fixed TTS audio playback in autostart
 #####################################################################
 
 set -e  # Exit on error
@@ -45,7 +44,7 @@ print_banner() {
     cat "$SCRIPT_DIR/assets/apollo-os-boot-logo.txt" 2>/dev/null || echo "APOLLO OS"
     echo -e "${NC}"
     echo -e "${MAGENTA}═══════════════════════════════════════════════════════${NC}"
-    echo -e "${CYAN}  Apollo OS Installer v0.4.1${NC}"
+    echo -e "${CYAN}  Apollo OS Installer v0.5.0${NC}"
     echo -e "${YELLOW}  Next-Generation Custom Layer for Fedora 43${NC}"
     echo -e "${MAGENTA}═══════════════════════════════════════════════════════${NC}\n"
 }
@@ -129,50 +128,27 @@ gather_user_config() {
 
     echo
     echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}"
-    echo -e "${CYAN}  Apollo Intelligence Configuration${NC}"
+    echo -e "${CYAN}  Apollo OS Configuration${NC}"
     echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}\n"
 
-    # Google Gemini API Key
-    echo -e "${YELLOW}Google Gemini API Key${NC}"
-    echo "Apollo OS uses Google Gemini for AI-powered interactions."
-    echo "Get your API key from: https://makersuite.google.com/app/apikey"
-    echo -e "${CYAN}(Press Enter to skip and configure later in ~/.config/apollo-os/config.env)${NC}"
-    prompt_password "Enter Gemini API Key (will be hidden): " GEMINI_API_KEY
-
-    echo
-    # Telegram Configuration
-    echo -e "${YELLOW}Telegram Bot Configuration${NC}"
+    # Telegram Configuration (optional)
+    echo -e "${YELLOW}Telegram Bot Configuration (Optional)${NC}"
     echo "Apollo OS can send notifications via Telegram."
     echo "Create a bot via @BotFather on Telegram."
     echo -e "${CYAN}(Press Enter to skip and configure later)${NC}"
     prompt_password "Enter Telegram Bot Token (will be hidden): " TELEGRAM_BOT_TOKEN
     prompt_user "Enter your Telegram User ID: " TELEGRAM_USER_ID
 
-    echo
-    # Ollama Configuration (Local LLM Fallback)
-    echo -e "${YELLOW}Local LLM Configuration${NC}"
-    echo "Apollo OS uses Ollama with qwen2.5:0.5b as offline fallback (fast, no reasoning overhead)."
-    echo "This will be installed and configured automatically."
-    echo -e "${GREEN}No user input required.${NC}"
-
     # Save configuration
     mkdir -p "$HOME/.config/apollo-os"
     cat > "$CONFIG_FILE" <<EOF
 # Apollo OS Configuration
 # Generated on $(date)
-# Edit this file to update your API keys and settings
+# Edit this file to update your settings
 
-# AI Configuration
-GEMINI_API_KEY="$GEMINI_API_KEY"
-GEMINI_MODEL="gemini-2.0-flash"
-
-# Telegram Configuration
+# Telegram Configuration (Optional)
 TELEGRAM_BOT_TOKEN="$TELEGRAM_BOT_TOKEN"
 TELEGRAM_USER_ID="$TELEGRAM_USER_ID"
-
-# Ollama Configuration
-OLLAMA_MODEL="qwen2.5:0.5b"
-OLLAMA_PRELOAD="true"
 
 # System Configuration
 WALLPAPER_DIR="$HOME/System/Wallpaper"
@@ -183,11 +159,11 @@ EOF
 
     chmod 600 "$CONFIG_FILE"
     log "Configuration saved to $CONFIG_FILE ✓"
-    
-    if [[ -z "$GEMINI_API_KEY" ]] || [[ -z "$TELEGRAM_BOT_TOKEN" ]]; then
+
+    if [[ -z "$TELEGRAM_BOT_TOKEN" ]]; then
         echo
-        echo -e "${YELLOW}⚠️  Note: Some configuration values are empty.${NC}"
-        echo -e "${YELLOW}   You can add them later by editing:${NC}"
+        echo -e "${YELLOW}⚠️  Note: Telegram configuration is empty.${NC}"
+        echo -e "${YELLOW}   You can add it later by editing:${NC}"
         echo -e "${CYAN}   $CONFIG_FILE${NC}"
         echo
     fi
@@ -218,7 +194,7 @@ install_packages() {
     sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
     sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
-    # Install COPR repositories for Niri and other components
+    # Install COPR repositories for Niri
     log "Enabling COPR repositories..."
     sudo -v  # Refresh sudo
     sudo dnf copr enable -y errornix/niri || warn "Failed to enable niri COPR repo (will try from standard repos)"
@@ -226,33 +202,30 @@ install_packages() {
     # Refresh DNF cache after adding repos
     sudo dnf makecache --refresh
 
-    # Core Window Managers & Wayland
-    log "Installing Window Managers..."
+    # Core Window Manager & Wayland
+    log "Installing Niri Window Manager..."
     sudo -v  # Refresh sudo
-    
-    # Install Sway first (critical)
-    sudo dnf install -y sway waybar || error "Critical: Sway installation failed - check repositories"
-    
+
     # Install Wayland components
     sudo dnf install -y wayland-protocols wayland-devel || warn "Wayland dev packages failed"
 
-    # Install Niri (may need to be built from source)
+    # Install Niri
     if ! command -v niri &>/dev/null; then
         log "Installing Niri Window Manager..."
-        sudo dnf install -y niri || warn "Niri installation failed - system will use Sway only"
+        sudo dnf install -y niri || error "Niri installation failed"
     else
         log "Niri already installed ✓"
     fi
 
-    # UI Components - Split into critical and optional
+    # Install Waybar
+    sudo dnf install -y waybar || error "Waybar installation failed"
+
+    # UI Components
     log "Installing UI components..."
     sudo -v  # Refresh sudo
-    
+
     # Critical UI components
-    sudo dnf install -y rofi-wayland mako grim slurp wl-clipboard || error "Critical UI components failed"
-    
-    # Optional UI components
-    sudo dnf install -y dunst swaylock-effects swayidle swayosd || warn "Some optional UI packages failed"
+    sudo dnf install -y rofi mako grim slurp wl-clipboard swaylock swaybg swayidle || error "Critical UI components failed"
 
     # Terminal Emulators
     log "Installing terminal emulators..."
@@ -270,21 +243,24 @@ install_packages() {
         pavucontrol \
         brightnessctl \
         playerctl \
+        power-profiles-daemon \
         btop \
         fastfetch \
         jq \
         wget \
         unzip \
         || warn "Some system tools failed to install"
-    
+
     # Fonts
     log "Installing fonts..."
     sudo dnf install -y \
         jetbrains-mono-fonts-all \
         google-noto-emoji-fonts \
         fontawesome-fonts \
+        google-noto-sans-fonts \
+        fira-code-fonts \
         || warn "Some fonts failed to install"
-    
+
     # Install JetBrainsMono Nerd Font (for icons in Waybar)
     log "Installing JetBrainsMono Nerd Font..."
     if [[ ! -d "$HOME/.local/share/fonts/JetBrainsMonoNerdFont" ]]; then
@@ -303,59 +279,6 @@ install_packages() {
         log "JetBrainsMono Nerd Font already installed ✓"
     fi
 
-    # Python & AI Dependencies
-    log "Installing Python and AI dependencies..."
-    sudo dnf install -y \
-        python3 \
-        python3-pip \
-        python3-devel \
-        || error "Python installation failed"
-
-    pip3 install --user \
-        google-generativeai \
-        python-telegram-bot \
-        psutil \
-        pyyaml \
-        || warn "Some Python packages failed to install"
-
-    # Install Ollama
-    log "Installing Ollama..."
-    sudo -v  # Refresh sudo
-    if ! command -v ollama &>/dev/null; then
-        curl -fsSL https://ollama.com/install.sh | sh || warn "Ollama installation failed"
-    else
-        log "Ollama already installed ✓"
-    fi
-
-    # Pull Ollama model (retry on failure)
-    if command -v ollama &>/dev/null; then
-        log "Pulling Ollama model (qwen2.5:0.5b - fast, no reasoning overhead)..."
-        
-        # Start ollama service first
-        systemctl --user enable --now ollama 2>/dev/null || sudo systemctl enable --now ollama 2>/dev/null
-        sleep 2
-        
-        # Try to pull model with timeout
-        timeout 180 ollama pull qwen2.5:0.5b || {
-            warn "Ollama model pull timed out or failed - will retry in background"
-            # Schedule background retry
-            (sleep 10 && ollama pull qwen2.5:0.5b &>/dev/null &)
-        }
-    fi
-
-    # Login Manager
-    log "Installing greetd and tuigreet..."
-    sudo dnf install -y greetd || warn "greetd not available, will use default login manager"
-
-    # Fonts
-    log "Installing fonts..."
-    sudo dnf install -y \
-        google-noto-sans-fonts \
-        google-noto-emoji-fonts \
-        fira-code-fonts \
-        fontawesome-fonts \
-        || warn "Font installation incomplete"
-
     log "Package installation complete ✓"
 }
 
@@ -365,37 +288,30 @@ install_packages() {
 
 verify_critical_packages() {
     log "Verifying critical packages..."
-    
+
     local missing=()
     local critical_packages=(
-        "sway"
+        "niri"
         "waybar"
         "rofi"
         "mako"
     )
-    
+
     for pkg in "${critical_packages[@]}"; do
         if ! command -v "$pkg" &>/dev/null; then
             missing+=("$pkg")
         fi
     done
-    
+
     if [ ${#missing[@]} -gt 0 ]; then
         warn "Missing critical packages: ${missing[*]}"
         log "Attempting to install missing packages..."
-        
+
         # Try to install missing packages
         for pkg in "${missing[@]}"; do
-            case "$pkg" in
-                rofi)
-                    sudo dnf install -y rofi-wayland || warn "Could not install rofi-wayland"
-                    ;;
-                *)
-                    sudo dnf install -y "$pkg" || warn "Could not install $pkg"
-                    ;;
-            esac
+            sudo dnf install -y "$pkg" || warn "Could not install $pkg"
         done
-        
+
         # Verify again
         missing=()
         for pkg in "${critical_packages[@]}"; do
@@ -403,12 +319,12 @@ verify_critical_packages() {
                 missing+=("$pkg")
             fi
         done
-        
+
         if [ ${#missing[@]} -gt 0 ]; then
             error "Critical packages still missing after retry: ${missing[*]}"
         fi
     fi
-    
+
     log "Critical package verification passed ✓"
 }
 
@@ -421,11 +337,9 @@ deploy_configs() {
 
     # Create necessary directories
     mkdir -p "$HOME/.config/niri"
-    mkdir -p "$HOME/.config/sway"
     mkdir -p "$HOME/.config/waybar"
     mkdir -p "$HOME/.config/mako"
     mkdir -p "$HOME/.config/rofi"
-    mkdir -p "$HOME/.config/swaylock"
     mkdir -p "$HOME/.config/gtk-3.0"
     mkdir -p "$HOME/.config/gtk-4.0"
     mkdir -p "$HOME/.config/xdg-desktop-portal"
@@ -435,7 +349,7 @@ deploy_configs() {
     log "Deploying GTK theme configurations..."
     cp "$SCRIPT_DIR/config-data/gtk-3.0-settings.ini" "$HOME/.config/gtk-3.0/settings.ini" || warn "GTK-3.0 config failed"
     cp "$SCRIPT_DIR/config-data/gtk-4.0-settings.ini" "$HOME/.config/gtk-4.0/settings.ini" || warn "GTK-4.0 config failed"
-    
+
     # Create GTK-2.0 config
     cat > "$HOME/.gtkrc-2.0" << 'GTKEOF'
 gtk-theme-name="adw-gtk3-dark"
@@ -444,8 +358,8 @@ gtk-font-name="Cantarell 11"
 gtk-cursor-theme-name="Adwaita"
 gtk-cursor-theme-size=24
 GTKEOF
-    
-    # Create XDG Portal configs
+
+    # Create XDG Portal config for Niri
     cat > "$HOME/.config/xdg-desktop-portal/niri-portals.conf" << 'PORTALEOF'
 [preferred]
 default=gtk
@@ -453,69 +367,43 @@ org.freedesktop.impl.portal.Settings=gtk
 org.freedesktop.impl.portal.Screenshot=wlr
 org.freedesktop.impl.portal.ScreenCast=wlr
 PORTALEOF
-    cp "$HOME/.config/xdg-desktop-portal/niri-portals.conf" "$HOME/.config/xdg-desktop-portal/sway-portals.conf"
 
-    # Deploy Niri configs
-    log "Deploying Niri configurations..."
-    cp "$SCRIPT_DIR/config-data/niri/"* "$HOME/.config/niri/" || warn "Niri config deployment failed"
-    
+    # Deploy Niri config
+    log "Deploying Niri configuration..."
+    cp "$SCRIPT_DIR/config-data/niri/apollo-os-niri-config.kdl" "$HOME/.config/niri/config.kdl" || warn "Niri config deployment failed"
+    cp "$SCRIPT_DIR/config-data/niri/apollo-autostart.sh" "$HOME/.config/niri/" || warn "Niri autostart deployment failed"
+
     # Make autostart executable
     chmod +x "$HOME/.config/niri/apollo-autostart.sh" 2>/dev/null
-    
-    # Add GTK_THEME and portal to Niri configs
-    for config in "$HOME/.config/niri/apollo-os-config-pro.kdl" "$HOME/.config/niri/apollo-os-config-mod.kdl"; do
-        if [ -f "$config" ]; then
-            # Add autostart if not present
-            if ! grep -q "apollo-autostart.sh" "$config"; then
-                sed -i '/spawn-at-startup.*polkit/a spawn-at-startup "~/.config/niri/apollo-autostart.sh" // Apollo OS Services' "$config"
-            fi
-            # Add portal if not present
-            if ! grep -q "xdg-desktop-portal-gtk" "$config"; then
-                sed -i '/spawn-at-startup.*polkit/a spawn-at-startup "/usr/libexec/xdg-desktop-portal-gtk" // GTK Portal for dark theme' "$config"
-            fi
-            # Add GTK_THEME environment if not present
-            if ! grep -q "GTK_THEME" "$config"; then
-                sed -i 's/environment {/environment {\n    GTK_THEME "adw-gtk3-dark"\n    ADW_DEBUG_COLOR_SCHEME "prefer-dark"/' "$config"
-            fi
-        fi
-    done
 
-    # Deploy Sway configs
-    log "Deploying Sway configurations..."
-    cp "$SCRIPT_DIR/config-data/sway/"* "$HOME/.config/sway/" || warn "Sway config deployment failed"
-    
-    # Remove non-existent omarchy-menu references and add portal
-    for config in "$HOME/.config/sway/"apollo-os-config-*; do
-        if [ -f "$config" ]; then
-            sed -i '/omarchy-menu/d' "$config" 2>/dev/null
-            # Add portal if not present
-            if ! grep -q "xdg-desktop-portal-gtk" "$config"; then
-                sed -i '/exec.*polkit/a exec /usr/libexec/xdg-desktop-portal-gtk' "$config"
-            fi
+    # Add GTK_THEME and portal to Niri config
+    if [ -f "$HOME/.config/niri/config.kdl" ]; then
+        # Add autostart if not present
+        if ! grep -q "apollo-autostart.sh" "$HOME/.config/niri/config.kdl"; then
+            sed -i '/spawn-at-startup.*polkit/a spawn-at-startup "~/.config/niri/apollo-autostart.sh" // Apollo OS Services' "$HOME/.config/niri/config.kdl"
         fi
-    done
+        # Add portal if not present
+        if ! grep -q "xdg-desktop-portal-gtk" "$HOME/.config/niri/config.kdl"; then
+            sed -i '/spawn-at-startup.*polkit/a spawn-at-startup "/usr/libexec/xdg-desktop-portal-gtk" // GTK Portal for dark theme' "$HOME/.config/niri/config.kdl"
+        fi
+        # Add GTK_THEME environment if not present
+        if ! grep -q "GTK_THEME" "$HOME/.config/niri/config.kdl"; then
+            sed -i 's/environment {/environment {\n    GTK_THEME "adw-gtk3-dark"\n    ADW_DEBUG_COLOR_SCHEME "prefer-dark"/' "$HOME/.config/niri/config.kdl"
+        fi
+    fi
 
     # Deploy Waybar configs
     log "Deploying Waybar configurations..."
-    cp "$SCRIPT_DIR/config-data/waybar/"* "$HOME/.config/waybar/" || warn "Waybar config deployment failed"
+    cp "$SCRIPT_DIR/config-data/waybar/apollo-os-waybar-config" "$HOME/.config/waybar/config" || warn "Waybar config deployment failed"
+    cp "$SCRIPT_DIR/config-data/waybar/apollo-os-waybar-style.css" "$HOME/.config/waybar/style.css" || warn "Waybar style deployment failed"
 
-    # Deploy Mako configs
-    log "Deploying Mako configurations..."
-    cp "$SCRIPT_DIR/config-data/mako/"* "$HOME/.config/mako/" || warn "Mako config deployment failed"
+    # Deploy Mako config
+    log "Deploying Mako configuration..."
+    cp "$SCRIPT_DIR/config-data/mako/apollo-os-mako-config" "$HOME/.config/mako/config" || warn "Mako config deployment failed"
 
-    # Deploy Rofi configs
-    log "Deploying Rofi configurations..."
-    cp "$SCRIPT_DIR/config-data/rofi/"* "$HOME/.config/rofi/" || warn "Rofi config deployment failed"
-
-    # Deploy Swaylock configs
-    log "Deploying Swaylock configurations..."
-    mkdir -p "$HOME/.config/swaylock"
-    cp "$SCRIPT_DIR/config-data/swaylock/"* "$HOME/.config/swaylock/" || warn "Swaylock config deployment failed"
-
-    # Deploy SwayOSD configs
-    log "Deploying SwayOSD configurations..."
-    mkdir -p "$HOME/.config/swayosd"
-    cp "$SCRIPT_DIR/config-data/swayosd/"* "$HOME/.config/swayosd/" || warn "SwayOSD config deployment failed"
+    # Deploy Rofi theme
+    log "Deploying Rofi theme..."
+    cp "$SCRIPT_DIR/config-data/rofi/apollo-os-rofi-theme.rasi" "$HOME/.config/rofi/config.rasi" || warn "Rofi config deployment failed"
 
     log "Configuration deployment complete ✓"
 }
@@ -527,25 +415,25 @@ PORTALEOF
 install_scripts() {
     log "Installing Apollo OS scripts..."
 
-    # Copy scripts to local bin
-    cp "$SCRIPT_DIR/scripts/"*.sh "$HOME/.local/bin/" || error "Failed to copy scripts"
-    cp "$SCRIPT_DIR/scripts/"*.py "$HOME/.local/bin/" || error "Failed to copy Python scripts"
+    # Copy scripts to local bin (excluding AI scripts)
+    for script in "$SCRIPT_DIR/scripts/"*.sh; do
+        if [ -f "$script" ]; then
+            cp "$script" "$HOME/.local/bin/" || warn "Failed to copy $(basename "$script")"
+        fi
+    done
 
     # Make scripts executable
-    chmod +x "$HOME/.local/bin/apollo-os-"* || error "Failed to make scripts executable"
-    chmod +x "$HOME/.local/bin/apollo-speak.sh" 2>/dev/null || true
-    
-    # Install wrapper scripts to /usr/local/bin/ (needed for GDM)
-    log "Installing wrapper scripts globally..."
+    chmod +x "$HOME/.local/bin/apollo-"* 2>/dev/null || true
+    chmod +x "$HOME/.local/bin/apollo-os-"* 2>/dev/null || true
+
+    # Install wrapper script to /usr/local/bin/ (needed for GDM)
+    log "Installing wrapper script globally..."
     sudo cp "$HOME/.local/bin/apollo-os-wrapper-niri.sh" /usr/local/bin/ || warn "Failed to install niri wrapper globally"
-    sudo cp "$HOME/.local/bin/apollo-os-wrapper-sway.sh" /usr/local/bin/ || warn "Failed to install sway wrapper globally"
-    sudo chmod +x /usr/local/bin/apollo-os-wrapper-*.sh
+    sudo chmod +x /usr/local/bin/apollo-os-wrapper-niri.sh
 
     # Create symlinks for convenience
-    ln -sf "$HOME/.local/bin/apollo-os-nl2bash.sh" "$HOME/.local/bin/??" || warn "Failed to create ?? symlink"
-    ln -sf "$HOME/.local/bin/apollo-os-diagnose.sh" "$HOME/.local/bin/apollo-diagnose" || warn "Failed to create apollo-diagnose symlink"
-    ln -sf "$HOME/.local/bin/apollo-os-chat.sh" "$HOME/.local/bin/apollo-chat" || warn "Failed to create apollo-chat symlink"
     ln -sf "$HOME/.local/bin/apollo-speak.sh" "$HOME/.local/bin/apollo-speak" || warn "Failed to create apollo-speak symlink"
+    ln -sf "$HOME/.local/bin/apollo-os-event-monitor.sh" "$HOME/.local/bin/apollo-event-monitor" || warn "Failed to create apollo-event-monitor symlink"
 
     log "Scripts installed ✓"
 }
@@ -555,22 +443,10 @@ install_scripts() {
 #####################################################################
 
 install_desktop_entries() {
-    log "Installing Wayland session entries..."
-
-    # Create directory for user-specific Wayland sessions
-    mkdir -p "$HOME/.local/share/wayland-sessions"
-
-    # Copy desktop entries
-    cp "$SCRIPT_DIR/wayland-sessions/"*.desktop "$HOME/.local/share/wayland-sessions/" || warn "Failed to copy desktop entries"
-
-    # Also try to install system-wide if we have permissions
-    if sudo mkdir -p /usr/share/wayland-sessions 2>/dev/null; then
-        sudo cp "$SCRIPT_DIR/wayland-sessions/"*.desktop /usr/share/wayland-sessions/ 2>/dev/null && \
-            log "System-wide session entries installed" || \
-            log "User-specific session entries installed"
-    fi
-
-    log "Desktop entries installed ✓"
+    # Note: Session entry is created in configure_login_manager()
+    # This function is kept for compatibility but does nothing
+    # Niri is the only session and is configured system-wide
+    log "Session entries will be configured in login manager setup ✓"
 }
 
 #####################################################################
@@ -582,20 +458,24 @@ setup_systemd() {
 
     mkdir -p "$HOME/.config/systemd/user"
 
-    # Copy systemd units (excluding boot splash files)
+    # Copy systemd units (excluding boot splash and AI daemon)
     for file in "$SCRIPT_DIR/systemd/"*.service "$SCRIPT_DIR/systemd/"*.timer; do
-        if [ -f "$file" ] && [ "$(basename "$file")" != "apollo-boot-splash.service" ]; then
-            cp "$file" "$HOME/.config/systemd/user/" || warn "Failed to copy $(basename "$file")"
+        if [ -f "$file" ]; then
+            local filename="$(basename "$file")"
+            # Skip boot splash and AI daemon
+            if [[ "$filename" != "apollo-boot-splash.service" && "$filename" != "apollo-os-daemon.service" ]]; then
+                cp "$file" "$HOME/.config/systemd/user/" || warn "Failed to copy $filename"
+            fi
         fi
     done
 
     # Reload systemd
     systemctl --user daemon-reload
 
-    # Enable services
-    systemctl --user enable apollo-os-daemon.service || warn "Failed to enable apollo-daemon"
-    systemctl --user enable apollo-os-notification-handler.service || warn "Failed to enable notification-handler"
-
+    # Enable services (event monitor will be started by autostart script)
+    # We don't enable it as systemd service to avoid race conditions
+    # It starts after Niri/Mako/Audio are ready
+    
     log "Systemd services configured ✓"
 }
 
@@ -605,25 +485,25 @@ setup_systemd() {
 
 install_audio_system() {
     log "Installing Audio System (TTS)..."
-    
+
     echo
     echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}"
     echo -e "${CYAN}  Audio System (Text-to-Speech)${NC}"
     echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}\n"
-    
+
     # Install required packages (espeak-ng as fallback, audio utilities)
     log "Installing audio utilities..."
     sudo dnf install -y espeak-ng sox ffmpeg pulseaudio-utils alsa-utils || warn "Some audio packages failed"
-    
+
     # Setup directories
     local PIPER_DIR="$HOME/.local/share/apollo-os/piper"
     local VOICE_DIR="$HOME/.local/share/apollo-os/voices"
     local SOUNDS_DIR="$HOME/.local/share/apollo-os/sounds"
-    
+
     mkdir -p "$PIPER_DIR"
     mkdir -p "$VOICE_DIR"
     mkdir -p "$SOUNDS_DIR"
-    
+
     # Download Piper TTS binary (not in Fedora repos)
     log "Downloading Piper TTS..."
     if [ ! -f "$PIPER_DIR/piper/piper" ]; then
@@ -635,7 +515,7 @@ install_audio_system() {
     else
         log "Piper TTS already installed ✓"
     fi
-    
+
     # Download LUNA voice model (en_GB-jenny_dioco-medium)
     log "Downloading LUNA voice model (~63 MB)..."
     if [ ! -f "$VOICE_DIR/luna.onnx" ]; then
@@ -649,7 +529,7 @@ install_audio_system() {
     else
         log "LUNA voice model already exists ✓"
     fi
-    
+
     # Generate chime sound
     log "Generating chime sound (880Hz → 660Hz)..."
     if [ ! -f "$SOUNDS_DIR/chime.wav" ]; then
@@ -658,9 +538,7 @@ install_audio_system() {
                -filter_complex "[0][1]concat=n=2:v=0:a=1" \
                -y "$SOUNDS_DIR/chime.wav" 2>/dev/null || warn "Failed to generate chime"
     fi
-    
-    # apollo-speak is already copied by install_scripts()
-    
+
     log "Audio System installed ✓"
     echo -e "${GREEN}TTS Voice: LUNA (British English, Piper TTS)${NC}"
 }
@@ -698,7 +576,7 @@ configure_login_manager() {
     echo -e "${CYAN}  Login Manager Configuration${NC}"
     echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}\n"
 
-    # Configure GDM (remove Fedora logo, clock with seconds)
+    # Configure GDM (clock with seconds)
     log "Configuring GDM appearance..."
     sudo mkdir -p /etc/dconf/db/gdm.d
     sudo bash -c 'cat > /etc/dconf/db/gdm.d/01-apollo << EOF
@@ -710,42 +588,30 @@ clock-show-seconds=true
 clock-show-date=false
 EOF'
     sudo dconf update
-    
-    # Remove GNOME sessions from selection (keep only Apollo sessions)
-    log "Removing default GNOME sessions..."
+
+    # Remove all other sessions - Niri is the only option
+    log "Removing all other sessions (Niri-only)..."
     sudo rm -f /usr/share/wayland-sessions/gnome.desktop 2>/dev/null
     sudo rm -f /usr/share/wayland-sessions/gnome-wayland.desktop 2>/dev/null
     sudo rm -f /usr/share/wayland-sessions/gnome-classic.desktop 2>/dev/null
     sudo rm -f /usr/share/wayland-sessions/gnome-classic-wayland.desktop 2>/dev/null
-    
-    # Rename default Niri/Sway sessions
-    log "Configuring session names..."
+    sudo rm -f /usr/share/wayland-sessions/sway.desktop 2>/dev/null
+
+    # Configure Niri as the only session
+    log "Setting Niri as default and only session..."
     sudo bash -c 'cat > /usr/share/wayland-sessions/niri.desktop << EOF
 [Desktop Entry]
-Name=Apollo Orbit (DEV)
-Comment=Niri - Scrollable Tiling Window Manager
-Exec=niri
+Name=Apollo OS
+Comment=Niri Scrollable Tiling Window Manager
+Exec=/usr/local/bin/apollo-os-wrapper-niri.sh pro dark
 Type=Application
 DesktopNames=niri
 EOF'
-    
-    sudo bash -c 'cat > /usr/share/wayland-sessions/sway.desktop << EOF
-[Desktop Entry]
-Name=Apollo Grid (DEV)
-Comment=Sway - i3-compatible Tiling Window Manager
-Exec=sway
-Type=Application
-DesktopNames=sway
-EOF'
-    
-    # Set Plymouth theme to spinner (no Fedora logo)
-    log "Setting Plymouth boot theme..."
-    sudo plymouth-set-default-theme spinner
-    # Remove Fedora watermark from spinner theme
-    sudo rm -f /usr/share/plymouth/themes/spinner/watermark.png
-    sudo dracut -f
-    
-    log "GDM and Plymouth configured ✓"
+
+    # Note: Plymouth/Boot is not modified here - only watermark.png is replaced via assets
+    # The Fedora spinner theme remains unchanged
+
+    log "GDM configured - Niri is the only available session ✓"
 }
 
 #####################################################################
@@ -761,9 +627,6 @@ finalize_installation() {
         log "Added ~/.local/bin to PATH"
     fi
 
-    # Start Apollo daemon
-    systemctl --user start apollo-os-daemon.service || warn "Failed to start apollo-daemon"
-
     # Print summary
     echo
     echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}"
@@ -772,22 +635,15 @@ finalize_installation() {
 
     echo -e "${CYAN}Next Steps:${NC}"
     echo "1. Log out of your current session"
-    echo "2. Select 'Niri PRO' or 'Sway PRO' from the login manager"
-    echo "3. Log in to experience Apollo OS"
+    echo "2. Log in - Apollo OS (Niri) starts automatically"
     echo
-    echo -e "${YELLOW}Available WM Sessions:${NC}"
-    echo "  • Niri PRO (Dark)  - Professional, minimal tiling"
-    echo "  • Niri MOD (Dark)  - Modified, enhanced tiling"
-    echo "  • Sway PRO (Dark)  - Classic i3-style tiling"
-    echo "  • Sway MOD (Dark)  - Enhanced Sway experience"
-    echo "  (Light variants available via theme switcher)"
+    echo -e "${YELLOW}Window Manager:${NC}"
+    echo "  • Niri - Scrollable tiling (default and only session)"
     echo
     echo -e "${CYAN}Quick Commands:${NC}"
-    echo "  ?? <question>                - Natural language to bash"
-    echo "  apollo-diagnose              - AI-powered system diagnostics"
-    echo "  apollo-chat                  - Interactive chat with Apollo AI"
     echo "  apollo-speak <text>          - Text-to-Speech with LUNA voice"
     echo "  apollo-os-theme-switcher.sh  - Switch between light/dark themes"
+    echo "  apollo-os-stats.sh           - System statistics"
     echo
     echo -e "${CYAN}Optional Post-Installation:${NC}"
     echo "  Boot Splash: sudo $SCRIPT_DIR/scripts/apollo-os-boot-splash-installer.sh"

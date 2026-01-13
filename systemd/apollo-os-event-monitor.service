@@ -1,0 +1,23 @@
+[Unit]
+Description=Apollo OS System Event Monitor
+Documentation=https://github.com/apolloenv/apollo-os
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/apollo-os-event-monitor.sh
+Restart=on-failure
+RestartSec=10
+
+# Security
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+
+# Environment
+Environment="XDG_RUNTIME_DIR=/run/user/%U"
+Environment="WAYLAND_DISPLAY=wayland-1"
+
+[Install]
+WantedBy=graphical-session.target
