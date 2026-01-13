@@ -1,0 +1,141 @@
+# =============================================================================
+# SWAY WM CONFIGURATION (Niri-Style Match)
+# =============================================================================
+
+# --- Variables ---
+set $mod Mod4
+set $term alacritty
+set $menu rofi -show drun -theme $ROFI_THEME_FILE
+set $browser firefox
+set $filemanager nautilus --new-window
+set $editor gnome-text-editor --new-window
+
+# --- Input configuration ---
+input * {
+    xkb_layout "de"
+}
+
+input type:touchpad {
+    dwt enabled
+    tap enabled
+    natural_scroll enabled
+    accel_profile adaptive
+    scroll_factor 1.0
+}
+
+# --- Output configuration ---
+output * bg $HOME/System/Wallpaper/current.jpg fill
+output eDP-1 scale 1
+# output DP-2 pos 1920 0
+
+# --- Look & Feel (Niri Match) ---
+seat seat0 xcursor_theme WhiteSur-cursors 24
+
+# Gaps
+gaps inner 0
+gaps outer 0
+smart_gaps on
+
+# Borders
+default_border pixel 2
+default_floating_border pixel 2
+client.focused          #ffffff #ffffff #000000 #ffffff #ffffff
+client.focused_inactive #505050 #505050 #ffffff #505050 #505050
+client.unfocused        #333333 #333333 #888888 #333333 #333333
+client.urgent           #e01b24 #e01b24 #ffffff #e01b24 #e01b24
+
+# Fonts
+font pango:JetBrainsMono Nerd Font 11
+
+# --- Keybindings ---
+
+# Applications
+bindsym $mod+Return exec $term
+bindsym $mod+b exec $browser
+bindsym $mod+d exec $filemanager
+bindsym $mod+n exec $editor
+bindsym $mod+t exec ptyxis --new-window
+
+# Launcher & Menu
+bindsym $mod+Space exec $menu
+bindsym $mod+Shift+Space exec $HOME/.local/bin/apollo-os-quickmenu.sh
+bindsym $mod+Ctrl+Space exec $HOME/.local/bin/apollo-os-wallpaper-cycle.sh
+bindsym $mod+Shift+Ctrl+Space exec omarchy-menu theme
+
+# Window Management
+bindsym $mod+q kill
+bindsym $mod+w floating toggle
+bindsym $mod+f fullscreen
+bindsym $mod+c floating enable, resize set 1200 800, move position center
+bindsym $mod+Shift+e exit
+bindsym $mod+Shift+r reload
+
+# Focus (Arrow keys)
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# Move (Arrow keys)
+bindsym $mod+Alt+Left move left
+bindsym $mod+Alt+Down move down
+bindsym $mod+Alt+Up move up
+bindsym $mod+Alt+Right move right
+
+# Resize
+mode "resize" {
+    bindsym Left resize shrink width 150px
+    bindsym Down resize grow height 100px
+    bindsym Up resize shrink height 100px
+    bindsym Right resize grow width 150px
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# Workspaces
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+
+bindsym $mod+Ctrl+1 move container to workspace number 1
+bindsym $mod+Ctrl+2 move container to workspace number 2
+bindsym $mod+Ctrl+3 move container to workspace number 3
+bindsym $mod+Ctrl+4 move container to workspace number 4
+bindsym $mod+Ctrl+5 move container to workspace number 5
+bindsym $mod+Ctrl+6 move container to workspace number 6
+bindsym $mod+Ctrl+7 move container to workspace number 7
+bindsym $mod+Ctrl+8 move container to workspace number 8
+bindsym $mod+Ctrl+9 move container to workspace number 9
+bindsym $mod+Ctrl+0 move container to workspace number 10
+
+# System & Media
+bindsym $mod+l exec swaylock -f -C $SWAYLOCK_CONFIG
+bindsym $mod+s exec sh -c "grim -g \"$(slurp)\" $HOME/Bilder/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png && notify-send 'Screenshot' 'Gespeichert unter Bilder/Screenshots'"
+
+bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
+bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindsym XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+bindsym XF86MonBrightnessUp exec brightnessctl set 10%+
+bindsym XF86MonBrightnessDown exec brightnessctl set 10%-
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+
+# --- Autostart ---
+exec /usr/libexec/polkit-gnome-authentication-agent-1
+exec nm-applet --indicator
+exec blueman-applet
+exec swayidle -w before-sleep 'swaylock -f -C $SWAYLOCK_CONFIG'
+exec_always sh -c "pkill waybar; sleep 0.1; waybar -c $WAYBAR_CONFIG_FILE -s $WAYBAR_STYLE_FILE"
+
+include /etc/sway/config.d/*

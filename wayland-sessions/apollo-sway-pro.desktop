@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Apollo Grid (GLASS)
+Comment=i3-style Tiling - Fluid Mode with Waybar
+Exec=/usr/local/bin/apollo-os-wrapper-sway.sh pro dark
+Type=Application
+DesktopNames=sway

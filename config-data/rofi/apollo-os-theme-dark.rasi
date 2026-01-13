@@ -1,0 +1,140 @@
+/**
+ * Apollo OS - Rofi Theme (Dark System -> Light UI)
+ * High Contrast Inversion Rule Applied
+ *
+ * When system theme is DARK, UI elements are LIGHT
+ */
+
+* {
+    /* High Contrast Light Colors */
+    background:     #F5F5F5;
+    background-alt: #EEEEEE;
+    foreground:     #1a1a1a;
+    selected:       #4A90E2;
+    active:         #2C5F8D;
+    urgent:         #E84A3F;
+
+    /* Spacing */
+    border-colour:  #CCCCCC;
+    spacing:        2px;
+}
+
+window {
+    transparency:   "real";
+    location:       center;
+    anchor:         center;
+    fullscreen:     false;
+    width:          600px;
+    border:         2px;
+    border-color:   @border-colour;
+    border-radius:  8px;
+    background-color: @background;
+}
+
+mainbox {
+    enabled:        true;
+    spacing:        10px;
+    margin:         0px;
+    padding:        20px;
+    background-color: transparent;
+    children:       [ "inputbar", "message", "listview" ];
+}
+
+inputbar {
+    enabled:        true;
+    spacing:        10px;
+    padding:        10px;
+    border:         0px;
+    border-radius:  4px;
+    background-color: @background-alt;
+    text-color:     @foreground;
+    children:       [ "prompt", "entry" ];
+}
+
+prompt {
+    enabled:        true;
+    background-color: transparent;
+    text-color:     @active;
+}
+
+entry {
+    enabled:        true;
+    background-color: transparent;
+    text-color:     @foreground;
+    cursor:         text;
+    placeholder:    "Type to search...";
+    placeholder-color: #888888;
+}
+
+message {
+    enabled:        true;
+    margin:         0px;
+    padding:        10px;
+    border:         0px;
+    border-radius:  4px;
+    background-color: @background-alt;
+    text-color:     @foreground;
+}
+
+textbox {
+    background-color: transparent;
+    text-color:     @foreground;
+    vertical-align: 0.5;
+    horizontal-align: 0.0;
+}
+
+listview {
+    enabled:        true;
+    columns:        1;
+    lines:          8;
+    cycle:          true;
+    dynamic:        true;
+    scrollbar:      false;
+    layout:         vertical;
+    reverse:        false;
+    fixed-height:   true;
+    fixed-columns:  true;
+    spacing:        4px;
+    background-color: transparent;
+}
+
+element {
+    enabled:        true;
+    spacing:        8px;
+    margin:         0px;
+    padding:        8px;
+    border:         0px;
+    border-radius:  4px;
+    background-color: transparent;
+    text-color:     @foreground;
+    cursor:         pointer;
+}
+
+element normal.normal {
+    background-color: transparent;
+    text-color:     @foreground;
+}
+
+element selected.normal {
+    background-color: @selected;
+    text-color:     #FFFFFF;
+}
+
+element alternate.normal {
+    background-color: transparent;
+    text-color:     @foreground;
+}
+
+element-icon {
+    background-color: transparent;
+    size:           24px;
+    cursor:         inherit;
+}
+
+element-text {
+    background-color: transparent;
+    text-color:     inherit;
+    cursor:         inherit;
+    vertical-align: 0.5;
+    horizontal-align: 0.0;
+}

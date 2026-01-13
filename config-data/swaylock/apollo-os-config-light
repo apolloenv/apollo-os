@@ -1,0 +1,66 @@
+# Apollo OS - Swaylock Configuration (Light System)
+# High Contrast with Blur Effect
+
+# Display
+ignore-empty-password
+show-failed-attempts
+show-keyboard-layout
+
+# Image & Effects
+image=$HOME/System/Wallpaper/current.jpg
+scaling=fill
+
+# Blur Effect
+effect-blur=7x5
+effect-vignette=0.5:0.5
+
+# Colors - Dark theme for light system (Inversion Rule)
+color=1a1a1a
+
+# Text Colors
+text-color=F5F5F5
+text-clear-color=F5F5F5
+text-caps-lock-color=E84A3F
+text-ver-color=6BA3E8
+text-wrong-color=E84A3F
+
+# Inside Ring Colors
+inside-color=1a1a1aCC
+inside-clear-color=1a1a1aCC
+inside-caps-lock-color=B71C1CCC
+inside-ver-color=0D47A1CC
+inside-wrong-color=B71C1CCC
+
+# Ring Colors
+ring-color=3a3a3a
+ring-clear-color=66BB6A
+ring-caps-lock-color=FF9800
+ring-ver-color=42A5F5
+ring-wrong-color=EF5350
+
+# Line Colors
+line-color=1a1a1a
+line-clear-color=1a1a1a
+line-caps-lock-color=1a1a1a
+line-ver-color=1a1a1a
+line-wrong-color=1a1a1a
+
+# Separator Color
+separator-color=3a3a3a
+
+# Key Highlight Colors
+key-hl-color=42A5F5
+bs-hl-color=EF5350
+
+# Layout
+indicator
+indicator-radius=100
+indicator-thickness=10
+
+# Font
+font=Noto Sans
+font-size=14
+
+# Positioning
+indicator-x-position=960
+indicator-y-position=540

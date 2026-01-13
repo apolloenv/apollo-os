@@ -1,0 +1,120 @@
+/* MODERN WAYBAR STYLE (Island Look) */
+
+* {
+    border: none;
+    border-radius: 0px;
+    font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: rgba(240, 240, 240, 0.95); /* Dunkler, transparenter Hintergrund */
+    color: #1a1a1a;
+    border-radius: 12px; /* Runde Ecken für die ganze Bar */
+    transition-property: background-color;
+    transition-duration: 0.5s;
+    /* Optional: Box-Shadow für die Bar */
+    /* box-shadow: 0 4px 8px rgba(0,0,0,0.3); */
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+/* --- Workspaces --- */
+#workspaces {
+    margin: 5px 5px;
+    background-color: rgba(60, 60, 60, 0.0);
+    border-radius: 0px;
+}
+
+#workspaces button {
+    padding: 0 15px;
+    background-color: transparent;
+    color: rgba(60, 60, 60, 0.9);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+#workspaces button:hover {
+    background: rgba(60, 60, 60, 0.25);
+    color: #1a1a1a;
+}
+
+#workspaces button.active {
+    background-color: rgba(60, 60, 60, 0.9); /* GNOME Blau */
+    color: #ffffff;
+    padding: 0 16px; /* Aktiver Tab wird breiter */
+}
+
+#workspaces button.urgent {
+    background-color: #e01b24;
+    color: #1a1a1a;
+}
+
+/* --- Modules --- */
+.modules-right {
+    margin: 5px 5px;
+    background-color: rgba(60, 60, 60, 0.0);
+    border-radius: 8px;
+    padding: 0 5px;
+}
+
+#bluetooth,
+#network,
+#pulseaudio,
+#backlight,
+#custom-btop,
+#battery,
+#clock {
+    padding: 4px 12px;
+    margin: 2px 2px;
+    color: #1a1a1a;
+    background-color: transparent;
+    border-radius: 8px;
+}
+
+/* Hover Effekte */
+#bluetooth:hover,
+#network:hover,
+#pulseaudio:hover,
+#backlight:hover,
+#custom-btop:hover,
+#battery:hover,
+#clock:hover {
+    background-color: rgba(60, 60, 60, 0.2);
+}
+
+/* --- Status Farben --- */
+
+/* Battery */
+#battery.charging { color: #8ff0a4; }
+#battery.warning:not(.charging) { color: #f8e45c; }
+#battery.critical:not(.charging) {
+    color: #ff7b63;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes blink { to { color: #1a1a1a; } }
+
+/* Network */
+#network.disconnected { color: #1a1a1a; }
+
+/* Audio */
+#pulseaudio.muted { color: #1a1a1a; }
+
+/* Custom Icons */
+#custom-synology {
+    color: #1a1a1a;
+    padding: 0 15px;
+    font-size: 16px;
+}
+
+#tray {
+    margin-right: 10px;
+}
