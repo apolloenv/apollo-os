@@ -48,7 +48,9 @@ case "$selected" in
         ;;
 
     "🔄 APOLLO OS Update")
-        alacritty -e bash -c "$HOME/.local/bin/apollo-os-update.sh"
+        # TTS before terminal opens
+        "$HOME/.local/bin/apollo-os-tts-notify.sh" update-start >/dev/null 2>&1
+        alacritty -e bash -c "$HOME/.local/bin/apollo-os-update.sh; $HOME/.local/bin/apollo-os-tts-notify.sh update-complete >/dev/null 2>&1"
         ;;
 
     "⌨️  Keyboard Shortcuts")

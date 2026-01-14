@@ -37,8 +37,8 @@ export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 speak() {
     local text="$1"
     local tmpfile="/tmp/apollo-tts-$$.wav"
-    echo "$text" | "$PIPER_BIN" --model "$VOICE_FILE" --length_scale "$SPEED" --output_file "$tmpfile" 2>/dev/null
-    pw-play "$tmpfile" 2>/dev/null || paplay "$tmpfile" 2>/dev/null || aplay "$tmpfile" 2>/dev/null
+    echo "$text" | "$PIPER_BIN" --model "$VOICE_FILE" --length_scale "$SPEED" --output_file "$tmpfile" >/dev/null 2>&1
+    pw-play "$tmpfile" >/dev/null 2>&1 || paplay "$tmpfile" >/dev/null 2>&1 || aplay "$tmpfile" >/dev/null 2>&1
     rm -f "$tmpfile"
 }
 

@@ -23,16 +23,13 @@ NC='\033[0m'
 # TTS function - runs synchronously to ensure audio completes
 tts_notify() {
     local script="$HOME/.local/bin/apollo-os-tts-notify.sh"
-    [ -x "$script" ] && "$script" "$@"
+    [ -x "$script" ] && "$script" "$@" >/dev/null 2>&1
 }
 
 echo -e "${BLUE}================================================"
 echo "  Apollo OS - Automatisches Update"
 echo -e "================================================${NC}"
 echo
-
-# TTS: Update started
-tts_notify update-start
 
 # Check if git is installed
 if ! command -v git &>/dev/null; then
@@ -303,9 +300,6 @@ echo -e "================================================${NC}"
 echo
 echo -e "${BLUE}Backup: $BACKUP_DIR${NC}"
 echo
-
-# TTS: Update complete
-tts_notify update-complete
 
 read -p "Drücke Enter zum Beenden..."
 
