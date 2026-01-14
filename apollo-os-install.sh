@@ -745,10 +745,19 @@ configure_login_manager() {
     if [[ -f "$HOME/System/Wallpaper/Basic-Black-Dots.jpg" ]]; then
         sudo cp "$HOME/System/Wallpaper/Basic-Black-Dots.jpg" /usr/share/backgrounds/apollo-login.jpg
         sudo chmod 644 /usr/share/backgrounds/apollo-login.jpg
+    elif [[ -f "$INSTALL_DIR/assets/wallpapers/Basic-Black-Dots.jpg" ]]; then
+        sudo cp "$INSTALL_DIR/assets/wallpapers/Basic-Black-Dots.jpg" /usr/share/backgrounds/apollo-login.jpg
+        sudo chmod 644 /usr/share/backgrounds/apollo-login.jpg
+    else
+        warn "Login wallpaper not found"
     fi
 
     # Add greeter user to video group
     sudo usermod -aG video greeter 2>/dev/null || true
+
+    # Set system to boot in text mode (greetd starts graphical session)
+    log "Setting boot target to multi-user (text mode)..."
+    sudo systemctl set-default multi-user.target
 
     # Disable GDM if installed, enable greetd
     log "Switching to greetd..."
