@@ -49,7 +49,7 @@ fi
 sleep 1
 
 # Wallpaper (only if not already running)
-if ! pgrep -x swaybg >/dev/null && [ -f "$WALLPAPER_PATH" ]; then
+if ! pgrep -x swaybg >/dev/null && [ -e "$WALLPAPER_PATH" ]; then
     swaybg -i "$WALLPAPER_PATH" -m fill &
 fi
 
