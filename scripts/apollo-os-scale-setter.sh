@@ -26,11 +26,5 @@ fi
 # Update scale in niri config for all outputs
 sed -i "/^output /,/^}/ s/^\(    scale \)[0-9.]\+$/\1$SCALE/" "$NIRI_CONFIG"
 
-# Reload niri config
-niri msg action reload-config 2>/dev/null || {
-    notify-send "Apollo OS" "Failed to reload config" -u critical
-    exit 1
-}
-
-# Notify user
-notify-send "Apollo OS" "Display scaling set to ${SCALE}x"
+# Notify user that they need to logout/login
+notify-send "Apollo OS" "Display scaling set to ${SCALE}x\nLogout/Login required for changes to take effect" -t 5000
