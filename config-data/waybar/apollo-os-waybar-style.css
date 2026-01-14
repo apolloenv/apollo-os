@@ -35,28 +35,28 @@ window#waybar.top * {
 
 /* --- Workspaces --- */
 window#waybar.top #workspaces {
-    margin: 5px 0px;
+    margin: 2px 0px;
     background-color: transparent;
     border-radius: 0px;
 }
 
 window#waybar.top #workspaces button {
-    padding: 0 10px;
+    padding: 10 10px;
     background-color: transparent;
     color: rgba(255, 255, 255, 1.0);
-    border-radius: 4px;
+    border-radius: 0px;
     transition: all 0.2s ease;
 }
 
 window#waybar.top #workspaces button:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
     color: #ffffff;
 }
 
 window#waybar.top #workspaces button.active {
     background-color: rgba(255, 255, 255, 1.0);
     color: #000000;
-    padding: 0 10px;
+    padding: 10 20px;
 }
 
 window#waybar.top #workspaces button.urgent {
@@ -66,7 +66,7 @@ window#waybar.top #workspaces button.urgent {
 
 /* --- Module rechts --- */
 window#waybar.top .modules-right {
-    margin: 5px 5px;
+    margin: 0px 0px;
     background-color: transparent;
     border-radius: 8px;
     padding: 0 5px;

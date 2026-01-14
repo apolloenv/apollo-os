@@ -31,12 +31,12 @@ input {
 // MONITORE (Outputs)
 // -----------------------------------------------------------------------------
 output "eDP-1" {
-    scale 1.0
+    scale 1.25
     position x=0 y=0
 }
 
 output "DP-2" {
-    scale 1.0
+    scale 1.25
     position x=1536 y=0
 }
 
@@ -104,7 +104,7 @@ layout {
 // FENSTER-REGELN (Window Rules)
 // -----------------------------------------------------------------------------
 window-rule {
-    geometry-corner-radius 4 // Abgerundete Ecken für alle Fenster
+    geometry-corner-radius 0 // Abgerundete Ecken für alle Fenster
     clip-to-geometry true
     draw-border-with-background false
 }

@@ -6,15 +6,15 @@
 /* === GLOBALE SETTINGS === */
 * {
     border: none;
-    border-radius: 0px;
+    border-radius: 12px;
     font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", sans-serif;
     min-height: 0;
 }
 
 window#waybar {
-    background-color: rgba(0, 0, 0, 1.0);
+    background-color: rgba(0, 0, 0, 0.0);
     color: #ffffff;
-    border-radius: 0px;
+    border-radius: 12px;
     transition-property: background-color;
     transition-duration: 0.5s;
 }
@@ -37,14 +37,14 @@ window#waybar.top * {
 window#waybar.top #workspaces {
     margin: 5px 0px;
     background-color: transparent;
-    border-radius: 0px;
+    border-radius: 12px;
 }
 
 window#waybar.top #workspaces button {
     padding: 0 10px;
     background-color: transparent;
     color: rgba(255, 255, 255, 1.0);
-    border-radius: 4px;
+    border-radius: 12px;
     transition: all 0.2s ease;
 }
 
@@ -68,7 +68,7 @@ window#waybar.top #workspaces button.urgent {
 window#waybar.top .modules-right {
     margin: 5px 5px;
     background-color: transparent;
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 0 5px;
 }
 
@@ -84,7 +84,7 @@ window#waybar.top #clock {
     margin: 2px 2px;
     color: #ffffff;
     background-color: transparent;
-    border-radius: 8px;
+    border-radius: 12px;
 }
 
 /* Hover-Effekte oben */
@@ -160,7 +160,7 @@ window#waybar.bottom #network {
     margin: 2px 2px;
     color: #ffffff;
     background-color: transparent;
-    border-radius: 8px;
+    border-radius: 12px;
 }
 
 /* Spacing für Network Module */
