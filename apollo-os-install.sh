@@ -888,6 +888,39 @@ finalize_installation() {
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
     gsettings set org.gnome.desktop.interface cursor-theme 'breeze_cursors' 2>/dev/null || true
 
+    # Fix GNOME apps that use gapplication launch (doesn't work well with Niri)
+    log "Fixing GNOME app launchers for Niri compatibility..."
+    mkdir -p "$HOME/.local/share/applications"
+    
+    # Fix Weather
+    if [ -f /usr/share/applications/org.gnome.Weather.desktop ]; then
+        cp /usr/share/applications/org.gnome.Weather.desktop "$HOME/.local/share/applications/"
+        sed -i 's|Exec=gapplication launch org.gnome.Weather|Exec=gnome-weather|' "$HOME/.local/share/applications/org.gnome.Weather.desktop"
+    fi
+    
+    # Fix Maps
+    if [ -f /usr/share/applications/org.gnome.Maps.desktop ]; then
+        cp /usr/share/applications/org.gnome.Maps.desktop "$HOME/.local/share/applications/"
+        sed -i 's|Exec=gapplication launch org.gnome.Maps %U|Exec=gnome-maps %U|' "$HOME/.local/share/applications/org.gnome.Maps.desktop"
+    fi
+    
+    # Fix Showtime (Videos)
+    if [ -f /usr/share/applications/org.gnome.Showtime.desktop ]; then
+        cat > "$HOME/.local/share/applications/org.gnome.Showtime.desktop" << 'SHOWTIME_EOF'
+[Desktop Entry]
+Type=Application
+Name=Videos
+Comment=Play movies and videos
+Exec=env GDK_BACKEND=wayland showtime
+Icon=org.gnome.Showtime
+Terminal=false
+Categories=AudioVideo;Video;Player;
+SHOWTIME_EOF
+    fi
+    
+    update-desktop-database "$HOME/.local/share/applications/" 2>/dev/null || true
+    log "GNOME app launchers fixed ✓"
+
     # Add local bin to PATH if not already there
     if ! grep -q "$HOME/.local/bin" "$HOME/.bashrc"; then
         echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
