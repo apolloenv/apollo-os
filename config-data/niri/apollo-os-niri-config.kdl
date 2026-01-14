@@ -145,6 +145,7 @@ spawn-at-startup "blueman-applet"
 spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1" // Passwort-Dialoge
 spawn-at-startup "sh" "-c" "swayidle -w before-sleep 'swaylock -i $HOME/System/Wallpaper/Basic-Black-Dots.jpg'"
 spawn-at-startup "sh" "-c" "sleep 4 && notify-send 'APOLLO OS' 'System initialized. All services operational.'"
+spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-welcome-tts.sh" // TTS Welcome
 
 // -----------------------------------------------------------------------------
 // LAYER-RULES (Waybar, Wallpaper, etc.)
