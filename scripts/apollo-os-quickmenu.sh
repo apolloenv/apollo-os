@@ -10,6 +10,9 @@
 
 set -e
 
+# Ensure XDG_RUNTIME_DIR for TTS/audio
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+
 # Load config for theme detection
 CONFIG_FILE="$HOME/.config/apollo-os/config.env"
 if [ -f "$CONFIG_FILE" ]; then
