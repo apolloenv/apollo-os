@@ -261,6 +261,13 @@ install_packages() {
         fira-code-fonts \
         || warn "Some fonts failed to install"
 
+    # GTK Themes
+    log "Installing GTK themes..."
+    sudo dnf install -y \
+        adw-gtk3-theme \
+        gnome-themes-extra \
+        || warn "GTK theme installation failed"
+
     # Install JetBrainsMono Nerd Font (for icons in Waybar)
     log "Installing JetBrainsMono Nerd Font..."
     if [[ ! -d "$HOME/.local/share/fonts/JetBrainsMonoNerdFont" ]]; then
@@ -433,7 +440,7 @@ PORTALEOF
 
     # Deploy Waybar configs
     log "Deploying Waybar configurations..."
-    cp "$SCRIPT_DIR/config-data/waybar/apollo-os-waybar-config" "$HOME/.config/waybar/config" || warn "Waybar config deployment failed"
+    cp "$SCRIPT_DIR/config-data/waybar/apollo-os-waybar-config" "$HOME/.config/waybar/config-niri" || warn "Waybar config deployment failed"
     cp "$SCRIPT_DIR/config-data/waybar/apollo-os-waybar-style.css" "$HOME/.config/waybar/style.css" || warn "Waybar style deployment failed"
 
     # Deploy Mako config
@@ -443,6 +450,11 @@ PORTALEOF
     # Deploy Rofi theme
     log "Deploying Rofi theme..."
     cp "$SCRIPT_DIR/config-data/rofi/apollo-os-rofi-theme.rasi" "$HOME/.config/rofi/config.rasi" || warn "Rofi config deployment failed"
+
+    # Deploy Alacritty config
+    log "Deploying Alacritty configuration..."
+    mkdir -p "$HOME/.config/alacritty"
+    cp "$SCRIPT_DIR/config-data/alacritty/apollo-os-alacritty.toml" "$HOME/.config/alacritty/alacritty.toml" || warn "Alacritty config deployment failed"
 
     log "Configuration deployment complete ✓"
 }

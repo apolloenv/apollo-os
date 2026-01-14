@@ -15,7 +15,7 @@ fi
 THEME=${APOLLO_THEME:-dark}
 
 # Config paths (simplified for v0.5.0 - single config)
-WAYBAR_CONFIG="$HOME/.config/waybar/config"
+WAYBAR_CONFIG="$HOME/.config/waybar/config-niri"
 WAYBAR_STYLE="$HOME/.config/waybar/style.css"
 MAKO_CONFIG="$HOME/.config/mako/config"
 WALLPAPER_PATH="$HOME/System/Wallpaper/current.jpg"
