@@ -767,6 +767,12 @@ EOF'
 finalize_installation() {
     log "Finalizing installation..."
 
+    # Apply GTK dark theme via gsettings
+    log "Applying dark theme settings..."
+    gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark' 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface cursor-theme 'Adwaita' 2>/dev/null || true
+
     # Add local bin to PATH if not already there
     if ! grep -q "$HOME/.local/bin" "$HOME/.bashrc"; then
         echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
