@@ -45,7 +45,7 @@ print_banner() {
     echo -e "${NC}"
     echo -e "${MAGENTA}═══════════════════════════════════════════════════════${NC}"
     echo -e "${CYAN}  Apollo OS Installer v0.5.0${NC}"
-    echo -e "${YELLOW}  Next-Generation Custom Layer for Fedora 43${NC}"
+    echo -e "${YELLOW}  APOLLO OS Enterprise Edition${NC}"
     echo -e "${MAGENTA}═══════════════════════════════════════════════════════${NC}\n"
 }
 
