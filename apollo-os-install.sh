@@ -308,6 +308,15 @@ EOF'
         breeze-cursor-theme \
         || warn "GTK theme installation failed"
 
+    # Login Manager (greetd with gtkgreet)
+    log "Installing greetd login manager..."
+    sudo dnf install -y \
+        greetd \
+        greetd-gtkgreet \
+        greetd-selinux \
+        sway \
+        || warn "greetd installation failed"
+
     # Install JetBrainsMono Nerd Font (for icons in Waybar)
     log "Installing JetBrainsMono Nerd Font..."
     if [[ ! -d "$HOME/.local/share/fonts/JetBrainsMonoNerdFont" ]]; then
@@ -712,31 +721,41 @@ setup_wallpapers() {
 }
 
 #####################################################################
-# Login Manager Configuration (GDM)
+# Login Manager Configuration (greetd with gtkgreet)
 #####################################################################
 
 configure_login_manager() {
-    log "Configuring GDM login manager..."
+    log "Configuring greetd login manager..."
 
     echo
     echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}"
     echo -e "${CYAN}  Login Manager Configuration${NC}"
     echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}\n"
 
-    # Configure GDM (clock with seconds)
-    log "Configuring GDM appearance..."
-    sudo mkdir -p /etc/dconf/db/gdm.d
-    sudo bash -c 'cat > /etc/dconf/db/gdm.d/01-apollo << EOF
-[org/gnome/login-screen]
-logo=""
+    # Copy greetd configuration files
+    log "Installing greetd configuration..."
+    sudo cp "$INSTALL_DIR/config-data/greetd/config.toml" /etc/greetd/config.toml
+    sudo cp "$INSTALL_DIR/config-data/greetd/sway-config" /etc/greetd/sway-config
+    sudo cp "$INSTALL_DIR/config-data/greetd/gtkgreet.css" /etc/greetd/gtkgreet.css
+    sudo cp "$INSTALL_DIR/config-data/greetd/environments" /etc/greetd/environments
 
-[org/gnome/desktop/interface]
-clock-show-seconds=true
-clock-show-date=false
-EOF'
-    sudo dconf update
+    # Copy login wallpaper to system location
+    log "Installing login wallpaper..."
+    sudo mkdir -p /usr/share/backgrounds
+    if [[ -f "$HOME/System/Wallpaper/Basic-Black-Dots.jpg" ]]; then
+        sudo cp "$HOME/System/Wallpaper/Basic-Black-Dots.jpg" /usr/share/backgrounds/apollo-login.jpg
+        sudo chmod 644 /usr/share/backgrounds/apollo-login.jpg
+    fi
 
-    # Remove all other sessions - Apollo OS Orbit is the only option
+    # Add greeter user to video group
+    sudo usermod -aG video greeter 2>/dev/null || true
+
+    # Disable GDM if installed, enable greetd
+    log "Switching to greetd..."
+    sudo systemctl disable gdm 2>/dev/null || true
+    sudo systemctl enable greetd
+
+    # Remove other session entries - Apollo OS Orbit is the only option
     log "Removing all other sessions (Apollo OS Orbit-only)..."
     sudo rm -f /usr/share/wayland-sessions/gnome.desktop 2>/dev/null
     sudo rm -f /usr/share/wayland-sessions/gnome-wayland.desktop 2>/dev/null
@@ -744,21 +763,10 @@ EOF'
     sudo rm -f /usr/share/wayland-sessions/gnome-classic-wayland.desktop 2>/dev/null
     sudo rm -f /usr/share/wayland-sessions/sway.desktop 2>/dev/null
 
-    # Configure Apollo OS Orbit as the only session
-    log "Setting Apollo OS Orbit as default and only session..."
-    sudo bash -c 'cat > /usr/share/wayland-sessions/niri.desktop << EOF
-[Desktop Entry]
-Name=Apollo OS
-Comment=APOLLO OS Orbit Window Manager
-Exec=/usr/local/bin/apollo-os-wrapper-niri.sh pro dark
-Type=Application
-DesktopNames=niri
-EOF'
-
     # Note: Plymouth/Boot is not modified here - only watermark.png is replaced via assets
     # The default spinner theme remains unchanged
 
-    log "GDM configured - Apollo OS Orbit is the only available session ✓"
+    log "greetd configured - Apollo OS Orbit login ready ✓"
 }
 
 #####################################################################
