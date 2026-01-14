@@ -20,10 +20,10 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-# TTS function
+# TTS function - runs synchronously to ensure audio completes
 tts_notify() {
     local script="$HOME/.local/bin/apollo-os-tts-notify.sh"
-    [ -x "$script" ] && "$script" "$@" &
+    [ -x "$script" ] && "$script" "$@"
 }
 
 echo -e "${BLUE}================================================"

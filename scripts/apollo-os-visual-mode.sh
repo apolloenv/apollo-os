@@ -23,7 +23,7 @@ WAYBAR_STYLE_MODERN="$HOME/.config/waybar/style-modern.css"
 # TTS function
 tts_notify() {
     local script="$HOME/.local/bin/apollo-os-tts-notify.sh"
-    [ -x "$script" ] && "$script" "$@" &
+    [ -x "$script" ] && "$script" "$@"
 }
 
 # Get current mode

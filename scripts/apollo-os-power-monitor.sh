@@ -8,15 +8,30 @@
 TTS_SCRIPT="$HOME/.local/bin/apollo-os-tts-notify.sh"
 LAST_STATE_FILE="/tmp/apollo-power-state"
 
-# Get current power state
+# Get current power state (1=AC connected, 0=battery)
 get_power_state() {
-    if [ -f /sys/class/power_supply/AC*/online ]; then
-        cat /sys/class/power_supply/AC*/online 2>/dev/null
-    elif [ -f /sys/class/power_supply/ACAD/online ]; then
-        cat /sys/class/power_supply/ACAD/online
-    else
-        echo "1"  # Assume plugged in if no battery
-    fi
+    # Check various AC adapter names
+    for ac in /sys/class/power_supply/AC* /sys/class/power_supply/ACAD /sys/class/power_supply/ADP*; do
+        if [ -f "$ac/online" ]; then
+            cat "$ac/online" 2>/dev/null
+            return
+        fi
+    done
+    # No AC adapter found - check if any battery exists
+    for bat in /sys/class/power_supply/BAT*; do
+        if [ -d "$bat" ]; then
+            # Has battery but no AC info - check status
+            local status=$(cat "$bat/status" 2>/dev/null)
+            if [ "$status" = "Charging" ] || [ "$status" = "Full" ]; then
+                echo "1"
+            else
+                echo "0"
+            fi
+            return
+        fi
+    done
+    # No battery, assume desktop/plugged in
+    echo "1"
 }
 
 # Get battery level
@@ -35,8 +50,11 @@ LAST_STATE=$(get_power_state)
 echo "$LAST_STATE" > "$LAST_STATE_FILE"
 LAST_LOW_WARNING=0
 
+# Wait for system to stabilize
+sleep 10
+
 while true; do
-    sleep 5
+    sleep 3
     
     CURRENT_STATE=$(get_power_state)
     BATTERY_LEVEL=$(get_battery_level)
@@ -45,11 +63,11 @@ while true; do
     if [ "$CURRENT_STATE" != "$LAST_STATE" ]; then
         if [ "$CURRENT_STATE" = "1" ]; then
             # Power connected
-            "$TTS_SCRIPT" power-connected &
+            "$TTS_SCRIPT" power-connected
             notify-send "Apollo OS" "Power supply connected"
         else
             # Power disconnected
-            "$TTS_SCRIPT" power-disconnected &
+            "$TTS_SCRIPT" power-disconnected
             notify-send "Apollo OS" "Running on battery"
         fi
         LAST_STATE="$CURRENT_STATE"
@@ -61,7 +79,7 @@ while true; do
         CURRENT_TIME=$(date +%s)
         # Only warn every 5 minutes
         if [ $((CURRENT_TIME - LAST_LOW_WARNING)) -gt 300 ]; then
-            "$TTS_SCRIPT" battery-low &
+            "$TTS_SCRIPT" battery-low
             notify-send -u critical "Apollo OS" "Battery critical: ${BATTERY_LEVEL}%"
             LAST_LOW_WARNING=$CURRENT_TIME
         fi
@@ -71,7 +89,7 @@ while true; do
     if [ "$CURRENT_STATE" = "1" ] && [ "$BATTERY_LEVEL" -ge 100 ]; then
         # Check if we haven't notified about full battery yet
         if [ ! -f "/tmp/apollo-battery-full-notified" ]; then
-            "$TTS_SCRIPT" battery-full &
+            "$TTS_SCRIPT" battery-full
             notify-send "Apollo OS" "Battery fully charged"
             touch "/tmp/apollo-battery-full-notified"
         fi

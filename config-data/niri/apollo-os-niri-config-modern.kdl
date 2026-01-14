@@ -146,6 +146,8 @@ spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1" // Passwort-
 spawn-at-startup "sh" "-c" "swayidle -w before-sleep 'swaylock -i /usr/share/backgrounds/apollo-login.jpg'"
 spawn-at-startup "sh" "-c" "sleep 4 && notify-send 'APOLLO OS' 'System initialized. All services operational.'"
 spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-welcome-tts.sh" // TTS Welcome
+spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-power-monitor.sh" // Power/Battery Monitor
+spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-network-monitor.sh" // Network Monitor
 
 // -----------------------------------------------------------------------------
 // LAYER-RULES (Waybar, Wallpaper, etc.)

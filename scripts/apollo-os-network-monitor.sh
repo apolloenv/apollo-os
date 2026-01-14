@@ -25,7 +25,7 @@ echo "$LAST_STATE" > "$LAST_STATE_FILE"
 sleep 10
 
 while true; do
-    sleep 5
+    sleep 3
     
     CURRENT_STATE=$(get_network_state)
     
@@ -33,11 +33,11 @@ while true; do
     if [ "$CURRENT_STATE" != "$LAST_STATE" ]; then
         if [ "$CURRENT_STATE" = "1" ]; then
             # Network connected
-            "$TTS_SCRIPT" wifi-connected &
+            "$TTS_SCRIPT" wifi-connected
             notify-send "Apollo OS" "Network connected"
         else
             # Network disconnected
-            "$TTS_SCRIPT" wifi-disconnected &
+            "$TTS_SCRIPT" wifi-disconnected
             notify-send "Apollo OS" "Network disconnected"
         fi
         LAST_STATE="$CURRENT_STATE"
