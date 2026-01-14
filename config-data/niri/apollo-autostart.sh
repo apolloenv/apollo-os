@@ -22,10 +22,10 @@ WALLPAPER_PATH="$HOME/System/Wallpaper/current.jpg"
 
 # Set GTK Theme
 if [[ "$THEME" == "dark" ]]; then
-    gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark' 2>/dev/null
+    gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark' 2>/dev/null
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null
 else
-    gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita' 2>/dev/null
+    gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3' 2>/dev/null
     gsettings set org.gnome.desktop.interface color-scheme 'default' 2>/dev/null
 fi
 
@@ -49,8 +49,19 @@ fi
 sleep 1
 
 # Wallpaper (only if not already running)
-if ! pgrep -x swaybg >/dev/null && [ -e "$WALLPAPER_PATH" ]; then
-    swaybg -i "$WALLPAPER_PATH" -m fill &
+if ! pgrep -x swaybg >/dev/null; then
+    # Try current.jpg first, fallback to any available wallpaper
+    if [ -e "$WALLPAPER_PATH" ]; then
+        swaybg -i "$WALLPAPER_PATH" -m fill &
+    elif [ -d "$HOME/System/Wallpaper" ]; then
+        # Use first available wallpaper as fallback
+        FALLBACK_WP=$(find "$HOME/System/Wallpaper" -type f \( -name "*.jpg" -o -name "*.png" \) | head -1)
+        if [ -n "$FALLBACK_WP" ]; then
+            swaybg -i "$FALLBACK_WP" -m fill &
+            # Create symlink for future use
+            ln -sf "$FALLBACK_WP" "$WALLPAPER_PATH" 2>/dev/null
+        fi
+    fi
 fi
 
 # Idle management with swaylock (only if not already running)

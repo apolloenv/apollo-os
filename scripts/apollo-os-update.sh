@@ -157,6 +157,10 @@ fi
 mako --config "$HOME/.config/mako/config" &>/dev/null &
 sleep 1
 
+# Apply GTK dark theme via gsettings
+gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark' 2>/dev/null
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null
+
 echo -e "${GREEN}✓${NC} Neu geladen"
 echo
 
