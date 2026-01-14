@@ -373,6 +373,11 @@ EOF
     sudo udevadm control --reload-rules || warn "Failed to reload udev rules"
     sudo udevadm trigger --subsystem-match=backlight || warn "Failed to trigger backlight subsystem"
     
+    # Allow wallpaper sync to login screen without password
+    log "Configuring wallpaper sync permissions..."
+    sudo bash -c "echo '$USER ALL=(ALL) NOPASSWD: /usr/bin/cp * /usr/share/backgrounds/apollo-login.jpg' > /etc/sudoers.d/apollo-wallpaper"
+    sudo chmod 440 /etc/sudoers.d/apollo-wallpaper
+    
     log "User permissions configured ✓"
     log "NOTE: You may need to log out and log back in for group changes to take effect"
 }
