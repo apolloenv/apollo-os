@@ -20,6 +20,7 @@ fi
 actions=(
     "🔒 Lock Screen"
     "🖼️  Next Wallpaper"
+    "🎨 Visual Mode"
     "⚡ Power Profiles"
     "🔍 Display Scaling"
     "🔄 APOLLO OS Update"
@@ -56,6 +57,16 @@ case "$selected" in
 
     "🖼️  Next Wallpaper")
         "$HOME/.local/bin/apollo-os-wallpaper-cycle.sh"
+        ;;
+
+    "🎨 Visual Mode")
+        # Get current mode
+        current_mode=$("$HOME/.local/bin/apollo-os-visual-mode.sh" status 2>/dev/null || echo "classic")
+        modes="Classic\nModern"
+        selected_mode=$(echo -e "$modes" | rofi -dmenu -p "Visual Mode (current: $current_mode)")
+        if [ -n "$selected_mode" ]; then
+            "$HOME/.local/bin/apollo-os-visual-mode.sh" "$(echo "$selected_mode" | tr '[:upper:]' '[:lower:]')"
+        fi
         ;;
 
     "⚡ Power Profiles")
