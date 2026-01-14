@@ -139,8 +139,7 @@
             "custom/localip",
             "custom/publicip",
             "custom/uptime",
-            "group/system-drawer",
-            "custom/system-updates"
+            "group/system-drawer"
         ],
 
         "cpu": {
