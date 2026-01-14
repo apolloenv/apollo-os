@@ -51,7 +51,7 @@ case "$selected" in
         ;;
 
     "⌨️  Keyboard Shortcuts")
-        firefox "https://github.com/apolloenv/apollo-os/blob/main/docs/keybindings.md" &
+        firefox "https://github.com/apolloenv/apollo-os/blob/main/docs/KEYBINDINGS.md" &
         ;;
 
     "🖼️  Next Wallpaper")
