@@ -831,10 +831,10 @@ configure_login_manager() {
 
     # Copy greetd configuration files
     log "Installing greetd configuration..."
-    sudo cp "$INSTALL_DIR/config-data/greetd/config.toml" /etc/greetd/config.toml
-    sudo cp "$INSTALL_DIR/config-data/greetd/sway-config" /etc/greetd/sway-config
-    sudo cp "$INSTALL_DIR/config-data/greetd/gtkgreet.css" /etc/greetd/gtkgreet.css
-    sudo cp "$INSTALL_DIR/config-data/greetd/environments" /etc/greetd/environments
+    sudo cp "$SCRIPT_DIR/config-data/greetd/config.toml" /etc/greetd/config.toml
+    sudo cp "$SCRIPT_DIR/config-data/greetd/sway-config" /etc/greetd/sway-config
+    sudo cp "$SCRIPT_DIR/config-data/greetd/gtkgreet.css" /etc/greetd/gtkgreet.css
+    sudo cp "$SCRIPT_DIR/config-data/greetd/environments" /etc/greetd/environments
 
     # Copy login wallpaper to system location
     log "Installing login wallpaper..."
@@ -842,8 +842,8 @@ configure_login_manager() {
     if [[ -f "$HOME/System/Wallpaper/Basic-Black-Dots.jpg" ]]; then
         sudo cp "$HOME/System/Wallpaper/Basic-Black-Dots.jpg" /usr/share/backgrounds/apollo-login.jpg
         sudo chmod 644 /usr/share/backgrounds/apollo-login.jpg
-    elif [[ -f "$INSTALL_DIR/assets/wallpapers/Basic-Black-Dots.jpg" ]]; then
-        sudo cp "$INSTALL_DIR/assets/wallpapers/Basic-Black-Dots.jpg" /usr/share/backgrounds/apollo-login.jpg
+    elif [[ -f "$SCRIPT_DIR/assets/wallpapers/Basic-Black-Dots.jpg" ]]; then
+        sudo cp "$SCRIPT_DIR/assets/wallpapers/Basic-Black-Dots.jpg" /usr/share/backgrounds/apollo-login.jpg
         sudo chmod 644 /usr/share/backgrounds/apollo-login.jpg
     else
         warn "Login wallpaper not found"
