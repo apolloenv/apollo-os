@@ -23,6 +23,7 @@ actions=(
     "⚡ Power Profiles"
     "🔍 Display Scaling"
     "🔄 APOLLO OS Update"
+    "⌨️  Keyboard Shortcuts"
     "📊 Reload Infobar"
     "🔔 Reload Notifications"
     "🪐 Reload Apollo OS Orbit"
@@ -47,6 +48,10 @@ case "$selected" in
 
     "🔄 APOLLO OS Update")
         alacritty -e bash -c "$HOME/.local/bin/apollo-os-update.sh"
+        ;;
+
+    "⌨️  Keyboard Shortcuts")
+        firefox "https://github.com/apolloenv/apollo-os/blob/main/docs/keybindings.md" &
         ;;
 
     "🖼️  Next Wallpaper")
