@@ -69,8 +69,3 @@ fi
 # Get wallpaper name for notification
 wallpaper_name=$(basename "$next_wallpaper")
 notify-send "Apollo OS" "Wallpaper: $wallpaper_name" -i dialog-information
-
-# Optional: Voice announcement
-if command -v apollo-speak &>/dev/null && [ "${APOLLO_DND:-false}" != "true" ]; then
-    apollo-speak "Wallpaper changed" &
-fi
