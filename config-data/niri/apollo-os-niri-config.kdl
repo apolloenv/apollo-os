@@ -162,7 +162,7 @@ binds {
     Mod+O { toggle-overview; }
     Mod+M { maximize-column; }
     Mod+F { fullscreen-window; }
-    Mod+C { spawn "/home/apollo/.config/niri/toggle-center.sh"; } // Zentrierung umschalten
+    Mod+C { spawn "sh" "-c" "$HOME/.config/niri/toggle-center.sh"; } // Zentrierung umschalten
     Mod+R { switch-preset-column-width; } // Zwischen Breiten wechseln
 
     // Apps (Immer in neuem Fenster)
