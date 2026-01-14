@@ -130,13 +130,12 @@
             "memory",
             "disk",
             "temperature",
-            "network#speed",
+            "network#speed"
         ],
         "modules-center": [],
         "modules-right": [
             
             "network#vpn",
-/*            "network#wifi", */
             "custom/localip",
             "custom/publicip",
             "custom/uptime",
