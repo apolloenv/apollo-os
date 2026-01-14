@@ -249,7 +249,6 @@
 
         "custom/system-updates": {
             "format": "  󰚰  APOLLO OS Update",
-            "exec": "echo ''",
             "interval": 3600,
             "tooltip": true,
             "tooltip-format": "Apollo OS von GitHub aktualisieren",
