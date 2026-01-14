@@ -137,6 +137,9 @@ case "$selected" in
         # Confirm
         confirm=$(echo -e "No\nYes" | rofi -dmenu -p "Shutdown System?")
         if [ "$confirm" = "Yes" ]; then
+            # TTS announcement before shutdown
+            "$HOME/.local/bin/apollo-os-tts-notify.sh" shutdown
+            sleep 1
             systemctl poweroff
         fi
         ;;
@@ -145,6 +148,9 @@ case "$selected" in
         # Confirm
         confirm=$(echo -e "No\nYes" | rofi -dmenu -p "Reboot System?")
         if [ "$confirm" = "Yes" ]; then
+            # TTS announcement before reboot
+            "$HOME/.local/bin/apollo-os-tts-notify.sh" reboot
+            sleep 1
             systemctl reboot
         fi
         ;;
