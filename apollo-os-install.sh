@@ -849,8 +849,8 @@ configure_login_manager() {
         warn "Login wallpaper not found"
     fi
 
-    # Add greeter user to video group
-    sudo usermod -aG video greeter 2>/dev/null || true
+    # Add greetd user to video group
+    sudo usermod -aG video greetd 2>/dev/null || true
 
     # Set system to boot in text mode (greetd starts graphical session)
     log "Setting boot target to multi-user (text mode)..."
