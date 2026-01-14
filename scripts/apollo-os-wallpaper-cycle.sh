@@ -8,8 +8,6 @@
 # Keybinding: Ctrl+Super+Space
 #####################################################################
 
-set -e
-
 WALLPAPER_DIR="$HOME/System/Wallpaper"
 CURRENT_LINK="$WALLPAPER_DIR/current.jpg"
 
