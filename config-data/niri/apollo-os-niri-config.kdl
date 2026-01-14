@@ -120,6 +120,12 @@ window-rule {
     default-column-width { proportion 1.0; }
 }
 
+// Floating Fenster: 60% Breite x 80% Höhe, zentriert
+window-rule {
+    match is-floating=true
+    default-column-width { proportion 0.6; }
+}
+
 // -----------------------------------------------------------------------------
 // STARTUP (Programme die beim Start ausgeführt werden)
 // -----------------------------------------------------------------------------
@@ -164,6 +170,7 @@ binds {
     Mod+N { spawn "gnome-text-editor" "--new-window"; }
     Mod+Return { spawn "alacritty"; }
     Mod+B { spawn "firefox" "--new-window"; }
+    Mod+Shift+B { spawn "sh" "-c" "$HOME/.config/niri/toggle-waybar-bottom.sh"; } // Untere Waybar umschalten
     Mod+T { spawn "ptyxis" "--new-window" "--working-directory" "/home/apollo/AIQSAN01/"; }
 
     // Navigation (Fokus)

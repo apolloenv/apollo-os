@@ -249,3 +249,6 @@ window#waybar.bottom #custom-notifications {
 .modules-right {
     margin: 2px 5px;
 }
+
+/* Optional override for hiding bottom bar */
+@import url('hide-bottom.css');
