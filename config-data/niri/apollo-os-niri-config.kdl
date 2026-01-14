@@ -146,7 +146,8 @@ binds {
     // Hilfe & Rofi
     Mod+Shift+Slash { show-hotkey-overlay; }
     Mod+Space { spawn "rofi" "-show" "drun"; }
-    Mod+Ctrl+Space { spawn "/home/apollo/.config/niri/wallpaper-cycle.sh"; }
+    Mod+Shift+Space { spawn "sh" "-c" "$HOME/.local/bin/apollo-os-quickmenu.sh"; }
+    Mod+Ctrl+Space { spawn "sh" "-c" "$HOME/.local/bin/apollo-os-wallpaper-cycle.sh"; }
     
     // Fenster Management
     Mod+Q { close-window; }

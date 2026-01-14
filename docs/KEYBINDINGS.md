@@ -1,260 +1,151 @@
-# Apollo OS v0.5.0 - Keybindings Reference
+# Apollo OS - Keybindings (Tastenkombinationen)
 
-**Copyright © 2026 by Manuel Kraibacher**
+**Niri Window Manager Shortcuts**
 
-Vollständige Übersicht aller Tastenkürzel für Niri Window Manager.
+Mod = Super/Windows-Taste
 
 ---
 
-## 📌 Wichtigste Shortcuts
+## 🚀 Schnellzugriff & Menüs
 
-| Kürzel | Aktion |
-|--------|--------|
-| `Super + Space` | Rofi Launcher (Anwendungen starten) |
-| `Super + Shift + Space` | Quick Menu (Schnellaktionen) |
-| `Super + Return` | Terminal öffnen (Alacritty) |
-| `Super + Q` | Fenster schließen |
-| `Super + L` | Bildschirm sperren |
-| `Super + Shift + ?` | Diese Keybindings anzeigen |
+| Tastenkombination | Aktion |
+|-------------------|--------|
+| `Mod + Space` | **App Launcher** (Rofi) |
+| `Mod + Shift + Space` | **Apollo Quick Menu** (System-Aktionen) |
+| `Mod + Ctrl + Space` | **Wallpaper wechseln** |
+| `Mod + Shift + /` | **Keybinding Hilfe** anzeigen |
 
 ---
 
 ## 🪟 Fenster-Management
 
-### Fokus verschieben
-| Kürzel | Aktion |
-|--------|--------|
-| `Super + H` | Fokus nach links |
-| `Super + J` | Fokus nach unten |
-| `Super + K` | Fokus nach oben |
-| `Super + L` | Fokus nach rechts |
-| `Super + Left` | Fokus nach links (Pfeiltasten) |
-| `Super + Down` | Fokus nach unten |
-| `Super + Up` | Fokus nach oben |
-| `Super + Right` | Fokus nach rechts |
-
-### Fenster verschieben
-| Kürzel | Aktion |
-|--------|--------|
-| `Super + Shift + H` | Fenster nach links verschieben |
-| `Super + Shift + J` | Fenster nach unten verschieben |
-| `Super + Shift + K` | Fenster nach oben verschieben |
-| `Super + Shift + L` | Fenster nach rechts verschieben |
-| `Super + Shift + Left` | Fenster nach links (Pfeiltasten) |
-| `Super + Shift + Down` | Fenster nach unten |
-| `Super + Shift + Up` | Fenster nach oben |
-| `Super + Shift + Right` | Fenster nach rechts |
-
-### Fenster-Größe
-| Kürzel | Aktion |
-|--------|--------|
-| `Super + R` | Größe ändern (Resize Mode) |
-| `Super + -` | Fenster schmaler |
-| `Super + +` | Fenster breiter |
-| `Super + Shift + -` | Fenster kleiner (Höhe) |
-| `Super + Shift + +` | Fenster höher |
-| `Super + F` | Fullscreen Toggle |
-
-### Fenster-Optionen
-| Kürzel | Aktion |
-|--------|--------|
-| `Super + Q` | Fenster schließen |
-| `Super + Shift + Q` | Fenster sofort beenden |
-| `Super + M` | Maximize Toggle |
-| `Super + Shift + F` | Floating Window Toggle |
+| Tastenkombination | Aktion |
+|-------------------|--------|
+| `Mod + Q` | Fenster schließen |
+| `Mod + W` | Fenster floating/tiling umschalten |
+| `Mod + E` | Fenster in Spalte einfügen/auswerfen |
+| `Mod + O` | Overview (Übersicht) anzeigen |
+| `Mod + M` | Spalte maximieren |
+| `Mod + F` | Vollbild umschalten |
+| `Mod + C` | Zentrierung umschalten |
+| `Mod + R` | Zwischen Spaltenbreiten wechseln |
 
 ---
 
-## 🗂️ Workspaces
+## 🧭 Navigation (Fokus)
 
-### Navigation
-| Kürzel | Aktion |
-|--------|--------|
-| `Super + 1` bis `9` | Zu Workspace 1-9 wechseln |
-| `Super + Ctrl + Left` | Vorheriger Workspace |
-| `Super + Ctrl + Right` | Nächster Workspace |
-| `Super + Ctrl + H` | Scroll nach links |
-| `Super + Ctrl + L` | Scroll nach rechts |
-| `Super + Tab` | Workspace-Übersicht |
-| `Super + O` | Overview (alle Workspaces) |
-
-### Fenster verschieben
-| Kürzel | Aktion |
-|--------|--------|
-| `Super + Shift + 1` bis `9` | Fenster zu Workspace 1-9 |
-| `Super + Ctrl + Shift + Left` | Fenster zu vorherigem Workspace |
-| `Super + Ctrl + Shift + Right` | Fenster zu nächstem Workspace |
+| Tastenkombination | Aktion |
+|-------------------|--------|
+| `Mod + ←` | Spalte links fokussieren |
+| `Mod + →` | Spalte rechts fokussieren |
+| `Mod + ↑` | Fenster/Workspace nach oben |
+| `Mod + ↓` | Fenster/Workspace nach unten |
+| `Mod + Tab` | Fenster nach unten/Spalte rechts |
+| `Mod + Shift + Tab` | Fenster nach oben/Spalte links |
 
 ---
 
-## 🚀 Anwendungen & Launcher
+## 🔄 Fenster verschieben
 
-| Kürzel | Aktion |
-|--------|--------|
-| `Super + Space` | Rofi Launcher (Apps) |
-| `Super + Shift + Space` | Apollo Quick Menu |
-| `Super + Return` | Terminal (Alacritty) |
-| `Super + E` | Dateimanager (Nautilus) |
-| `Super + W` | Webbrowser (Firefox/Edge) |
-
----
-
-## 🎨 Theme & Wallpaper
-
-| Kürzel | Aktion |
-|--------|--------|
-| `Super + Ctrl + Space` | Nächstes Wallpaper |
-| `Super + Shift + T` | Theme Switcher (Dark/Light) |
+| Tastenkombination | Aktion |
+|-------------------|--------|
+| `Mod + Alt + ←` | Spalte nach links verschieben |
+| `Mod + Alt + →` | Spalte nach rechts verschieben |
+| `Mod + Alt + ↑` | Fenster nach oben verschieben |
+| `Mod + Alt + ↓` | Fenster nach unten verschieben |
 
 ---
 
-## 📸 Screenshots
+## 📏 Fenster-Größe ändern
 
-| Kürzel | Aktion |
-|--------|--------|
-| `Print` | Screenshot (gesamter Bildschirm) |
-| `Super + Print` | Screenshot (Bereich auswählen) |
-| `Super + Shift + S` | Screenshot Tool (Slurp + Grim) |
-
-**Speicherort:** `~/Pictures/Screenshots/`
+| Tastenkombination | Aktion |
+|-------------------|--------|
+| `Mod + Ctrl + ←` | Spalte schmaler (-10%) |
+| `Mod + Ctrl + →` | Spalte breiter (+10%) |
+| `Mod + Ctrl + ↑` | Fenster kürzer (-10%) |
+| `Mod + Ctrl + ↓` | Fenster höher (+10%) |
 
 ---
 
-## 🔊 Audio & Media
+## 🔢 Workspaces
 
-| Kürzel | Aktion |
-|--------|--------|
-| `XF86AudioRaiseVolume` | Lautstärke erhöhen |
-| `XF86AudioLowerVolume` | Lautstärke verringern |
-| `XF86AudioMute` | Stummschalten Toggle |
+| Tastenkombination | Aktion |
+|-------------------|--------|
+| `Mod + 1-9, 0` | Workspace 1-10 wechseln |
+
+---
+
+## 🎯 Anwendungen starten
+
+| Tastenkombination | Aktion |
+|-------------------|--------|
+| `Mod + Return` | **Alacritty** (Terminal) |
+| `Mod + T` | **Ptyxis** (Terminal in AIQSAN01) |
+| `Mod + B` | **Firefox** (Browser) |
+| `Mod + D` | **Nautilus** (Dateimanager) |
+| `Mod + N` | **GNOME Text Editor** |
+
+---
+
+## 🖥️ System
+
+| Tastenkombination | Aktion |
+|-------------------|--------|
+| `Mod + L` | **Bildschirm sperren** |
+| `Mod + Shift + E` | **Abmelden** |
+| `Mod + Shift + R` | **Waybar neu laden** |
+| `Mod + S` | **Screenshot** (Bereich auswählen) |
+
+---
+
+## 🔊 Multimedia (funktionieren auch bei gesperrtem Bildschirm)
+
+| Taste | Aktion |
+|-------|--------|
+| `XF86AudioRaiseVolume` | Lautstärke +5% |
+| `XF86AudioLowerVolume` | Lautstärke -5% |
+| `XF86AudioMute` | Ton stumm schalten |
+| `XF86AudioMicMute` | Mikrofon stumm schalten |
+| `XF86MonBrightnessUp` | Helligkeit +10% |
+| `XF86MonBrightnessDown` | Helligkeit -10% |
 | `XF86AudioPlay` | Play/Pause |
 | `XF86AudioNext` | Nächster Track |
 | `XF86AudioPrev` | Vorheriger Track |
 
 ---
 
-## 🔆 Helligkeit
+## 🎨 Apollo Quick Menu (Mod + Shift + Space)
 
-| Kürzel | Aktion |
-|--------|--------|
-| `XF86MonBrightnessUp` | Helligkeit erhöhen |
-| `XF86MonBrightnessDown` | Helligkeit verringern |
+Das Quick Menu bietet folgende Optionen:
 
----
-
-## 🔐 System
-
-| Kürzel | Aktion |
-|--------|--------|
-| `Super + L` | Bildschirm sperren |
-| `Super + Shift + E` | Logout Menü |
-| `Super + Shift + R` | Niri neu laden |
-| `Ctrl + Alt + Backspace` | Niri beenden (Notfall) |
+- 🔒 **Lock Screen** - Bildschirm sperren
+- 🎨 **Toggle Theme** - Hell/Dunkel-Modus umschalten
+- 📊 **Show Statistics** - System-Statistiken anzeigen
+- 🖼️ **Next Wallpaper** - Nächstes Hintergrundbild
+- 🔋 **Power Profiles** - Energiesparmodus wähseln
+- 🔄 **Reload Waybar** - Statusleiste neu laden
+- 🔄 **Reload Mako** - Benachrichtigungen neu laden
+- 🚪 **Logout** - Abmelden
+- 🔄 **Restart WM** - Window Manager neu starten
+- 🔴 **Shutdown** - System herunterfahren
+- 🔄 **Reboot** - System neu starten
 
 ---
 
-## 🎯 Quick Menu Aktionen
+## 💡 Tipps
 
-`Super + Shift + Space` öffnet das Quick Menu mit folgenden Optionen:
+### Keybinding Hilfe anzeigen
+Drücke `Mod + Shift + /` um eine vollständige Übersicht aller Keybindings direkt in Niri anzuzeigen.
 
-1. **Lock Screen** - Bildschirm sperren
-2. **Logout** - Abmelden
-3. **Reboot** - Neu starten
-4. **Shutdown** - Herunterfahren
-5. **Screenshot** - Screenshot erstellen
-6. **Wallpaper** - Nächstes Wallpaper
-7. **Theme** - Dark/Light Theme wechseln
-8. **Audio** - Pavucontrol (Audio-Einstellungen)
-9. **Network** - NetworkManager
-10. **Bluetooth** - Blueman
-11. **System Stats** - Systeminfo anzeigen
+### Scripts in ~/.local/bin/
+Alle Apollo OS Scripts werden nach `~/.local/bin/` installiert und sind über den PATH verfügbar.
+
+### Zentrierung umschalten (Mod + C)
+Schaltet zwischen zentrierter und nicht-zentrierter Ansicht der fokussierten Spalte um.
+
+### Toggle-Center Script
+Das Script `~/.config/niri/toggle-center.sh` verwaltet die Zentrierung dynamisch.
 
 ---
 
-### Waybar-Interaktionen
-| Aktion | Funktion |
-|--------|----------|
-| Klick auf Batterie | Power Profile wechseln (Energiesparmodus/Balanced/Performance) |
-| Klick auf Audio | Pavucontrol öffnen |
-| Klick auf Bluetooth | Blueman Manager öffnen |
-| Klick auf btop Icon | System Monitor öffnen |
-
----
-
-## 🔋 Power Profile Management
-
-**Klick auf Batterie-Symbol in Waybar** wechselt zwischen:
-
-1. **🔋 Power Saver** - Maximale Akkulaufzeit
-   - CPU-Takt reduziert
-   - Display-Helligkeit automatisch gedimmt
-   - Hintergrund-Prozesse eingeschränkt
-
-2. **⚖️ Balanced** - Standard-Einstellung
-   - Ausgewogenes Verhältnis Leistung/Akku
-   - Empfohlen für normale Nutzung
-
-3. **⚡ Performance** - Maximale Leistung
-   - CPU läuft mit vollem Takt
-   - Für rechenintensive Aufgaben
-   - Höherer Stromverbrauch
-
-**Manuelle Steuerung:**
-```bash
-powerprofilesctl set power-saver
-powerprofilesctl set balanced
-powerprofilesctl set performance
-powerprofilesctl get  # Aktuelles Profil anzeigen
-```
-
----
-
-## 📝 Niri-spezifische Features
-
-### Scrolling Tiling
-Niri verwendet ein **scrollbares** Layout:
-- Workspaces sind horizontal angeordnet
-- `Super + Mausrad` = horizontales Scrollen
-- Neue Fenster werden rechts hinzugefügt
-
-### Column Management
-- Jedes Fenster ist in einer "Spalte"
-- `Super + Shift + H/L` = Fenster zwischen Spalten verschieben
-- `Super + -/+` = Spaltenbreite ändern
-
----
-
-## 🔧 Anpassungen
-
-### Eigene Keybindings hinzufügen
-
-Editiere:
-```bash
-nano ~/.config/niri/config.kdl
-```
-
-Beispiel:
-```kdl
-binds {
-    Mod+B { spawn "firefox"; }  // Firefox mit Super+B starten
-}
-```
-
-Nach Änderungen:
-```bash
-niri msg action reload-config  # oder Super + Shift + R
-```
-
----
-
-## 📚 Niri Dokumentation
-
-Offizielle Niri Docs: https://github.com/YaLTeR/niri/wiki
-
----
-
-**Tipp:** Drücke `Super + Shift + ?` um diese Übersicht im Niri Overlay zu sehen!
-
----
-
-**Made with ❤️ in Austria | Copyright © 2026 Manuel Kraibacher**
+**Apollo OS v0.5.2** - Copyright 2025 by Manuel Kraibacher
