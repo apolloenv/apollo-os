@@ -81,6 +81,14 @@ cp "$INSTALL_DIR/config-data/rofi/apollo-os-rofi-theme.rasi" "$HOME/.config/rofi
 cp "$INSTALL_DIR/config-data/niri/apollo-autostart.sh" "$HOME/.config/niri/"
 chmod +x "$HOME/.config/niri/apollo-autostart.sh"
 
+# Copy Niri helper scripts
+for script in "$INSTALL_DIR/config-data/niri/"*.sh; do
+    if [ -f "$script" ] && [ "$(basename "$script")" != "apollo-autostart.sh" ]; then
+        cp "$script" "$HOME/.config/niri/"
+        chmod +x "$HOME/.config/niri/$(basename "$script")"
+    fi
+done
+
 # Copy GTK configs if exist
 if [ -f "$INSTALL_DIR/config-data/gtk-3.0-settings.ini" ]; then
     cp "$INSTALL_DIR/config-data/gtk-3.0-settings.ini" "$HOME/.config/gtk-3.0/settings.ini"
