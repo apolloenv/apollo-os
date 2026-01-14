@@ -55,7 +55,7 @@ overview {
 // HOTKEY OVERLAY (Tastaturkürzel-Anzeige beim Login)
 // -----------------------------------------------------------------------------
 hotkey-overlay {
-    skip-at-startup false  // Zeige Overlay beim ersten Start
+    skip-at-startup true  // Nicht beim Start anzeigen
 }
 
 // -----------------------------------------------------------------------------
