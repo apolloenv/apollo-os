@@ -143,7 +143,7 @@ spawn-at-startup "sh" "-c" "mako --config $HOME/.config/mako/config" // Benachri
 spawn-at-startup "nm-applet" "--indicator"
 spawn-at-startup "blueman-applet"
 spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1" // Passwort-Dialoge
-spawn-at-startup "sh" "-c" "swayidle -w before-sleep 'swaylock -i $HOME/System/Wallpaper/Basic-Black-Dots.jpg'"
+spawn-at-startup "sh" "-c" "swayidle -w before-sleep 'swaylock -i /usr/share/backgrounds/apollo-login.jpg'"
 spawn-at-startup "sh" "-c" "sleep 4 && notify-send 'APOLLO OS' 'System initialized. All services operational.'"
 spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-welcome-tts.sh" // TTS Welcome
 
@@ -206,7 +206,7 @@ binds {
     Mod+Ctrl+Down  { set-window-height "+10%"; }
 
     // ─── System ────────────────────────────────────────────────────────────
-    Mod+L { spawn "swaylock" "-i" "$HOME/System/Wallpaper/Basic-Black-Dots.jpg"; }
+    Mod+L { spawn "swaylock" "-i" "/usr/share/backgrounds/apollo-login.jpg"; }
     Mod+Shift+E { quit; }
     Mod+Shift+R { spawn "sh" "-c" "pkill waybar; sleep 0.5; waybar -c $HOME/.config/waybar/config-niri & disown"; }
     

@@ -51,6 +51,12 @@ done
 # Update symlink
 ln -sf "$next_wallpaper" "$CURRENT_LINK"
 
+# Copy to login/lockscreen wallpaper (requires sudo)
+if [ -f "$next_wallpaper" ]; then
+    sudo cp "$next_wallpaper" /usr/share/backgrounds/apollo-login.jpg 2>/dev/null || true
+    sudo chmod 644 /usr/share/backgrounds/apollo-login.jpg 2>/dev/null || true
+fi
+
 # Reload wallpaper based on WM
 if pgrep -x swaybg >/dev/null; then
     # Niri uses swaybg
