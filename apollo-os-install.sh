@@ -471,6 +471,8 @@ PORTALEOF
     # Deploy Apollo OS Orbit config
     log "Deploying Apollo OS Orbit configuration..."
     cp "$SCRIPT_DIR/config-data/niri/apollo-os-niri-config.kdl" "$HOME/.config/niri/config.kdl" || warn "Apollo OS Orbit config deployment failed"
+    cp "$SCRIPT_DIR/config-data/niri/apollo-os-niri-config.kdl" "$HOME/.config/niri/config-classic.kdl" || warn "Classic config deployment failed"
+    cp "$SCRIPT_DIR/config-data/niri/apollo-os-niri-config-modern.kdl" "$HOME/.config/niri/config-modern.kdl" || warn "Modern config deployment failed"
     cp "$SCRIPT_DIR/config-data/niri/apollo-autostart.sh" "$HOME/.config/niri/" || warn "Apollo OS Orbit autostart deployment failed"
 
     # Make autostart executable
@@ -495,7 +497,11 @@ PORTALEOF
     # Deploy Waybar configs
     log "Deploying Waybar configurations..."
     cp "$SCRIPT_DIR/config-data/waybar/apollo-os-waybar-config" "$HOME/.config/waybar/config-niri" || warn "Waybar config deployment failed"
+    cp "$SCRIPT_DIR/config-data/waybar/apollo-os-waybar-config" "$HOME/.config/waybar/config-niri-classic" || warn "Waybar classic config failed"
+    cp "$SCRIPT_DIR/config-data/waybar/apollo-os-waybar-config-modern" "$HOME/.config/waybar/config-niri-modern" || warn "Waybar modern config failed"
     cp "$SCRIPT_DIR/config-data/waybar/apollo-os-waybar-style.css" "$HOME/.config/waybar/style.css" || warn "Waybar style deployment failed"
+    cp "$SCRIPT_DIR/config-data/waybar/apollo-os-waybar-style.css" "$HOME/.config/waybar/style-classic.css" || warn "Waybar classic style failed"
+    cp "$SCRIPT_DIR/config-data/waybar/apollo-os-waybar-style-modern.css" "$HOME/.config/waybar/style-modern.css" || warn "Waybar modern style failed"
     
     # Create hide-bottom.css for waybar toggle feature
     touch "$HOME/.config/waybar/hide-bottom.css" || warn "hide-bottom.css creation failed"

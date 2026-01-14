@@ -74,8 +74,14 @@ echo -e "${GREEN}Aktualisiere Konfigurationen...${NC}"
 
 # Copy configs
 cp "$INSTALL_DIR/config-data/niri/apollo-os-niri-config.kdl" "$HOME/.config/niri/config.kdl"
+cp "$INSTALL_DIR/config-data/niri/apollo-os-niri-config.kdl" "$HOME/.config/niri/config-classic.kdl"
+cp "$INSTALL_DIR/config-data/niri/apollo-os-niri-config-modern.kdl" "$HOME/.config/niri/config-modern.kdl"
 cp "$INSTALL_DIR/config-data/waybar/apollo-os-waybar-config" "$HOME/.config/waybar/config-niri"
+cp "$INSTALL_DIR/config-data/waybar/apollo-os-waybar-config" "$HOME/.config/waybar/config-niri-classic"
+cp "$INSTALL_DIR/config-data/waybar/apollo-os-waybar-config-modern" "$HOME/.config/waybar/config-niri-modern"
 cp "$INSTALL_DIR/config-data/waybar/apollo-os-waybar-style.css" "$HOME/.config/waybar/style.css"
+cp "$INSTALL_DIR/config-data/waybar/apollo-os-waybar-style.css" "$HOME/.config/waybar/style-classic.css"
+cp "$INSTALL_DIR/config-data/waybar/apollo-os-waybar-style-modern.css" "$HOME/.config/waybar/style-modern.css"
 cp "$INSTALL_DIR/config-data/mako/apollo-os-mako-config" "$HOME/.config/mako/config"
 cp "$INSTALL_DIR/config-data/rofi/apollo-os-rofi-theme.rasi" "$HOME/.config/rofi/config.rasi"
 cp "$INSTALL_DIR/config-data/niri/apollo-autostart.sh" "$HOME/.config/niri/"
@@ -113,6 +119,28 @@ done
 
 echo -e "${GREEN}✓${NC} Scripts aktualisiert"
 echo
+
+# Update desktop entries (for Niri compatibility)
+echo -e "${GREEN}Aktualisiere Desktop-Einträge...${NC}"
+mkdir -p "$HOME/.local/share/applications"
+if [ -d "$INSTALL_DIR/config-data/applications" ]; then
+    cp "$INSTALL_DIR/config-data/applications/"*.desktop "$HOME/.local/share/applications/" 2>/dev/null || true
+    update-desktop-database "$HOME/.local/share/applications" 2>/dev/null || true
+fi
+echo -e "${GREEN}✓${NC} Desktop-Einträge aktualisiert"
+echo
+
+# Install/Update LUNA TTS voice if not present
+VOICE_DIR="$HOME/.local/share/apollo-os/voices"
+if [ ! -f "$VOICE_DIR/luna.onnx" ]; then
+    echo -e "${GREEN}Installiere LUNA TTS Stimme...${NC}"
+    mkdir -p "$VOICE_DIR"
+    VOICE_URL="https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/en/en_GB/jenny_dioco/medium"
+    wget -q --show-progress -O "$VOICE_DIR/luna.onnx" "$VOICE_URL/en_GB-jenny_dioco-medium.onnx" 2>/dev/null || true
+    wget -q --show-progress -O "$VOICE_DIR/luna.onnx.json" "$VOICE_URL/en_GB-jenny_dioco-medium.onnx.json" 2>/dev/null || true
+    echo -e "${GREEN}✓${NC} LUNA Stimme installiert"
+    echo
+fi
 
 # Update wallpapers if exist
 if [ -d "$INSTALL_DIR/assets/wallpapers" ]; then
