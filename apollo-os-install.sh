@@ -711,6 +711,26 @@ finalize_installation() {
         log "Added ~/.local/bin to PATH"
     fi
 
+    # Cleanup installation files
+    log "Cleaning up installation files..."
+    if [ -d "$SCRIPT_DIR" ] && [ "$SCRIPT_DIR" != "$HOME" ]; then
+        # Keep only wallpapers and essential files
+        if [ -d "$SCRIPT_DIR/wallpapers" ]; then
+            log "Preserving wallpapers..."
+        fi
+        
+        # Remove installation scripts and temporary files
+        rm -f "$SCRIPT_DIR/apollo-os-install.sh" 2>/dev/null || true
+        rm -rf "$SCRIPT_DIR/config-data" 2>/dev/null || true
+        rm -rf "$SCRIPT_DIR/scripts" 2>/dev/null || true
+        rm -rf "$SCRIPT_DIR/assets" 2>/dev/null || true
+        rm -rf "$SCRIPT_DIR/.git" 2>/dev/null || true
+        rm -f "$SCRIPT_DIR/.gitignore" 2>/dev/null || true
+        rm -f "$SCRIPT_DIR/README.md" 2>/dev/null || true
+        
+        log "Installation files cleaned up"
+    fi
+
     # Print summary
     echo
     echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}"
