@@ -4,15 +4,15 @@
 # Apollo OS - Master Installer v0.5.0
 # Copyright © 2026 by Manuel Kraibacher
 #
-# Description: Transforms Fedora 43 Workstation into Apollo OS
-# Base: Fedora 43 Workstation (Gnome)
+# Description: Apollo OS Enterprise Installation System
+# Platform: Linux x86_64
 # Window Manager: Niri (Scrollable Tiling)
 #
 # v0.5.0 Changes:
 # - Niri-only installation (Sway removed)
 # - Simplified configuration (PRO Dark theme only)
 # - AI integration removed (Gemini/Ollama)
-# - Plymouth spinner theme with Fedora watermark
+# - Plymouth spinner theme with custom watermark
 # - GTK dark theme support for Niri
 # - Piper TTS with LUNA voice (en_GB-jenny_dioco-medium)
 # - Login greeting notification with time-based message
@@ -86,13 +86,13 @@ check_system() {
 
     # Check if Fedora
     if [[ ! -f /etc/fedora-release ]]; then
-        error "This installer requires Fedora Linux"
+        error "This installer requires a compatible Linux distribution"
     fi
 
     # Check Fedora version
     FEDORA_VERSION=$(rpm -E %fedora)
     if [[ "$FEDORA_VERSION" != "43" ]]; then
-        warn "This installer is designed for Fedora 43. Current version: $FEDORA_VERSION"
+        warn "This installer is optimized for system version 43. Current version: $FEDORA_VERSION"
         read -p "Continue anyway? (y/N): " -n 1 -r
         echo
         if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -693,7 +693,7 @@ DesktopNames=niri
 EOF'
 
     # Note: Plymouth/Boot is not modified here - only watermark.png is replaced via assets
-    # The Fedora spinner theme remains unchanged
+    # The default spinner theme remains unchanged
 
     log "GDM configured - Niri is the only available session ✓"
 }
