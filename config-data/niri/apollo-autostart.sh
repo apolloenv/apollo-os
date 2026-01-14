@@ -22,11 +22,17 @@ WALLPAPER_PATH="$HOME/System/Wallpaper/current.jpg"
 
 # Set GTK Theme
 if [[ "$THEME" == "dark" ]]; then
+    # Set GTK theme via gsettings
     gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark' 2>/dev/null
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null
+    
+    # Export for GTK apps
+    export GTK_THEME="adw-gtk3-dark"
+    export ADW_DEBUG_COLOR_SCHEME="prefer-dark"
 else
     gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3' 2>/dev/null
     gsettings set org.gnome.desktop.interface color-scheme 'default' 2>/dev/null
+    export GTK_THEME="adw-gtk3"
 fi
 
 # Ensure PulseAudio/Pipewire is ready for TTS
