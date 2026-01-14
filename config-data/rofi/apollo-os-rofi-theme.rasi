@@ -1,9 +1,11 @@
-/**
- * Apollo OS - Rofi Theme (Dark System -> Light UI)
- * High Contrast Inversion Rule Applied
- *
- * When system theme is DARK, UI elements are LIGHT
- */
+configuration {
+    show-icons: true;
+    display-drun: "Applications";
+    display-run: "Run";
+    display-window: "Windows";
+    drun-display-format: "{name}";
+    font: "monospace 12";
+}
 
 * {
     /* High Contrast Light Colors */
@@ -17,18 +19,18 @@
     /* Spacing */
     border-colour:  #CCCCCC;
     spacing:        2px;
+    
+    /* Dim overlay - 50% transparent black */
+    background-dim: #00000080;
 }
 
 window {
     transparency:   "real";
     location:       center;
     anchor:         center;
-    fullscreen:     false;
-    width:          600px;
-    border:         2px;
-    border-color:   @border-colour;
-    border-radius:  8px;
-    background-color: @background;
+    fullscreen:     true;
+    background-color: @background-dim;
+    children:       [ "mainbox" ];
 }
 
 mainbox {
@@ -36,7 +38,11 @@ mainbox {
     spacing:        10px;
     margin:         0px;
     padding:        20px;
-    background-color: transparent;
+    width:          600px;
+    background-color: @background;
+    border:         2px;
+    border-color:   @border-colour;
+    border-radius:  8px;
     children:       [ "inputbar", "message", "listview" ];
 }
 
@@ -48,39 +54,24 @@ inputbar {
     border-radius:  4px;
     background-color: @background-alt;
     text-color:     @foreground;
-    children:       [ "prompt", "entry" ];
+    children:       [ "textbox-prompt-colon", "entry" ];
 }
 
-prompt {
+textbox-prompt-colon {
     enabled:        true;
-    background-color: transparent;
-    text-color:     @active;
+    expand:         false;
+    str:            "";
+    background-color: inherit;
+    text-color:     inherit;
 }
 
 entry {
     enabled:        true;
-    background-color: transparent;
-    text-color:     @foreground;
+    background-color: inherit;
+    text-color:     inherit;
     cursor:         text;
     placeholder:    "Type to search...";
     placeholder-color: #888888;
-}
-
-message {
-    enabled:        true;
-    margin:         0px;
-    padding:        10px;
-    border:         0px;
-    border-radius:  4px;
-    background-color: @background-alt;
-    text-color:     @foreground;
-}
-
-textbox {
-    background-color: transparent;
-    text-color:     @foreground;
-    vertical-align: 0.5;
-    horizontal-align: 0.0;
 }
 
 listview {
@@ -94,13 +85,15 @@ listview {
     reverse:        false;
     fixed-height:   true;
     fixed-columns:  true;
-    spacing:        4px;
+    spacing:        5px;
+    margin:         0px;
+    padding:        10px 0px 0px 0px;
     background-color: transparent;
 }
 
 element {
     enabled:        true;
-    spacing:        8px;
+    spacing:        10px;
     margin:         0px;
     padding:        8px;
     border:         0px;
@@ -110,19 +103,9 @@ element {
     cursor:         pointer;
 }
 
-element normal.normal {
-    background-color: transparent;
-    text-color:     @foreground;
-}
-
 element selected.normal {
     background-color: @selected;
     text-color:     #FFFFFF;
-}
-
-element alternate.normal {
-    background-color: transparent;
-    text-color:     @foreground;
 }
 
 element-icon {
@@ -137,4 +120,25 @@ element-text {
     cursor:         inherit;
     vertical-align: 0.5;
     horizontal-align: 0.0;
+}
+
+message {
+    enabled:        true;
+    margin:         0px;
+    padding:        10px;
+    border-radius:  4px;
+    background-color: @background-alt;
+}
+
+textbox {
+    background-color: inherit;
+    text-color:     @foreground;
+    vertical-align: 0.5;
+    horizontal-align: 0.0;
+}
+
+error-message {
+    padding:        20px;
+    background-color: @background;
+    text-color:     @urgent;
 }
