@@ -31,49 +31,53 @@ if [ "$was_floating" = "false" ]; then
     
     # Get current window info after toggle
     window_info=$(niri msg -j focused-window 2>/dev/null)
-    current_width=$(echo "$window_info" | jq -r '.size.w')
-    current_height=$(echo "$window_info" | jq -r '.size.h')
-    current_x=$(echo "$window_info" | jq -r '.logical_position.x')
-    current_y=$(echo "$window_info" | jq -r '.logical_position.y')
+    current_width=$(echo "$window_info" | jq -r '.layout.window_size[0]')
+    current_height=$(echo "$window_info" | jq -r '.layout.window_size[1]')
+    current_x=$(echo "$window_info" | jq -r '.layout.tile_pos_in_workspace_view[0]')
+    current_y=$(echo "$window_info" | jq -r '.layout.tile_pos_in_workspace_view[1]')
     
-    # Only proceed if we have valid dimensions
-    if [ "$current_width" != "null" ] && [ "$current_height" != "null" ]; then
-        # Calculate width difference
-        width_diff=$((target_width - current_width))
-        if [ $width_diff -ne 0 ]; then
-            niri msg action set-window-width "$width_diff"
-        fi
-        
-        # Calculate height difference
-        height_diff=$((target_height - current_height))
-        if [ $height_diff -ne 0 ]; then
-            niri msg action set-window-height "$height_diff"
-        fi
-        
-        # Wait for resize
-        sleep 0.2
-        
-        # Calculate center position
-        center_x=$(awk "BEGIN {printf \"%.0f\", ($screen_width - $target_width) / 2}")
-        center_y=$(awk "BEGIN {printf \"%.0f\", ($screen_height - $target_height) / 2}")
-        
-        # Get updated position after resize
-        window_info=$(niri msg -j focused-window 2>/dev/null)
-        current_x=$(echo "$window_info" | jq -r '.logical_position.x')
-        current_y=$(echo "$window_info" | jq -r '.logical_position.y')
-        
-        # Calculate movement needed
-        if [ "$current_x" != "null" ] && [ "$current_y" != "null" ]; then
-            move_x=$((center_x - current_x))
-            move_y=$((center_y - current_y))
-            
-            # Move to center
-            if [ $move_x -ne 0 ] || [ $move_y -ne 0 ]; then
-                niri msg action move-floating-window -x "$move_x" -y "$move_y"
-            fi
-        fi
+    # Convert float to int
+    current_width=$(printf "%.0f" "$current_width")
+    current_height=$(printf "%.0f" "$current_height")
+    current_x=$(printf "%.0f" "$current_x")
+    current_y=$(printf "%.0f" "$current_y")
+    
+    # Calculate width difference
+    width_diff=$((target_width - current_width))
+    if [ $width_diff -ne 0 ]; then
+        niri msg action set-window-width "$width_diff"
+    fi
+    
+    # Calculate height difference
+    height_diff=$((target_height - current_height))
+    if [ $height_diff -ne 0 ]; then
+        niri msg action set-window-height "$height_diff"
+    fi
+    
+    # Wait for resize
+    sleep 0.2
+    
+    # Calculate center position
+    center_x=$(awk "BEGIN {printf \"%.0f\", ($screen_width - $target_width) / 2}")
+    center_y=$(awk "BEGIN {printf \"%.0f\", ($screen_height - $target_height) / 2}")
+    
+    # Get updated position after resize
+    window_info=$(niri msg -j focused-window 2>/dev/null)
+    current_x=$(echo "$window_info" | jq -r '.layout.tile_pos_in_workspace_view[0]')
+    current_y=$(echo "$window_info" | jq -r '.layout.tile_pos_in_workspace_view[1]')
+    current_x=$(printf "%.0f" "$current_x")
+    current_y=$(printf "%.0f" "$current_y")
+    
+    # Calculate movement needed
+    move_x=$((center_x - current_x))
+    move_y=$((center_y - current_y))
+    
+    # Move to center
+    if [ $move_x -ne 0 ] || [ $move_y -ne 0 ]; then
+        niri msg action move-floating-window -x "$move_x" -y "$move_y"
     fi
 fi
+
 
 
 
