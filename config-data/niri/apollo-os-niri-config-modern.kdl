@@ -62,7 +62,7 @@ hotkey-overlay {
 // LAYOUT & DESIGN
 // -----------------------------------------------------------------------------
 layout {
-    gaps 16               // Abstand zwischen Fenstern und Bildschirmrand
+    gaps 12               // Abstand zwischen Fenstern und Bildschirmrand
     center-focused-column "never" // Fokussierte Spalte immer zentrieren (wird per Super+C getoggelt)
     default-column-width { proportion 0.5; } // Standardbreite neuer Fenster (2/3)
     background-color "transparent"
@@ -79,8 +79,8 @@ layout {
     border {
        width 3
        // Verlauf von Weiß zu transparentem Weiß (Schwarz-Weiß Design)
-       active-color "rgba(255, 255, 255, 1.0)"
-       inactive-color "rgba(80, 80, 80, 1.0)"
+       active-color "rgba(255, 255, 255, 0.7)"
+       inactive-color "rgba(80, 80, 80, 0.7)"
     }
     
     shadow {
@@ -118,7 +118,7 @@ window-rule {
 // Fokussierte Fenster voll deckend
 window-rule {
     match is-focused=true
-    opacity 0.98
+    opacity 0.99
 }
 
 // Spezielle Regeln für bestimmte Apps (immer volle Breite starten)
