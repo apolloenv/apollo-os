@@ -132,6 +132,7 @@ window-rule {
 spawn-at-startup "xwayland-satellite" // XWayland Unterstützung
 spawn-at-startup "waybar" "-c" "$HOME/.config/waybar/config-niri" // Statusleiste
 spawn-at-startup "swaybg" "-i" "$HOME/System/Wallpaper/current.jpg" "-m" "fill"
+spawn-at-startup "mako" "--config" "$HOME/.config/mako/config" // Benachrichtigungen
 spawn-at-startup "nm-applet" "--indicator"
 spawn-at-startup "blueman-applet"
 spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1" // Passwort-Dialoge
