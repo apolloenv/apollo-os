@@ -249,11 +249,11 @@
 
         "custom/system-updates": {
             "format": "  󰚰  APOLLO OS Update",
-            "exec": "dnf check-update 2>/dev/null | grep -c '^[a-zA-Z]' || echo '0'",
+            "exec": "echo ''",
             "interval": 3600,
             "tooltip": true,
-            "tooltip-format": "Verfügbare System-Updates",
-            "on-click": "gnome-terminal -e 'sudo dnf upgrade'"
+            "tooltip-format": "Apollo OS von GitHub aktualisieren",
+            "on-click": "alacritty -e bash -c '$HOME/.local/bin/apollo-os-update.sh'"
         }
     }
 ]
