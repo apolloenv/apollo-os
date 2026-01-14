@@ -596,6 +596,18 @@ install_scripts() {
     ln -sf "$HOME/.local/bin/apollo-speak.sh" "$HOME/.local/bin/apollo-speak" || warn "Failed to create apollo-speak symlink"
     ln -sf "$HOME/.local/bin/apollo-os-event-monitor.sh" "$HOME/.local/bin/apollo-event-monitor" || warn "Failed to create apollo-event-monitor symlink"
 
+    # Install fixed desktop entries (for Niri compatibility)
+    log "Installing desktop entries..."
+    mkdir -p "$HOME/.local/share/applications"
+    cp "$SCRIPT_DIR/config-data/applications/"*.desktop "$HOME/.local/share/applications/" 2>/dev/null || true
+    update-desktop-database "$HOME/.local/share/applications" 2>/dev/null || true
+
+    # Set default text editor
+    xdg-mime default org.gnome.TextEditor.desktop text/plain 2>/dev/null || true
+    xdg-mime default org.gnome.TextEditor.desktop text/markdown 2>/dev/null || true
+    xdg-mime default org.gnome.TextEditor.desktop text/x-markdown 2>/dev/null || true
+    xdg-mime default org.gnome.TextEditor.desktop application/x-shellscript 2>/dev/null || true
+
     log "Scripts installed ✓"
 }
 
