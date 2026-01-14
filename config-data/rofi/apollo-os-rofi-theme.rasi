@@ -19,18 +19,14 @@ configuration {
     /* Spacing */
     border-colour:  #CCCCCC;
     spacing:        2px;
-    
-    /* Dim overlay - 50% transparent black */
-    background-dim: #00000080;
 }
 
 window {
     transparency:   "real";
     location:       center;
     anchor:         center;
-    fullscreen:     false;
-    background-color: @background-dim;
-    children:       [ "mainbox" ];
+    fullscreen:     true;
+    background-color: #00000080;
 }
 
 mainbox {
