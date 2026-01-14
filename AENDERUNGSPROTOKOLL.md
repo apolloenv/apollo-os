@@ -1,4 +1,43 @@
-# Apollo OS v0.5.0 - Änderungsprotokoll
+# Apollo OS - Änderungsprotokoll
+
+## v0.5.1 (2026-01-14)
+**Datum:** 2026-01-14  
+**Durchgeführt von:** Apollo Agent  
+**Auftraggeber:** Manuel Kraibacher
+
+### 🐛 Fehlerbehebungen
+
+#### Helligkeitssteuerung nicht funktionsfähig
+**Problem:** Funktionstasten für Bildschirmhelligkeit funktionierten nicht, obwohl `brightnessctl` installiert war.
+
+**Ursache:** 
+- Benutzer nicht zur `video` Gruppe hinzugefügt
+- Fehlende udev-Regeln für Backlight-Berechtigungen
+
+**Lösung:**
+1. **Neue Funktion in Installation**: `configure_user_permissions()`
+   - Fügt Benutzer zu `video` und `input` Gruppen hinzu
+   - Erstellt udev-Regeln für Backlight-Zugriff
+   - Lädt udev-Regeln automatisch neu
+
+2. **Hotfix-Script erstellt**: `scripts/apollo-os-brightness-fix.sh`
+   - Behebt Problem auf bestehenden Installationen
+   - Interaktives Script mit Abmelde-Option
+
+**Geänderte Dateien:**
+- `apollo-os-install.sh`: Neue Funktion `configure_user_permissions()` (Zeile 285-323)
+- `apollo-os-install.sh`: Aufruf in main() hinzugefügt (Zeile 707)
+- `scripts/apollo-os-brightness-fix.sh`: NEU - Hotfix-Script
+- `docs/BRIGHTNESS_FIX.md`: NEU - Dokumentation
+
+**Weitere Hinweise:**
+- Nach Installation/Hotfix: **Abmelden und Neuanmelden erforderlich**
+- Funktioniert nur auf Laptops mit Backlight-Hardware
+- Desktop-PCs ohne Laptop-Display: Normal, dass keine Backlight-Geräte gefunden werden
+
+---
+
+## v0.5.0 (2026-01-13)
 **Datum:** 2026-01-13  
 **Durchgeführt von:** Apollo Agent  
 **Auftraggeber:** Manuel Kraibacher

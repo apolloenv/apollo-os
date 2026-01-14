@@ -1,4 +1,4 @@
-# 🚀 Apollo OS v0.5.0
+# 🚀 Apollo OS v0.5.1
 
 **Modern Wayland Desktop Environment for Fedora 43**
 
@@ -15,6 +15,7 @@ A streamlined custom layer for Fedora 43 Workstation featuring Niri scrollable t
 - 🪟 **Niri Window Manager**: Scrollable tiling compositor (Wayland-native)
 - 🎨 **GTK Dark Theme**: Consistent dark mode across all applications
 - 🔋 **Power Management**: Click battery icon to cycle power profiles
+- 🔆 **Brightness Control**: Fn keys for screen brightness (laptops)
 - 🔊 **Intelligent TTS**: LUNA Voice with system event announcements (English)
   - Login greeting
   - Battery warnings (low/critical)
@@ -24,6 +25,16 @@ A streamlined custom layer for Fedora 43 Workstation featuring Niri scrollable t
 - 🖼️ **Wallpaper Cycling**: Dynamic wallpaper system
 - 📱 **Telegram Integration**: Optional notification system
 - 🔐 **Secure**: Minimal attack surface, systemd integration
+
+---
+
+## 🔧 Latest Changes (v0.5.1)
+
+### Fixed: Brightness Control
+- Added automatic user permissions configuration (`video` and `input` groups)
+- Created udev rules for backlight access
+- Hotfix script available for existing installations: `scripts/apollo-os-brightness-fix.sh`
+- See [docs/BRIGHTNESS_FIX.md](docs/BRIGHTNESS_FIX.md) for details
 
 ---
 

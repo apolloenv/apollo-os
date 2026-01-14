@@ -130,6 +130,72 @@ Für rechenintensive Aufgaben:
 
 ---
 
+## 🔆 Brightness Control (Bildschirmhelligkeit)
+
+### Funktionstasten funktionieren nicht - Was tun?
+
+**Symptom:** Fn + Brightness Tasten ändern nichts, Waybar zeigt keine Helligkeit an.
+
+**Lösung:** Führe das Hotfix-Script aus:
+```bash
+cd /path/to/apollo-os
+./scripts/apollo-os-brightness-fix.sh
+```
+
+Das Script:
+1. Installiert `brightnessctl` (falls nötig)
+2. Fügt dich zur `video` Gruppe hinzu
+3. Erstellt udev-Regeln für Backlight-Zugriff
+4. Bietet automatisches Abmelden an
+
+**Wichtig:** Nach dem Script **musst du dich abmelden und wieder anmelden**!
+
+### Welche Tasten steuern die Helligkeit?
+
+Standard auf den meisten Laptops:
+- **Heller:** Fn + F5 oder Fn + →
+- **Dunkler:** Fn + F6 oder Fn + ←
+
+Die genauen Tasten variieren je nach Laptop-Hersteller.
+
+### Manuelle Helligkeitssteuerung
+
+Über Terminal:
+```bash
+# Helligkeit anzeigen
+brightnessctl info
+
+# Helligkeit auf 50% setzen
+brightnessctl set 50%
+
+# Helligkeit um 10% erhöhen
+brightnessctl set 10%+
+
+# Helligkeit um 10% reduzieren
+brightnessctl set 10%-
+```
+
+### "Keine Backlight-Geräte gefunden"
+
+Dies ist normal für:
+- Desktop-PCs (keine integrierte Display-Beleuchtung)
+- Externe Monitore (nutze Monitor-Tasten)
+
+Nur Laptops mit integrierten Displays haben Backlight-Steuerung.
+
+### Waybar zeigt keine Helligkeit
+
+Prüfe ob Backlight-Geräte vorhanden sind:
+```bash
+ls /sys/class/backlight/
+```
+
+Wenn leer: Dein System hat keine Backlight-Hardware (siehe oben).
+
+**Weitere Details:** Siehe [docs/BRIGHTNESS_FIX.md](BRIGHTNESS_FIX.md)
+
+---
+
 ### Wie funktioniert das TTS-System?
 Apollo OS verwendet **Piper TTS** mit der LUNA Voice (British English). Fallback ist espeak-ng.
 

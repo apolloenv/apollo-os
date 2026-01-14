@@ -283,6 +283,45 @@ install_packages() {
 }
 
 #####################################################################
+# Configure User Permissions
+#####################################################################
+
+configure_user_permissions() {
+    log "Configuring user permissions..."
+    
+    # Add user to video group for brightness control
+    if ! groups | grep -q video; then
+        log "Adding user to 'video' group for brightness control..."
+        sudo usermod -aG video "$USER" || warn "Failed to add user to video group"
+    else
+        log "User already in 'video' group ✓"
+    fi
+    
+    # Add user to input group for input device access
+    if ! groups | grep -q input; then
+        log "Adding user to 'input' group..."
+        sudo usermod -aG input "$USER" || warn "Failed to add user to input group"
+    else
+        log "User already in 'input' group ✓"
+    fi
+    
+    # Create udev rule for brightness control without sudo
+    log "Creating udev rules for brightness control..."
+    sudo bash -c 'cat > /etc/udev/rules.d/90-backlight.rules' << 'EOF'
+# Allow users in video group to control backlight
+ACTION=="add", SUBSYSTEM=="backlight", RUN+="/bin/chgrp video /sys/class/backlight/%k/brightness"
+ACTION=="add", SUBSYSTEM=="backlight", RUN+="/bin/chmod g+w /sys/class/backlight/%k/brightness"
+EOF
+    
+    # Reload udev rules
+    sudo udevadm control --reload-rules || warn "Failed to reload udev rules"
+    sudo udevadm trigger --subsystem-match=backlight || warn "Failed to trigger backlight subsystem"
+    
+    log "User permissions configured ✓"
+    log "NOTE: You may need to log out and log back in for group changes to take effect"
+}
+
+#####################################################################
 # Verify Critical Packages
 #####################################################################
 
@@ -665,6 +704,7 @@ main() {
     check_system
     gather_user_config
     install_packages
+    configure_user_permissions
     verify_critical_packages
     deploy_configs
     install_scripts
