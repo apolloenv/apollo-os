@@ -72,9 +72,7 @@ case "$selected" in
         scales="1.0\n1.25\n1.5"
         selected_scale=$(echo -e "$scales" | rofi -dmenu -p "Display Scaling")
         if [ -n "$selected_scale" ]; then
-            niri msg action set-output-scale eDP-1 "$selected_scale" 2>/dev/null && \
-                notify-send "Apollo OS" "Display scaling: ${selected_scale}x" || \
-                notify-send "Apollo OS" "Failed to set scaling"
+            "$HOME/.local/bin/apollo-os-scale-setter.sh" "$selected_scale"
         fi
         ;;
 
