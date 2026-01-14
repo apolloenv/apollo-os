@@ -6,14 +6,14 @@
 #
 # Description: Apollo OS Enterprise Installation System
 # Platform: Linux x86_64
-# Window Manager: Niri (Scrollable Tiling)
+# Window Manager: Apollo OS Orbit (Scrollable Tiling)
 #
 # v0.5.0 Changes:
-# - Niri-only installation (Sway removed)
+# - Apollo OS Orbit-only installation (Sway removed)
 # - Simplified configuration (PRO Dark theme only)
 # - AI integration removed (Gemini/Ollama)
 # - Plymouth spinner theme with custom watermark
-# - GTK dark theme support for Niri
+# - GTK dark theme support for Apollo OS Orbit
 # - Piper TTS with LUNA voice (en_GB-jenny_dioco-medium)
 # - Login greeting notification with time-based message
 #####################################################################
@@ -203,7 +203,7 @@ install_packages() {
     sudo dnf makecache --refresh
 
     # Core Window Manager & Wayland
-    log "Installing Niri Window Manager..."
+    log "Installing Apollo OS Orbit Window Manager..."
     sudo -v  # Refresh sudo
 
     # Install Wayland components
@@ -211,10 +211,10 @@ install_packages() {
 
     # Install Niri
     if ! command -v niri &>/dev/null; then
-        log "Installing Niri Window Manager..."
-        sudo dnf install -y niri || error "Niri installation failed"
+        log "Installing Apollo OS Orbit Window Manager..."
+        sudo dnf install -y niri || error "Apollo OS Orbit installation failed"
     else
-        log "Niri already installed ✓"
+        log "Apollo OS Orbit already installed ✓"
     fi
 
     # Install Waybar
@@ -398,7 +398,7 @@ gtk-cursor-theme-name="Adwaita"
 gtk-cursor-theme-size=24
 GTKEOF
 
-    # Create XDG Portal config for Niri
+    # Create XDG Portal config for Apollo OS Orbit
     cat > "$HOME/.config/xdg-desktop-portal/niri-portals.conf" << 'PORTALEOF'
 [preferred]
 default=gtk
@@ -407,15 +407,15 @@ org.freedesktop.impl.portal.Screenshot=wlr
 org.freedesktop.impl.portal.ScreenCast=wlr
 PORTALEOF
 
-    # Deploy Niri config
-    log "Deploying Niri configuration..."
-    cp "$SCRIPT_DIR/config-data/niri/apollo-os-niri-config.kdl" "$HOME/.config/niri/config.kdl" || warn "Niri config deployment failed"
-    cp "$SCRIPT_DIR/config-data/niri/apollo-autostart.sh" "$HOME/.config/niri/" || warn "Niri autostart deployment failed"
+    # Deploy Apollo OS Orbit config
+    log "Deploying Apollo OS Orbit configuration..."
+    cp "$SCRIPT_DIR/config-data/niri/apollo-os-niri-config.kdl" "$HOME/.config/niri/config.kdl" || warn "Apollo OS Orbit config deployment failed"
+    cp "$SCRIPT_DIR/config-data/niri/apollo-autostart.sh" "$HOME/.config/niri/" || warn "Apollo OS Orbit autostart deployment failed"
 
     # Make autostart executable
     chmod +x "$HOME/.config/niri/apollo-autostart.sh" 2>/dev/null
 
-    # Add GTK_THEME and portal to Niri config
+    # Add GTK_THEME and portal to Apollo OS Orbit config
     if [ -f "$HOME/.config/niri/config.kdl" ]; then
         # Add autostart if not present
         if ! grep -q "apollo-autostart.sh" "$HOME/.config/niri/config.kdl"; then
@@ -529,7 +529,7 @@ install_scripts() {
 install_desktop_entries() {
     # Note: Session entry is created in configure_login_manager()
     # This function is kept for compatibility but does nothing
-    # Niri is the only session and is configured system-wide
+    # Apollo OS Orbit is the only session and is configured system-wide
     log "Session entries will be configured in login manager setup ✓"
 }
 
@@ -558,7 +558,7 @@ setup_systemd() {
 
     # Enable services (event monitor will be started by autostart script)
     # We don't enable it as systemd service to avoid race conditions
-    # It starts after Niri/Mako/Audio are ready
+    # It starts after Apollo OS Orbit/Mako/Audio are ready
     
     log "Systemd services configured ✓"
 }
@@ -673,20 +673,20 @@ clock-show-date=false
 EOF'
     sudo dconf update
 
-    # Remove all other sessions - Niri is the only option
-    log "Removing all other sessions (Niri-only)..."
+    # Remove all other sessions - Apollo OS Orbit is the only option
+    log "Removing all other sessions (Apollo OS Orbit-only)..."
     sudo rm -f /usr/share/wayland-sessions/gnome.desktop 2>/dev/null
     sudo rm -f /usr/share/wayland-sessions/gnome-wayland.desktop 2>/dev/null
     sudo rm -f /usr/share/wayland-sessions/gnome-classic.desktop 2>/dev/null
     sudo rm -f /usr/share/wayland-sessions/gnome-classic-wayland.desktop 2>/dev/null
     sudo rm -f /usr/share/wayland-sessions/sway.desktop 2>/dev/null
 
-    # Configure Niri as the only session
-    log "Setting Niri as default and only session..."
+    # Configure Apollo OS Orbit as the only session
+    log "Setting Apollo OS Orbit as default and only session..."
     sudo bash -c 'cat > /usr/share/wayland-sessions/niri.desktop << EOF
 [Desktop Entry]
 Name=Apollo OS
-Comment=Niri Scrollable Tiling Window Manager
+Comment=APOLLO OS Orbit Window Manager
 Exec=/usr/local/bin/apollo-os-wrapper-niri.sh pro dark
 Type=Application
 DesktopNames=niri
@@ -695,7 +695,7 @@ EOF'
     # Note: Plymouth/Boot is not modified here - only watermark.png is replaced via assets
     # The default spinner theme remains unchanged
 
-    log "GDM configured - Niri is the only available session ✓"
+    log "GDM configured - Apollo OS Orbit is the only available session ✓"
 }
 
 #####################################################################
@@ -739,10 +739,10 @@ finalize_installation() {
 
     echo -e "${CYAN}Next Steps:${NC}"
     echo "1. Log out of your current session"
-    echo "2. Log in - Apollo OS (Niri) starts automatically"
+    echo "2. Log in - Apollo OS starts automatically"
     echo
     echo -e "${YELLOW}Window Manager:${NC}"
-    echo "  • Niri - Scrollable tiling (default and only session)"
+    echo "  • APOLLO OS Orbit Window Manager (default and only session)"
     echo
     echo -e "${CYAN}Quick Commands:${NC}"
     echo "  apollo-speak <text>          - Text-to-Speech with LUNA voice"
