@@ -28,7 +28,7 @@ window {
     transparency:   "real";
     location:       center;
     anchor:         center;
-    fullscreen:     true;
+    fullscreen:     false;
     background-color: @background-dim;
     children:       [ "mainbox" ];
 }
