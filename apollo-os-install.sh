@@ -749,9 +749,6 @@ finalize_installation() {
     echo "  apollo-os-theme-switcher.sh  - Switch between light/dark themes"
     echo "  apollo-os-stats.sh           - System statistics"
     echo
-    echo -e "${CYAN}Optional Post-Installation:${NC}"
-    echo "  Boot Splash: sudo $SCRIPT_DIR/scripts/apollo-os-boot-splash-installer.sh"
-    echo
     echo -e "${GREEN}Installation log saved to: $INSTALL_LOG${NC}"
     echo
 }
