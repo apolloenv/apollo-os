@@ -540,6 +540,14 @@ copy_plymouth_watermark() {
     sudo chmod 644 "$watermark_target"
     sudo chown root:root "$watermark_target"
     
+    # Set spinner as default Plymouth theme
+    log "Setting spinner as default Plymouth theme..."
+    sudo plymouth-set-default-theme spinner || warn "Failed to set Plymouth theme"
+    
+    # Rebuild initramfs to apply changes
+    log "Rebuilding initramfs..."
+    sudo dracut -f || warn "Failed to rebuild initramfs"
+    
     log "Plymouth watermark installed ✓"
     log "Watermark: $watermark_target"
     
