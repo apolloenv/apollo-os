@@ -1,5 +1,46 @@
 # Apollo OS - Änderungsprotokoll
 
+## v0.5.2 (2026-01-14)
+**Datum:** 2026-01-14  
+**Durchgeführt von:** Apollo Agent  
+**Auftraggeber:** Manuel Kraibacher
+
+### ✨ Verbesserungen
+
+#### Plymouth Watermark Installation vereinfacht
+**Änderung:** Automatische Installation des Apollo OS Watermarks während der Hauptinstallation.
+
+**Was wurde geändert:**
+1. **Neue Funktion in Installation**: `copy_plymouth_watermark()`
+   - Kopiert `assets/spinner/watermark.png` nach `/usr/share/plymouth/themes/spinner/`
+   - Prüft ob Plymouth Spinner Theme vorhanden ist
+   - Erstellt Backup falls Watermark bereits existiert
+   - Setzt korrekte Berechtigungen (`root:root 644`)
+
+2. **Hotfix-Script erstellt**: `scripts/apollo-os-watermark-installer.sh`
+   - Für nachträgliche Installation falls Plymouth später installiert wird
+   - Einfaches Script ohne Plymouth-Konfiguration
+
+3. **Vereinfachung der Boot-Splash-Strategie:**
+   - Watermark wird nur kopiert, keine Plymouth/GRUB-Änderungen
+   - Plymouth-Installer-Script entfernt (zu komplex)
+   - Fokus auf minimale, nicht-invasive Installation
+
+**Geänderte Dateien:**
+- `apollo-os-install.sh`: Neue Funktion `copy_plymouth_watermark()` (Zeile 451-495)
+- `apollo-os-install.sh`: Aufruf in main() hinzugefügt (Zeile 760)
+- `scripts/apollo-os-watermark-installer.sh`: NEU - Hotfix-Script
+- `scripts/apollo-os-plymouth-installer.sh`: ENTFERNT (zu komplex, nicht benötigt)
+- `docs/BOOT_SPLASH.md`: Aktualisiert - neue Installation dokumentiert
+- `assets/spinner/APOLLO OS.png`: Umbenannt zu `watermark.png`
+
+**Weitere Hinweise:**
+- Watermark-Installation ist optional (nur wenn Plymouth Spinner Theme vorhanden)
+- Keine Änderungen an Plymouth-Konfiguration oder Bootloader
+- Für nachträgliche Installation: `./scripts/apollo-os-watermark-installer.sh`
+
+---
+
 ## v0.5.1 (2026-01-14)
 **Datum:** 2026-01-14  
 **Durchgeführt von:** Apollo Agent  

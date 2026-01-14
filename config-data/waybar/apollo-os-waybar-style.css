@@ -1,74 +1,85 @@
-/* MODERN WAYBAR STYLE (Island Look) */
+/* ============================================
+   WAYBAR STYLE - APOLLO OS
+   Copyright 2025 by Manuel Kraibacher
+   ============================================ */
 
+/* === GLOBALE SETTINGS === */
 * {
     border: none;
     border-radius: 0px;
     font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", sans-serif;
-    font-size: 14px;
-    font-weight: bold;
     min-height: 0;
 }
 
 window#waybar {
-    background-color: rgba(0, 0, 0, 0.0); /* Dunkler, transparenter Hintergrund */
+    background-color: rgba(0, 0, 0, 1.0);
     color: #ffffff;
-    border-radius: 12px; /* Runde Ecken für die ganze Bar */
+    border-radius: 0px;
     transition-property: background-color;
     transition-duration: 0.5s;
-    /* Optional: Box-Shadow für die Bar */
-    /* box-shadow: 0 4px 8px rgba(0,0,0,0.3); */
 }
 
 window#waybar.hidden {
     opacity: 0.2;
 }
 
+
+/* ============================================
+   OBERE BAR (TOP)
+   ============================================ */
+
+window#waybar.top * {
+    font-size: 14px;
+    font-weight: bold;
+}
+
 /* --- Workspaces --- */
-#workspaces {
-    margin: 5px 5px;
-    background-color: rgba(255, 255, 255, 0.0);
+window#waybar.top #workspaces {
+    margin: 5px 0px;
+    background-color: transparent;
     border-radius: 0px;
 }
 
-#workspaces button {
-    padding: 0 15px;
+window#waybar.top #workspaces button {
+    padding: 0 10px;
     background-color: transparent;
     color: rgba(255, 255, 255, 1.0);
-    border-radius: 12px;
-    transition: all 0.3s ease;
+    border-radius: 4px;
+    transition: all 0.2s ease;
 }
 
-#workspaces button:hover {
+window#waybar.top #workspaces button:hover {
     background: rgba(255, 255, 255, 0.3);
     color: #ffffff;
 }
 
-#workspaces button.active {
-    background-color: rgba(255, 255, 255, 1.0); /* GNOME Blau */
+window#waybar.top #workspaces button.active {
+    background-color: rgba(255, 255, 255, 1.0);
     color: #000000;
-    padding: 0 16px; /* Aktiver Tab wird breiter */
+    padding: 0 10px;
 }
 
-#workspaces button.urgent {
-    background-color: #e01b24;
-    color: #ffffff;
+window#waybar.top #workspaces button.urgent {
+    background-color: #FF340F;
+    color: #000000;
 }
 
-/* --- Modules --- */
-.modules-right {
+/* --- Module rechts --- */
+window#waybar.top .modules-right {
     margin: 5px 5px;
-    background-color: rgba(255, 255, 255, 0.0);
+    background-color: transparent;
     border-radius: 8px;
     padding: 0 5px;
 }
 
-#bluetooth,
-#network,
-#pulseaudio,
-#backlight,
-#custom-btop,
-#battery,
-#clock {
+window#waybar.top #bluetooth,
+window#waybar.top #network,
+window#waybar.top #pulseaudio,
+window#waybar.top #backlight,
+window#waybar.top #custom-btop,
+window#waybar.top #custom-power-profile,
+window#waybar.top #battery,
+window#waybar.top #clock {
     padding: 4px 12px;
     margin: 2px 2px;
     color: #ffffff;
@@ -76,45 +87,165 @@ window#waybar.hidden {
     border-radius: 8px;
 }
 
-/* Hover Effekte */
-#bluetooth:hover,
-#network:hover,
-#pulseaudio:hover,
-#backlight:hover,
-#custom-btop:hover,
-#battery:hover,
-#clock:hover {
+/* Hover-Effekte oben */
+window#waybar.top #bluetooth:hover,
+window#waybar.top #network:hover,
+window#waybar.top #pulseaudio:hover,
+window#waybar.top #backlight:hover,
+window#waybar.top #custom-btop:hover,
+window#waybar.top #custom-power-profile:hover,
+window#waybar.top #battery:hover,
+window#waybar.top #clock:hover {
     background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* --- Status Farben --- */
-
-/* Battery */
-#battery.charging { color: #8ff0a4; }
-#battery.warning:not(.charging) { color: #f8e45c; }
-#battery.critical:not(.charging) {
-    color: #ff7b63;
-    animation-name: blink;
-    animation-duration: 0.5s;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+/* --- Status-Farben oben --- */
+window#waybar.top #battery.charging {
+    color: #88CC00;
 }
 
-@keyframes blink { to { color: #ffffff; } }
+window#waybar.top #battery.warning:not(.charging) {
+    color: rgba(255, 131, 36, 1.0);
+}
 
-/* Network */
-#network.disconnected { color: #ffffff; }
+window#waybar.top #battery.critical:not(.charging) {
+    color: #FF340F;
+    animation: blink-battery 0.5s infinite alternate;
+}
 
-/* Audio */
-#pulseaudio.muted { color: #ffffff; }
+@keyframes blink-battery {
+    to { color: #ffffff; }
+}
 
-/* Custom Icons */
-#custom-synology {
+window#waybar.top #network.disconnected {
+    color: rgba(255, 131, 36, 1.0);
+}
+
+window#waybar.top #pulseaudio.muted {
+    color: #FFFFFF;
+}
+
+/* --- Drawer-Module oben --- */
+window#waybar.top #custom-synology {
     color: #ffffff;
     padding: 0 15px;
     font-size: 16px;
 }
 
-#tray {
+window#waybar.top #tray {
     margin-right: 10px;
+}
+
+
+/* ============================================
+   UNTERE BAR (BOTTOM)
+   ============================================ */
+
+window#waybar.bottom * {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* --- Alle Module unten (inkl. Network) --- */
+window#waybar.bottom #cpu,
+window#waybar.bottom #memory,
+window#waybar.bottom #disk,
+window#waybar.bottom #temperature,
+window#waybar.bottom #custom-hostname,
+window#waybar.bottom #custom-localip,
+window#waybar.bottom #custom-publicip,
+window#waybar.bottom #custom-uptime,
+window#waybar.bottom #network {
+    padding: 4px 10px;
+    margin: 2px 2px;
+    color: #ffffff;
+    background-color: transparent;
+    border-radius: 8px;
+}
+
+/* Spacing für Network Module */
+window#waybar.bottom #network.speed {
+    margin-right: 6px;
+}
+
+window#waybar.bottom #network.vpn {
+    margin-right: 6px;
+}
+
+window#waybar.bottom #network.wifi {
+    margin-right: 4px;
+}
+
+/* --- Hover-Effekte unten --- */
+window#waybar.bottom #cpu:hover,
+window#waybar.bottom #memory:hover,
+window#waybar.bottom #disk:hover,
+window#waybar.bottom #temperature:hover,
+window#waybar.bottom #custom-localip:hover,
+window#waybar.bottom #custom-publicip:hover,
+window#waybar.bottom #custom-uptime:hover,
+window#waybar.bottom #network:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* --- Status-Farben unten --- */
+window#waybar.bottom #cpu.warning {
+    color: rgba(255, 131, 36, 1.0);
+}
+
+window#waybar.bottom #cpu.critical {
+    color: #FF340F;
+}
+
+window#waybar.bottom #memory.warning {
+    color: rgba(255, 131, 36, 1.0);
+}
+
+window#waybar.bottom #memory.critical {
+    color: #FF340F;
+}
+
+window#waybar.bottom #disk.warning {
+    color: rgba(255, 131, 36, 1.0);
+}
+
+window#waybar.bottom #disk.critical {
+    color: #FF340F;
+}
+
+window#waybar.bottom #temperature.critical {
+    color: #FF340F;
+    animation: blink-temp 0.5s infinite alternate;
+}
+
+@keyframes blink-temp {
+    to { color: #ffffff; }
+}
+
+/* --- Hostname Highlight --- */
+window#waybar.bottom #custom-hostname {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* --- IP Adressen & Uptime --- */
+window#waybar.bottom #custom-localip,
+window#waybar.bottom #custom-publicip,
+window#waybar.bottom #custom-uptime {
+    font-family: monospace;
+    font-size: 14px;
+}
+
+/* --- System Drawer unten --- */
+window#waybar.bottom #custom-notifications {
+    margin-right: 5px;
+    padding: 2px 8px;
+}
+
+/* --- Module Gruppierung --- */
+.modules-left,
+.modules-center,
+.modules-right {
+    margin: 2px 5px;
 }

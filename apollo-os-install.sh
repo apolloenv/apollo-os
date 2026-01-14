@@ -448,6 +448,51 @@ PORTALEOF
 }
 
 #####################################################################
+# Copy Plymouth Watermark
+#####################################################################
+
+copy_plymouth_watermark() {
+    log "Installing Plymouth watermark..."
+    
+    local watermark_source="$SCRIPT_DIR/assets/spinner/watermark.png"
+    local watermark_target="/usr/share/plymouth/themes/spinner/watermark.png"
+    
+    # Check if watermark source exists
+    if [[ ! -f "$watermark_source" ]]; then
+        warn "Watermark source not found: $watermark_source"
+        return 1
+    fi
+    
+    # Check if Plymouth spinner theme directory exists
+    if [[ ! -d /usr/share/plymouth/themes/spinner ]]; then
+        warn "Plymouth spinner theme directory not found, skipping watermark installation"
+        return 0
+    fi
+    
+    # Backup existing watermark if present
+    if [[ -f "$watermark_target" ]]; then
+        log "Backing up existing watermark..."
+        sudo cp "$watermark_target" "${watermark_target}.backup.$(date +%Y%m%d)" || warn "Failed to backup watermark"
+    fi
+    
+    # Copy Apollo OS watermark
+    log "Copying Apollo OS watermark to Plymouth..."
+    sudo cp "$watermark_source" "$watermark_target" || {
+        warn "Failed to copy watermark"
+        return 1
+    }
+    
+    # Set correct permissions
+    sudo chmod 644 "$watermark_target"
+    sudo chown root:root "$watermark_target"
+    
+    log "Plymouth watermark installed ✓"
+    log "Watermark: $watermark_target"
+    
+    return 0
+}
+
+#####################################################################
 # Script Installation
 #####################################################################
 
@@ -707,6 +752,7 @@ main() {
     configure_user_permissions
     verify_critical_packages
     deploy_configs
+    copy_plymouth_watermark
     install_scripts
     install_desktop_entries
     setup_systemd

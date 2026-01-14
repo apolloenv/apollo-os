@@ -1,4 +1,4 @@
-# 🚀 Apollo OS v0.5.1
+# 🚀 Apollo OS v0.5.2
 
 **Modern Wayland Desktop Environment for Fedora 43**
 
@@ -16,6 +16,7 @@ A streamlined custom layer for Fedora 43 Workstation featuring Niri scrollable t
 - 🎨 **GTK Dark Theme**: Consistent dark mode across all applications
 - 🔋 **Power Management**: Click battery icon to cycle power profiles
 - 🔆 **Brightness Control**: Fn keys for screen brightness (laptops)
+- 🖼️ **Boot Branding**: Apollo OS watermark for Plymouth boot splash
 - 🔊 **Intelligent TTS**: LUNA Voice with system event announcements (English)
   - Login greeting
   - Battery warnings (low/critical)
@@ -28,9 +29,15 @@ A streamlined custom layer for Fedora 43 Workstation featuring Niri scrollable t
 
 ---
 
-## 🔧 Latest Changes (v0.5.1)
+## 🔧 Latest Changes (v0.5.2)
 
-### Fixed: Brightness Control
+### Improved: Plymouth Watermark Installation
+- Automatic watermark installation during setup
+- Apollo OS branding for Plymouth boot splash
+- Hotfix script for existing installations: `scripts/apollo-os-watermark-installer.sh`
+- See [docs/BOOT_SPLASH.md](docs/BOOT_SPLASH.md) for details
+
+### Fixed: Brightness Control (v0.5.1)
 - Added automatic user permissions configuration (`video` and `input` groups)
 - Created udev rules for backlight access
 - Hotfix script available for existing installations: `scripts/apollo-os-brightness-fix.sh`

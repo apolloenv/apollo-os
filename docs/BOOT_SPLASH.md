@@ -31,86 +31,55 @@ sudo ./scripts/apollo-os-boot-splash-installer.sh
 
 ---
 
-## Option 2: Plymouth mit Apollo OS Watermark (NEU)
+## Option 2: Apollo OS Watermark für Plymouth
 
-**Script:** `scripts/apollo-os-plymouth-installer.sh`
+**Info:** Das Apollo OS Watermark wird automatisch während der Installation nach `/usr/share/plymouth/themes/spinner/watermark.png` kopiert, falls das Plymouth Spinner Theme vorhanden ist.
 
-### Was macht es?
-- ✅ Installiert/behält Plymouth
-- ✅ Kopiert Apollo OS Watermark nach `/usr/share/plymouth/themes/spinner/`
-- ✅ Setzt Fedora Spinner Theme als Standard
-- ✅ Graphischer Boot-Splash mit Apollo Branding
-- ✅ Optionally: Kann verbose bleiben oder quiet sein
+### Automatische Installation
+Das Watermark wird im Hauptinstaller (`apollo-os-install.sh`) automatisch installiert:
+- ✅ Prüft ob Plymouth Spinner Theme vorhanden ist
+- ✅ Kopiert `assets/spinner/watermark.png` nach `/usr/share/plymouth/themes/spinner/`
+- ✅ Setzt korrekte Berechtigungen (`root:root 644`)
+- ✅ Erstellt Backup falls bereits vorhanden
 
-### Installation
+### Manuelle Installation (Hotfix)
+
+**Script:** `scripts/apollo-os-watermark-installer.sh`
+
+Falls das Watermark nicht während der Installation kopiert wurde (z.B. Plymouth wurde nachträglich installiert):
+
 ```bash
 cd ~/apollo-os-dev/v0.5.0
-sudo ./scripts/apollo-os-plymouth-installer.sh
+./scripts/apollo-os-watermark-installer.sh
 ```
 
-### Was passiert?
-1. **Plymouth Installation prüfen/installieren**
-   - Installiert Plymouth falls nicht vorhanden
-   - Installiert Spinner Theme
+### Was macht es?
+- Kopiert nur das Watermark-File
+- Ändert KEINE Plymouth-Konfiguration
+- Ändert KEINE Bootloader-Einstellungen
+- Erstellt Backup falls Watermark bereits existiert
 
-2. **Watermark kopieren**
-   - Original wird gebackupt: `watermark.png.backup.YYYYMMDD`
-   - Apollo OS Logo wird kopiert: `assets/spinner/APOLLO OS.png` → `/usr/share/plymouth/themes/spinner/watermark.png`
-   - Berechtigungen: `root:root 644`
-
-3. **Theme setzen**
-   - `plymouth-set-default-theme spinner`
-
-4. **initramfs rebuilden**
-   - `dracut -f` (baut initramfs mit neuem Plymouth neu)
-
-5. **GRUB updaten**
-   - Fügt `splash` Parameter zu GRUB_CMDLINE_LINUX hinzu
-   - Backup: `/etc/default/grub.backup.plymouth.YYYYMMDD`
-   - Regeneriert GRUB config
-
-### Vorteile
-- Professioneller Look
-- Apollo OS Branding
-- User-freundlicher
-- Standard für die meisten Linux-Distros
-
-### Nachteile
-- Etwas langsamerer Boot
-- Plymouth-Overhead
-- Boot-Nachrichten versteckt (außer bei Fehlern)
+### Hinweis
+Das Watermark wird nur kopiert, wenn Plymouth installiert ist und das Spinner-Theme verwendet wird. Es ändert nichts an deiner aktuellen Boot-Konfiguration.
 
 ---
 
 ## Vergleich
 
-| Feature | ASCII Splash | Plymouth Watermark |
-|---------|--------------|-------------------|
-| **Boot-Nachrichten** | Voll sichtbar | Versteckt (außer Fehler) |
-| **Look** | Terminal/Hacker | Professionell |
-| **Performance** | Schneller | Minimal langsamer |
-| **Branding** | ASCII Logo | Graphisches Logo |
-| **User-Freundlichkeit** | Techie | Mainstream |
+| Feature | ASCII Splash | Standard (mit Watermark) |
+|---------|--------------|--------------------------|
+| **Boot-Nachrichten** | Voll sichtbar | Je nach Plymouth-Config |
+| **Look** | Terminal/Hacker | Abhängig von Plymouth |
+| **Performance** | Schneller | Abhängig von Plymouth |
+| **Branding** | ASCII Logo | Watermark wenn Plymouth aktiv |
+| **User-Freundlichkeit** | Techie | Standard |
 | **Debugging** | Einfacher | Schwieriger |
 
 ---
 
 ## Wechseln zwischen den Modi
 
-### Von ASCII zu Plymouth wechseln
-
-```bash
-cd ~/apollo-os-dev/v0.5.0
-sudo ./scripts/apollo-os-plymouth-installer.sh
-sudo reboot
-```
-
-Plymouth-Installer:
-- Installiert Plymouth automatisch
-- Kopiert Watermark
-- Konfiguriert alles
-
-### Von Plymouth zu ASCII wechseln
+### Von Standard zu ASCII wechseln
 
 ```bash
 cd ~/apollo-os-dev/v0.5.0
@@ -123,27 +92,30 @@ ASCII-Boot-Splash-Installer:
 - Installiert ASCII-Splash-Service
 - Aktiviert verbose Boot
 
+### Watermark nachträglich installieren
+
+Falls Plymouth später installiert wurde:
+
+```bash
+cd ~/apollo-os-dev/v0.5.0
+./scripts/apollo-os-watermark-installer.sh
+```
+
 ---
 
 ## Überprüfung
 
-### Plymouth Status prüfen
+### Watermark prüfen
 
 ```bash
-# Ist Plymouth installiert?
-rpm -q plymouth
-
-# Welches Theme ist aktiv?
-plymouth-set-default-theme
-
-# Watermark vorhanden?
+# Ist Watermark vorhanden?
 ls -lh /usr/share/plymouth/themes/spinner/watermark.png
 
-# Plymouth während Boot testen (VORSICHT - startet Display Manager neu!)
-sudo plymouthd --debug
-sudo plymouth show-splash
-sleep 3
-sudo plymouth quit
+# Plymouth Status (falls installiert)
+rpm -q plymouth
+
+# Welches Theme ist aktiv? (falls Plymouth aktiv)
+plymouth-set-default-theme
 ```
 
 ### ASCII Splash Status prüfen
@@ -164,26 +136,21 @@ grep GRUB_CMDLINE_LINUX /etc/default/grub
 
 ## Fehlerbehebung
 
-### Plymouth zeigt Watermark nicht
+### Watermark nachträglich installieren
 
-**Problem:** Plymouth läuft, aber zeigt Standard-Fedora Logo
+**Problem:** Plymouth wurde nach Apollo OS installiert
 
 **Lösung:**
 ```bash
-# Prüfe ob Datei existiert
-ls -la /usr/share/plymouth/themes/spinner/watermark.png
-
-# Falls nicht, kopiere nochmal
 cd ~/apollo-os-dev/v0.5.0
-sudo cp "assets/spinner/APOLLO OS.png" \
-    /usr/share/plymouth/themes/spinner/watermark.png
-
-# Rebuild initramfs
-sudo dracut -f
-
-# Reboot
-sudo reboot
+./scripts/apollo-os-watermark-installer.sh
 ```
+
+Das Script:
+- Prüft ob Watermark-Source vorhanden ist
+- Prüft ob Plymouth Spinner Theme existiert
+- Kopiert Watermark mit korrekten Berechtigungen
+- Erstellt Backup falls bereits vorhanden
 
 ### ASCII Splash funktioniert nicht
 
@@ -206,31 +173,15 @@ grep "quiet\|splash" /etc/default/grub
 sudo reboot
 ```
 
-### Schwarzer Bildschirm beim Boot
-
-**Problem:** Plymouth hängt oder zeigt nichts
-
-**Lösung:**
-```bash
-# Boot in Recovery Mode
-# Im GRUB: 'e' drücken, 'splash' entfernen, boot mit Ctrl+X
-
-# Dann Plymouth entfernen
-sudo dnf remove plymouth
-sudo dracut -f
-sudo reboot
-```
-
 ---
 
 ## Dateien & Pfade
 
-### Plymouth
-- **Watermark Source:** `assets/spinner/APOLLO OS.png`
-- **Watermark Target:** `/usr/share/plymouth/themes/spinner/watermark.png`
-- **Theme Directory:** `/usr/share/plymouth/themes/spinner/`
-- **Config:** `/etc/default/grub` (splash parameter)
-- **Installer:** `scripts/apollo-os-plymouth-installer.sh`
+### Watermark
+- **Source:** `assets/spinner/watermark.png`
+- **Target:** `/usr/share/plymouth/themes/spinner/watermark.png`
+- **Installer:** `scripts/apollo-os-watermark-installer.sh`
+- **Installation:** Automatisch während Hauptinstallation wenn Plymouth vorhanden
 
 ### ASCII Splash
 - **Logo Source:** `assets/apollo-os-boot-logo.txt`
@@ -243,18 +194,19 @@ sudo reboot
 
 ## Empfehlung
 
-**Für Produktionsumgebung / normale User:**
-→ **Plymouth mit Watermark** (`apollo-os-plymouth-installer.sh`)
-- Professioneller
-- User-freundlicher
-- Standard-Verhalten
+**Für Standard-Installation:**
+→ **Standard (Plymouth mit Watermark)** wenn Plymouth vorhanden
+- Watermark wird automatisch installiert
+- Keine zusätzliche Konfiguration nötig
+- Standard-Plymouth-Verhalten bleibt erhalten
 
 **Für Entwicklung / Tech-Enthusiasten:**
 → **ASCII Splash** (`apollo-os-boot-splash-installer.sh`)
 - Debugging-freundlich
 - Zeigt alle Meldungen
 - Minimaler
+- Entfernt Plymouth komplett
 
 ---
 
-**Apollo OS v0.5.1** - Copyright 2025 by Manuel Kraibacher
+**Apollo OS v0.5.2** - Copyright 2025 by Manuel Kraibacher
