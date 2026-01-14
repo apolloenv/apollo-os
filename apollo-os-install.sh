@@ -131,6 +131,19 @@ gather_user_config() {
     echo -e "${CYAN}  Apollo OS Configuration${NC}"
     echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}\n"
 
+    # Hostname Configuration
+    echo -e "${YELLOW}System Hostname Configuration${NC}"
+    echo "Current hostname: $(hostname)"
+    read -p "Enter new hostname (press Enter to keep current): " NEW_HOSTNAME
+    if [ -n "$NEW_HOSTNAME" ]; then
+        echo "$NEW_HOSTNAME" | sudo tee /etc/hostname > /dev/null
+        sudo hostnamectl set-hostname "$NEW_HOSTNAME"
+        log "Hostname set to: $NEW_HOSTNAME"
+    else
+        log "Keeping current hostname: $(hostname)"
+    fi
+    echo
+
     # Telegram Configuration (optional)
     echo -e "${YELLOW}Telegram Bot Configuration (Optional)${NC}"
     echo "Apollo OS can send notifications via Telegram."
@@ -241,7 +254,6 @@ install_packages() {
         nm-connection-editor \
         pavucontrol \
         playerctl \
-        power-profiles-daemon \
         btop \
         fastfetch \
         jq \
@@ -249,9 +261,34 @@ install_packages() {
         unzip \
         || warn "Some system tools failed to install"
     
+    # Power profiles daemon (may conflict with tuned-ppd)
+    log "Installing power profiles daemon..."
+    sudo dnf install -y --allowerasing power-profiles-daemon || warn "Power profiles daemon installation failed"
+    
     # Critical UI tools (separate to ensure installation)
     log "Installing critical UI tools..."
     sudo dnf install -y blueman brightnessctl || error "Critical tools (blueman, brightnessctl) failed to install"
+    
+    # Remote Desktop & VPN
+    log "Installing remote desktop and VPN tools..."
+    sudo dnf install -y remmina || warn "Remmina installation failed"
+    
+    # Tailscale VPN
+    if [ ! -f /etc/yum.repos.d/tailscale.repo ]; then
+        log "Adding Tailscale repository..."
+        sudo bash -c 'cat > /etc/yum.repos.d/tailscale.repo << EOF
+[tailscale-stable]
+name=Tailscale stable
+baseurl=https://pkgs.tailscale.com/stable/fedora/\$basearch
+enabled=1
+type=rpm
+repo_gpgcheck=1
+gpgcheck=0
+gpgkey=https://pkgs.tailscale.com/stable/fedora/repo.gpg
+EOF'
+    fi
+    sudo dnf install -y tailscale || warn "Tailscale installation failed"
+    sudo systemctl enable --now tailscaled 2>/dev/null || warn "Tailscale service enablement failed"
 
     # Fonts
     log "Installing fonts..."
