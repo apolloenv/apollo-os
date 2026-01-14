@@ -52,6 +52,13 @@ overview {
 }
 
 // -----------------------------------------------------------------------------
+// HOTKEY OVERLAY (Tastaturkürzel-Anzeige beim Login)
+// -----------------------------------------------------------------------------
+hotkey-overlay {
+    skip-at-startup false  // Zeige Overlay beim ersten Start
+}
+
+// -----------------------------------------------------------------------------
 // LAYOUT & DESIGN
 // -----------------------------------------------------------------------------
 layout {
@@ -150,54 +157,58 @@ layer-rule {
 // TASTENKÜRZEL (Binds)
 // -----------------------------------------------------------------------------
 binds {
-    // Hilfe & Rofi
+    // ═══════════════════════════════════════════════════════════════════════
+    // APOLLO OS - KEYBOARD SHORTCUTS
+    // ═══════════════════════════════════════════════════════════════════════
+    
+    // ─── Help & Launcher ───────────────────────────────────────────────────
     Mod+Shift+Slash { show-hotkey-overlay; }
     Mod+Space { spawn "rofi" "-show" "drun"; }
     Mod+Shift+Space { spawn "sh" "-c" "$HOME/.local/bin/apollo-os-quickmenu.sh"; }
     Mod+Ctrl+Space { spawn "sh" "-c" "$HOME/.local/bin/apollo-os-wallpaper-cycle.sh"; }
     
-    // Fenster Management
+    // ─── Window Management ─────────────────────────────────────────────────
     Mod+Q { close-window; }
     Mod+W { toggle-window-floating; }
-    Mod+E { consume-or-expel-window-right; } // Fenster in Spalte einfügen/auswerfen
+    Mod+E { consume-or-expel-window-right; }
     Mod+O { toggle-overview; }
     Mod+M { maximize-column; }
     Mod+F { fullscreen-window; }
-    Mod+C { spawn "sh" "-c" "$HOME/.config/niri/toggle-center.sh"; } // Zentrierung umschalten
-    Mod+R { switch-preset-column-width; } // Zwischen Breiten wechseln
+    Mod+C { spawn "sh" "-c" "$HOME/.config/niri/toggle-center.sh"; }
+    Mod+R { switch-preset-column-width; }
 
-    // Apps (Immer in neuem Fenster)
+    // ─── Applications ──────────────────────────────────────────────────────
     Mod+D { spawn "nautilus" "--new-window"; }
     Mod+N { spawn "gnome-text-editor" "--new-window"; }
     Mod+Return { spawn "alacritty"; }
     Mod+B { spawn "firefox" "--new-window"; }
-    Mod+Shift+B { spawn "sh" "-c" "$HOME/.config/niri/toggle-waybar-bottom.sh"; } // Untere Waybar umschalten
-    Mod+T { spawn "ptyxis" "--new-window" "--working-directory" "/home/apollo/AIQSAN01/"; }
+    Mod+Shift+B { spawn "sh" "-c" "$HOME/.config/niri/toggle-waybar-bottom.sh"; }
+    Mod+T { spawn "ptyxis" "--new-window"; }
 
-    // Navigation (Fokus)
+    // ─── Navigation (Focus) ────────────────────────────────────────────────
     Mod+Left  { focus-column-left; }
     Mod+Right { focus-column-right; }
     Mod+Up    { focus-window-or-workspace-up; }
     Mod+Down  { focus-window-or-workspace-down; }
     
-    // Verschieben
+    // ─── Move Windows ──────────────────────────────────────────────────────
     Mod+Alt+Left  { move-column-left; }
     Mod+Alt+Right { move-column-right; }
     Mod+Alt+Up    { move-window-up; }
     Mod+Alt+Down  { move-window-down; }
     
-    // Größe ändern
+    // ─── Resize Windows ────────────────────────────────────────────────────
     Mod+Ctrl+Left  { set-column-width "-10%"; }
     Mod+Ctrl+Right { set-column-width "+10%"; }
     Mod+Ctrl+Up    { set-window-height "-10%"; }
     Mod+Ctrl+Down  { set-window-height "+10%"; }
 
-    // System
+    // ─── System ────────────────────────────────────────────────────────────
     Mod+L { spawn "swaylock" "-i" "$HOME/System/Wallpaper/Basic-Black-Dots.jpg"; }
     Mod+Shift+E { quit; }
-    Mod+Shift+R { spawn "sh" "-c" "pkill waybar; sleep 0.5; waybar -c /home/apollo/.config/waybar/config-niri & disown"; }
+    Mod+Shift+R { spawn "sh" "-c" "pkill waybar; sleep 0.5; waybar -c $HOME/.config/waybar/config-niri & disown"; }
     
-    // Workspaces
+    // ─── Workspaces ────────────────────────────────────────────────────────
     Mod+1 { focus-workspace 1; }
     Mod+2 { focus-workspace 2; }
     Mod+3 { focus-workspace 3; }
@@ -209,10 +220,10 @@ binds {
     Mod+9 { focus-workspace 9; }
     Mod+0 { focus-workspace 10; }
     
-    // Screenshot
-    Mod+S { spawn "sh" "-c" "grim -g \"$(slurp)\" ~/Bilder/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png && notify-send 'Screenshot' 'Gespeichert unter Bilder/Screenshots'"; }
+    // ─── Screenshot ────────────────────────────────────────────────────────
+    Mod+S { spawn "sh" "-c" "grim -g \"$(slurp)\" ~/Bilder/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png && notify-send 'Screenshot' 'Saved to Pictures/Screenshots'"; }
     
-    // Multimedia Tasten
+    // ─── Media Keys ────────────────────────────────────────────────────────
     XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
     XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
@@ -223,14 +234,29 @@ binds {
     XF86AudioNext allow-when-locked=true { spawn "playerctl" "next"; }
     XF86AudioPrev allow-when-locked=true { spawn "playerctl" "previous"; }
     
+    // ─── Window Switching ──────────────────────────────────────────────────
     Mod+Tab { focus-window-down-or-column-right; }
     Mod+Shift+Tab { focus-window-up-or-column-left; }
     
-    // Maus-Bindings (Scroll)
+    // ─── Mouse Scroll ──────────────────────────────────────────────────────
     Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
     Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
     Mod+WheelScrollRight { focus-column-right; }
     Mod+WheelScrollLeft { focus-column-left; }
+    
+    // ─── Mouse Window Control ──────────────────────────────────────────────
+    // Super + Left Click: Move window
+    // Super + Right Click: Resize window
+    // Super + Alt + Left Click: Resize window (alternative)
+    // Super + Middle Click: Close window
+    Mod+LeftClick { move-window; }
+    Mod+RightClick { resize-window; }
+    Mod+Alt+LeftClick { resize-window; }
+    Mod+MiddleClick { close-window; }
+    
+    // ─── Touchpad Gestures (3-Finger Swipe) ────────────────────────────────
+    TouchpadScrollDown { focus-workspace-down; }
+    TouchpadScrollUp { focus-workspace-up; }
 }
 
 // -----------------------------------------------------------------------------
