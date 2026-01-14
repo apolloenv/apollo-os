@@ -142,20 +142,20 @@ fi
 # Reload configurations
 echo -e "${GREEN}Lade Konfigurationen neu...${NC}"
 
-# Reload Niri
-niri msg action load-config-file 2>/dev/null || true
-
 # Reload Waybar
 WAYBAR_PID=$(pgrep -x waybar)
 if [ -n "$WAYBAR_PID" ]; then
     kill -SIGUSR2 $WAYBAR_PID 2>/dev/null || true
 fi
 
-# Reload Mako
+# Restart Mako (reload doesn't work properly, restart needed)
 MAKO_PID=$(pgrep -x mako)
 if [ -n "$MAKO_PID" ]; then
-    kill -SIGUSR1 $MAKO_PID 2>/dev/null || true
+    kill $MAKO_PID 2>/dev/null || true
+    sleep 1
 fi
+mako --config "$HOME/.config/mako/config" &>/dev/null &
+sleep 1
 
 echo -e "${GREEN}✓${NC} Neu geladen"
 echo
