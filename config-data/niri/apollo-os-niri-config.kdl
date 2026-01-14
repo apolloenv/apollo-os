@@ -135,7 +135,7 @@ spawn-at-startup "swaybg" "-i" "/home/apollo/System/Wallpapers/Black-Dots.jpg" "
 spawn-at-startup "nm-applet" "--indicator"
 spawn-at-startup "blueman-applet"
 spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1" // Passwort-Dialoge
-spawn-at-startup "swayidle" "-w" "before-sleep" "swaylock -i /home/apollo/System/Wallpapers/Black-Dots.jpg"
+spawn-at-startup "swayidle" "-w" "before-sleep" "swaylock -i $HOME/System/Wallpaper/Basic-Black-Dots.jpg"
 
 // -----------------------------------------------------------------------------
 // LAYER-RULES (Waybar, Wallpaper, etc.)
@@ -192,7 +192,7 @@ binds {
     Mod+Ctrl+Down  { set-window-height "+10%"; }
 
     // System
-    Mod+L { spawn "swaylock" "-i" "/home/apollo/System/Wallpapers/Black-Dots.jpg"; }
+    Mod+L { spawn "swaylock" "-i" "$HOME/System/Wallpaper/Basic-Black-Dots.jpg"; }
     Mod+Shift+E { quit; }
     Mod+Shift+R { spawn "sh" "-c" "pkill waybar; sleep 0.5; waybar -c /home/apollo/.config/waybar/config-niri & disown"; }
     
@@ -284,7 +284,6 @@ animations {
 cursor {
     // Name des Cursor-Themes (z.B. "Adwaita", "Bibata-Modern-Classic")
     xcursor-theme "WhiteSur-cursors"
-    xcursor-size 24
 }
 
 // Hinweis: Das Icon-Theme für Apps wird über GSettings oder die GTK-Settings gesteuert.
