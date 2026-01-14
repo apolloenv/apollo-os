@@ -442,6 +442,9 @@ PORTALEOF
     log "Deploying Waybar configurations..."
     cp "$SCRIPT_DIR/config-data/waybar/apollo-os-waybar-config" "$HOME/.config/waybar/config-niri" || warn "Waybar config deployment failed"
     cp "$SCRIPT_DIR/config-data/waybar/apollo-os-waybar-style.css" "$HOME/.config/waybar/style.css" || warn "Waybar style deployment failed"
+    
+    # Create hide-bottom.css for waybar toggle feature
+    touch "$HOME/.config/waybar/hide-bottom.css" || warn "hide-bottom.css creation failed"
 
     # Deploy Mako config
     log "Deploying Mako configuration..."

@@ -32,6 +32,9 @@ fi
 # Ensure PulseAudio/Pipewire is ready for TTS
 sleep 1
 
+# Set Niri Socket for IPC (needed for Waybar workspaces)
+export NIRI_SOCKET="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/niri.${WAYLAND_DISPLAY}.$(pgrep -x niri).sock"
+
 # Waybar (only if not already running)
 if ! pgrep -x waybar >/dev/null && [ -f "$WAYBAR_CONFIG" ]; then
     waybar -c "$WAYBAR_CONFIG" -s "$WAYBAR_STYLE" &
