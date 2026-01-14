@@ -66,6 +66,22 @@ TELEGRAM_USER_ID="YOUR_ID"       # Your Telegram user ID
 
 **Note:** Telegram integration is optional and can be configured later.
 
+### Boot Splash (Optional)
+
+Choose between two boot splash options:
+
+**Option 1: Plymouth with Apollo OS Logo** (Professional)
+```bash
+sudo ./scripts/apollo-os-plymouth-installer.sh
+```
+
+**Option 2: ASCII Boot Splash** (Verbose/Debug-friendly)
+```bash
+sudo ./scripts/apollo-os-boot-splash-installer.sh
+```
+
+See [docs/BOOT_SPLASH.md](docs/BOOT_SPLASH.md) for details.
+
 ---
 
 ## ⌨️ Essential Keybindings
@@ -87,6 +103,8 @@ TELEGRAM_USER_ID="YOUR_ID"       # Your Telegram user ID
 - **[Installation Guide](docs/INSTALLATION.md)** - Step-by-step setup
 - **[Keybindings Reference](docs/KEYBINDINGS.md)** - All keyboard shortcuts
 - **[FAQ](docs/FAQ.md)** - Common questions and troubleshooting
+- **[Boot Splash Options](docs/BOOT_SPLASH.md)** - Plymouth vs ASCII splash
+- **[Brightness Fix](docs/BRIGHTNESS_FIX.md)** - Fix brightness control
 - **[Project Validation](PROJEKT_VALIDIERUNG.md)** - Technical audit report
 
 ---
