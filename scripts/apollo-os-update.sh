@@ -109,10 +109,26 @@ echo
 # Update wallpapers if exist
 if [ -d "$INSTALL_DIR/assets/wallpapers" ]; then
     echo -e "${GREEN}Aktualisiere Wallpapers...${NC}"
-    mkdir -p "$HOME/System/Wallpapers"
-    cp -r "$INSTALL_DIR/assets/wallpapers/"* "$HOME/System/Wallpapers/" 2>/dev/null || true
+    mkdir -p "$HOME/System/Wallpaper"
+    cp -r "$INSTALL_DIR/assets/wallpapers/"* "$HOME/System/Wallpaper/" 2>/dev/null || true
     echo -e "${GREEN}✓${NC} Wallpapers aktualisiert"
     echo
+fi
+
+# Check hostname and offer to change if still default
+CURRENT_HOSTNAME=$(hostname)
+if [ "$CURRENT_HOSTNAME" = "fedora" ] || [ "$CURRENT_HOSTNAME" = "localhost" ]; then
+    echo -e "${YELLOW}⚠ Hostname ist noch auf Standard ('$CURRENT_HOSTNAME')${NC}"
+    read -p "Möchtest du den Hostname jetzt ändern? (j/n): " change_hostname
+    if [[ "$change_hostname" =~ ^[jJyY]$ ]]; then
+        read -p "Neuer Hostname: " new_hostname
+        if [ -n "$new_hostname" ]; then
+            echo -e "${GREEN}Ändere Hostname auf '$new_hostname'...${NC}"
+            sudo hostnamectl set-hostname "$new_hostname"
+            echo -e "${GREEN}✓${NC} Hostname geändert"
+            echo
+        fi
+    fi
 fi
 
 # Reload configurations
