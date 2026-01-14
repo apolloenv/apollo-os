@@ -8,7 +8,13 @@
 
 sleep 5
 
-PIPER_MODEL="$HOME/.local/share/piper-voices/en_US-lessac-medium.onnx"
+# Try LUNA voice first (installed by apollo-os-install.sh)
+PIPER_MODEL="$HOME/.local/share/apollo-os/piper-voices/luna.onnx"
+
+# Fallback to lessac voice
+if [[ ! -f "$PIPER_MODEL" ]]; then
+    PIPER_MODEL="$HOME/.local/share/piper-voices/en_US-lessac-medium.onnx"
+fi
 
 if [[ -f "$HOME/.local/bin/piper" ]] && [[ -f "$PIPER_MODEL" ]]; then
     echo "System initialized. All services operational." | \
