@@ -92,6 +92,9 @@ fi
 # Wait for audio system to be fully ready
 sleep 2
 
+# Welcome Notification
+notify-send -u normal "APOLLO OS" "System initialized. All services operational." &
+
 # Login Greeting (with TTS - now starts after audio is ready)
 if [ -f "$HOME/.local/bin/apollo-os-greeting.sh" ]; then
     "$HOME/.local/bin/apollo-os-greeting.sh" &
