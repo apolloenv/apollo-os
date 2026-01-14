@@ -8,6 +8,11 @@
 # Usage: apollo-os-scale-setter.sh <scale>
 #####################################################################
 
+# Set environment for Wayland/DBus
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-1}"
+export DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNTIME_DIR/bus}"
+
 NIRI_CONFIG="$HOME/.config/niri/config.kdl"
 SCALE="$1"
 
