@@ -35,8 +35,16 @@ echo "$LAST_STATE" > "$LAST_STATE_FILE"
 # Wait for system to stabilize after login
 sleep 10
 
+SLEEP_MARKER="/tmp/apollo-os-sleeping"
+
 while true; do
     sleep 3
+    
+    # Skip network notifications if system is going to sleep or waking
+    if [ -f "$SLEEP_MARKER" ]; then
+        LAST_STATE=$(get_network_state)
+        continue
+    fi
     
     CURRENT_STATE=$(get_network_state)
     

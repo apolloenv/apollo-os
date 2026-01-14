@@ -856,10 +856,31 @@ configure_login_manager() {
     log "Setting boot target to multi-user (text mode)..."
     sudo systemctl set-default multi-user.target
 
-    # Disable GDM if installed, enable greetd
+    # Disable GDM if installed, enable greetd with override for multi-user.target
     log "Switching to greetd..."
     sudo systemctl disable gdm 2>/dev/null || true
+    
+    # Create greetd override to ensure it starts with multi-user.target
+    sudo mkdir -p /etc/systemd/system/greetd.service.d
+    sudo cp "$SCRIPT_DIR/systemd/greetd-override.conf" /etc/systemd/system/greetd.service.d/override.conf
+    sudo systemctl daemon-reload
     sudo systemctl enable greetd
+
+    # Configure logind for TTS delay before sleep
+    log "Configuring sleep delay for TTS notifications..."
+    sudo mkdir -p /etc/systemd/logind.conf.d
+    sudo cp "$SCRIPT_DIR/systemd/logind-delay.conf" /etc/systemd/logind.conf.d/apollo-os-delay.conf
+
+    # Configure quiet boot (text mode, no Plymouth splash)
+    log "Configuring text boot (no splash)..."
+    sudo grubby --update-kernel=ALL --remove-args='quiet rhgb splash' 2>/dev/null || true
+    sudo grubby --set-default-index=0 2>/dev/null || true
+    
+    # Set GRUB timeout to 0
+    if [ -f /etc/default/grub ]; then
+        sudo sed -i 's/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=0/' /etc/default/grub
+        sudo grub2-mkconfig -o /boot/grub2/grub.cfg 2>/dev/null || true
+    fi
 
     # Remove other session entries - Apollo OS Orbit is the only option
     log "Removing all other sessions (Apollo OS Orbit-only)..."
@@ -868,9 +889,6 @@ configure_login_manager() {
     sudo rm -f /usr/share/wayland-sessions/gnome-classic.desktop 2>/dev/null
     sudo rm -f /usr/share/wayland-sessions/gnome-classic-wayland.desktop 2>/dev/null
     sudo rm -f /usr/share/wayland-sessions/sway.desktop 2>/dev/null
-
-    # Note: Plymouth/Boot is not modified here - only watermark.png is replaced via assets
-    # The default spinner theme remains unchanged
 
     log "greetd configured - Apollo OS Orbit login ready ✓"
 }

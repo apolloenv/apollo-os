@@ -118,6 +118,14 @@ case "$EVENT" in
         speak "Apollo OS login successful."
         ;;
     
+    # Sleep/Suspend events
+    sleep)
+        speak "Apollo OS entering standby mode. System secured and offline."
+        ;;
+    wake)
+        speak "Apollo OS resuming. All systems operational."
+        ;;
+    
     # Audio
     muted)
         speak "Audio muted."

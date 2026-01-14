@@ -148,6 +148,7 @@ spawn-at-startup "sh" "-c" "sleep 4 && notify-send 'APOLLO OS' 'System initializ
 spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-welcome-tts.sh" // TTS Welcome
 spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-power-monitor.sh" // Power/Battery Monitor
 spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-network-monitor.sh" // Network Monitor
+spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-sleep-monitor.sh" // Sleep/Wake TTS Monitor
 
 // -----------------------------------------------------------------------------
 // LAYER-RULES (Waybar, Wallpaper, etc.)
