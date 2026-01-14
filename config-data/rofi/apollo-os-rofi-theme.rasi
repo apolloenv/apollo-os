@@ -108,8 +108,6 @@ element normal.normal {
 element selected.normal {
     background-color: @selected;
     text-color:     @foreground;
-    border:         1px solid;
-    border-color:   @border-colour;
 }
 
 element alternate.normal {

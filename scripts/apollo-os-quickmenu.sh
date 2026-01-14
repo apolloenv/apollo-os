@@ -18,16 +18,16 @@ fi
 
 # Define actions (v0.5.0 - without AI features)
 actions=(
-    " Lock Screen"
-    " Next Wallpaper"
-    " Power Profiles"
-    " APOLLO OS Update"
-    " Reload Infobar"
-    " Reload Notifications"
-    " Reload Apollo OS Orbit"
-    " Logout"
-    " Shutdown"
-    " Reboot"
+    "🔒 Lock Screen"
+    "🖼️  Next Wallpaper"
+    "⚡ Power Profiles"
+    "🔄 APOLLO OS Update"
+    "📊 Reload Infobar"
+    "🔔 Reload Notifications"
+    "🪐 Reload Apollo OS Orbit"
+    "🚪 Logout"
+    "⏻  Shutdown"
+    "🔄 Reboot"
 )
 
 # Show menu
@@ -35,7 +35,7 @@ selected=$(printf '%s\n' "${actions[@]}" | rofi -dmenu -p "Apollo Quick Menu" -i
 
 # Execute selected action
 case "$selected" in
-    " Lock Screen")
+    "🔒 Lock Screen")
         # Use swaylock with black background
         if command -v swaylock &>/dev/null; then
             swaylock -f -c 000000
@@ -44,15 +44,15 @@ case "$selected" in
         fi
         ;;
 
-    " APOLLO OS Update")
+    "🔄 APOLLO OS Update")
         alacritty -e bash -c "$HOME/.local/bin/apollo-os-update.sh"
         ;;
 
-    " Next Wallpaper")
+    "🖼️  Next Wallpaper")
         "$HOME/.local/bin/apollo-os-wallpaper-cycle.sh"
         ;;
 
-    " Power Profiles")
+    "⚡ Power Profiles")
         # Get available profiles
         if command -v powerprofilesctl &>/dev/null; then
             profiles=$(powerprofilesctl list 2>/dev/null | grep -E '^\*?\s+\w+' | sed 's/^\*\?\s*//' || echo "balanced")
@@ -66,7 +66,7 @@ case "$selected" in
         fi
         ;;
 
-    " Reload Infobar")
+    "📊 Reload Infobar")
         WPID=$(pgrep -x waybar)
         if [ -n "$WPID" ]; then
             kill $WPID 2>/dev/null || true
@@ -76,7 +76,7 @@ case "$selected" in
         notify-send "Apollo OS" "Infobar reloaded"
         ;;
 
-    " Reload Notifications")
+    "🔔 Reload Notifications")
         MPID=$(pgrep -x mako)
         if [ -n "$MPID" ]; then
             kill $MPID 2>/dev/null || true
@@ -86,7 +86,7 @@ case "$selected" in
         notify-send "Apollo OS" "Notifications reloaded"
         ;;
 
-    " Reload Apollo OS Orbit")
+    "🪐 Reload Apollo OS Orbit")
         # Confirm
         confirm=$(echo -e "No\nYes" | rofi -dmenu -p "Reload Window Manager?")
         if [ "$confirm" = "Yes" ]; then
@@ -97,7 +97,7 @@ case "$selected" in
         fi
         ;;
 
-    " Logout")
+    "🚪 Logout")
         # Confirm
         confirm=$(echo -e "No\nYes" | rofi -dmenu -p "Logout?")
         if [ "$confirm" = "Yes" ]; then
@@ -107,7 +107,7 @@ case "$selected" in
         fi
         ;;
 
-    " Shutdown")
+    "⏻  Shutdown")
         # Confirm
         confirm=$(echo -e "No\nYes" | rofi -dmenu -p "Shutdown System?")
         if [ "$confirm" = "Yes" ]; then
@@ -115,7 +115,7 @@ case "$selected" in
         fi
         ;;
 
-    " Reboot")
+    "🔄 Reboot")
         # Confirm
         confirm=$(echo -e "No\nYes" | rofi -dmenu -p "Reboot System?")
         if [ "$confirm" = "Yes" ]; then
