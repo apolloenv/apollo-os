@@ -296,7 +296,7 @@ animations {
 
 cursor {
     // Name des Cursor-Themes (z.B. "Adwaita", "Bibata-Modern-Classic")
-    xcursor-theme "Adwaita"
+    xcursor-theme "breeze_cursors"
 }
 
 // Hinweis: Das Icon-Theme für Apps wird über GSettings oder die GTK-Settings gesteuert.

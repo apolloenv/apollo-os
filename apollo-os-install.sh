@@ -300,11 +300,12 @@ EOF'
         fira-code-fonts \
         || warn "Some fonts failed to install"
 
-    # GTK Themes
-    log "Installing GTK themes..."
+    # GTK Themes and Cursor
+    log "Installing GTK themes and cursor..."
     sudo dnf install -y \
         adw-gtk3-theme \
         gnome-themes-extra \
+        breeze-cursor-theme \
         || warn "GTK theme installation failed"
 
     # Install JetBrainsMono Nerd Font (for icons in Waybar)
@@ -440,7 +441,7 @@ deploy_configs() {
 gtk-theme-name="adw-gtk3-dark"
 gtk-icon-theme-name="Adwaita"
 gtk-font-name="Cantarell 11"
-gtk-cursor-theme-name="Adwaita"
+gtk-cursor-theme-name="breeze_cursors"
 gtk-cursor-theme-size=24
 GTKEOF
 
@@ -771,7 +772,7 @@ finalize_installation() {
     log "Applying dark theme settings..."
     gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark' 2>/dev/null || true
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
-    gsettings set org.gnome.desktop.interface cursor-theme 'Adwaita' 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface cursor-theme 'breeze_cursors' 2>/dev/null || true
 
     # Add local bin to PATH if not already there
     if ! grep -q "$HOME/.local/bin" "$HOME/.bashrc"; then
