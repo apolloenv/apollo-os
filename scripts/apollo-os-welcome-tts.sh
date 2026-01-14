@@ -2,23 +2,36 @@
 #####################################################################
 # Apollo OS - Welcome TTS
 # Copyright © 2026 by Manuel Kraibacher
-#
-# Description: Text-to-speech welcome message at login
 #####################################################################
 
 sleep 5
 
-# Try LUNA voice first (installed by apollo-os-install.sh)
-PIPER_MODEL="$HOME/.local/share/apollo-os/piper-voices/luna.onnx"
+# Use LUNA voice (British English) - check both possible locations
+PIPER_MODEL="$HOME/.local/share/apollo-os/voices/luna.onnx"
 
-# Fallback to lessac voice
+# Fallback locations
+if [[ ! -f "$PIPER_MODEL" ]]; then
+    PIPER_MODEL="$HOME/.local/share/apollo-os/piper-voices/luna.onnx"
+fi
 if [[ ! -f "$PIPER_MODEL" ]]; then
     PIPER_MODEL="$HOME/.local/share/piper-voices/en_US-lessac-medium.onnx"
 fi
 
+# Check network connection
+if nmcli -t -f STATE general 2>/dev/null | grep -q "connected"; then
+    AI_STATUS="Connected to Apollo AI Nexus."
+    NETWORK_STATUS="Network connected. System is online."
+else
+    AI_STATUS="Connected to Apollo AI Cortex."
+    NETWORK_STATUS="No network connected."
+fi
+
+# Build message
+MESSAGE="Apollo OS. Environment loaded. All systems operational. System is up to date and protected. Diagnostics nominal. ${AI_STATUS} ${NETWORK_STATUS}"
+
 if [[ -f "$HOME/.local/bin/piper" ]] && [[ -f "$PIPER_MODEL" ]]; then
-    echo "System initialized. All services operational." | \
-        "$HOME/.local/bin/piper" --model "$PIPER_MODEL" --output_file /tmp/welcome.wav 2>/dev/null
+    echo "$MESSAGE" | \
+        "$HOME/.local/bin/piper" --model "$PIPER_MODEL" --length_scale 1.15 --output_file /tmp/welcome.wav 2>/dev/null
     
     if [[ -f /tmp/welcome.wav ]]; then
         paplay /tmp/welcome.wav 2>/dev/null || aplay /tmp/welcome.wav 2>/dev/null
