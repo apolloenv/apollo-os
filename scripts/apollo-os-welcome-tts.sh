@@ -17,6 +17,11 @@ if [[ ! -f "$PIPER_MODEL" ]]; then
     PIPER_MODEL="$HOME/.local/share/piper-voices/en_US-lessac-medium.onnx"
 fi
 
+# Exit if no voice found
+if [[ ! -f "$PIPER_MODEL" ]]; then
+    exit 0
+fi
+
 # Check network connection
 if nmcli -t -f STATE general 2>/dev/null | grep -q "connected"; then
     AI_STATUS="Connected to Apollo AI Nexus."
@@ -29,12 +34,11 @@ fi
 # Build message
 MESSAGE="Apollo OS. Environment loaded. All systems operational. System is up to date and protected. Diagnostics nominal. ${AI_STATUS} ${NETWORK_STATUS}"
 
-if [[ -f "$HOME/.local/bin/piper" ]] && [[ -f "$PIPER_MODEL" ]]; then
-    echo "$MESSAGE" | \
-        "$HOME/.local/bin/piper" --model "$PIPER_MODEL" --length_scale 1.15 --output_file /tmp/welcome.wav 2>/dev/null
-    
-    if [[ -f /tmp/welcome.wav ]]; then
-        paplay /tmp/welcome.wav 2>/dev/null || aplay /tmp/welcome.wav 2>/dev/null
-        rm -f /tmp/welcome.wav
-    fi
+# Generate and play TTS
+TMPFILE="/tmp/apollo-welcome-$$.wav"
+echo "$MESSAGE" | piper --model "$PIPER_MODEL" --length_scale 1.15 --output_file "$TMPFILE" 2>/dev/null
+
+if [[ -f "$TMPFILE" ]]; then
+    pw-play "$TMPFILE" 2>/dev/null || paplay "$TMPFILE" 2>/dev/null || aplay "$TMPFILE" 2>/dev/null
+    rm -f "$TMPFILE"
 fi

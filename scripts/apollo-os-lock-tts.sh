@@ -2,37 +2,21 @@
 #####################################################################
 # Apollo OS - Lock/Unlock TTS
 # Copyright © 2026 by Manuel Kraibacher
+# 
+# This is a wrapper that calls the central TTS notify script
 #####################################################################
 
 ACTION=$1
-
-# Use LUNA voice
-PIPER_MODEL="$HOME/.local/share/apollo-os/voices/luna.onnx"
-if [[ ! -f "$PIPER_MODEL" ]]; then
-    PIPER_MODEL="$HOME/.local/share/apollo-os/piper-voices/luna.onnx"
-fi
-if [[ ! -f "$PIPER_MODEL" ]]; then
-    exit 0
-fi
+TTS_SCRIPT="$HOME/.local/bin/apollo-os-tts-notify.sh"
 
 case "$ACTION" in
     lock)
-        MESSAGE="Apollo OS secured."
+        [ -x "$TTS_SCRIPT" ] && "$TTS_SCRIPT" lock
         ;;
     unlock)
-        MESSAGE="Apollo OS login successful."
+        [ -x "$TTS_SCRIPT" ] && "$TTS_SCRIPT" unlock
         ;;
     *)
         exit 0
         ;;
 esac
-
-if [[ -f "$HOME/.local/bin/piper" ]] && [[ -f "$PIPER_MODEL" ]]; then
-    echo "$MESSAGE" | \
-        "$HOME/.local/bin/piper" --model "$PIPER_MODEL" --length_scale 1.15 --output_file /tmp/lock-tts.wav 2>/dev/null
-    
-    if [[ -f /tmp/lock-tts.wav ]]; then
-        paplay /tmp/lock-tts.wav 2>/dev/null || aplay /tmp/lock-tts.wav 2>/dev/null
-        rm -f /tmp/lock-tts.wav
-    fi
-fi

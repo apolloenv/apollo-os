@@ -4,14 +4,13 @@
 # Copyright © 2026 by Manuel Kraibacher
 #####################################################################
 
-# Play lock sound
-~/.local/bin/apollo-os-lock-tts.sh lock &
+TTS_SCRIPT="$HOME/.local/bin/apollo-os-tts-notify.sh"
 
-# Wait briefly for TTS to start
-sleep 0.5
+# Play lock sound (synchronous to ensure it completes before screen locks)
+[ -x "$TTS_SCRIPT" ] && "$TTS_SCRIPT" lock
 
 # Lock screen
 swaylock -i /usr/share/backgrounds/apollo-login.jpg
 
 # After unlock, play unlock sound
-~/.local/bin/apollo-os-lock-tts.sh unlock &
+[ -x "$TTS_SCRIPT" ] && "$TTS_SCRIPT" unlock
