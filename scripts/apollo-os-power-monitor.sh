@@ -5,6 +5,17 @@
 # Monitors power events (AC/Battery) and triggers TTS notifications
 # Should be started at login via spawn-at-startup in niri config
 
+# Prevent multiple instances
+LOCKFILE="/tmp/apollo-power-monitor.lock"
+if [ -f "$LOCKFILE" ]; then
+    PID=$(cat "$LOCKFILE")
+    if kill -0 "$PID" 2>/dev/null; then
+        exit 0  # Already running
+    fi
+fi
+echo $$ > "$LOCKFILE"
+trap "rm -f $LOCKFILE" EXIT
+
 TTS_SCRIPT="$HOME/.local/bin/apollo-os-tts-notify.sh"
 LAST_STATE_FILE="/tmp/apollo-power-state"
 

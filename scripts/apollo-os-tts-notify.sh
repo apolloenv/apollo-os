@@ -2,32 +2,42 @@
 # Apollo OS TTS Notification System
 # Copyright 2025 by Manuel Kraibacher
 
-# Find LUNA voice
-VOICE_FILE=$(find "$HOME/.local/share" -name 'luna.onnx' 2>/dev/null | head -1)
+# Find piper binary
+PIPER_BIN=""
+for p in "$HOME/.local/bin/piper" "/usr/bin/piper" "/usr/local/bin/piper"; do
+    [ -x "$p" ] && PIPER_BIN="$p" && break
+done
 
-# Fallback voice paths
-if [ -z "$VOICE_FILE" ]; then
-    for path in \
-        "$HOME/.local/share/apollo-os/voices/luna.onnx" \
-        "$HOME/.local/share/apollo-os/piper-voices/luna.onnx" \
-        "/usr/share/piper-voices/luna.onnx"; do
-        [ -f "$path" ] && VOICE_FILE="$path" && break
-    done
+# Exit if no piper found
+if [ -z "$PIPER_BIN" ]; then
+    exit 1
 fi
 
+# Find LUNA voice
+VOICE_FILE=""
+for path in \
+    "$HOME/.local/share/apollo-os/voices/luna.onnx" \
+    "$HOME/.local/share/apollo-os/piper-voices/luna.onnx" \
+    "/usr/share/piper-voices/luna.onnx"; do
+    [ -f "$path" ] && VOICE_FILE="$path" && break
+done
+
 # Exit if no voice found
-if [ -z "$VOICE_FILE" ] || [ ! -f "$VOICE_FILE" ]; then
+if [ -z "$VOICE_FILE" ]; then
     exit 1
 fi
 
 # Speed setting (higher = slower)
 SPEED=1.15
 
+# Ensure PipeWire/PulseAudio can be reached
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+
 # TTS function
 speak() {
     local text="$1"
     local tmpfile="/tmp/apollo-tts-$$.wav"
-    echo "$text" | piper --model "$VOICE_FILE" --length_scale "$SPEED" --output_file "$tmpfile" 2>/dev/null
+    echo "$text" | "$PIPER_BIN" --model "$VOICE_FILE" --length_scale "$SPEED" --output_file "$tmpfile" 2>/dev/null
     pw-play "$tmpfile" 2>/dev/null || paplay "$tmpfile" 2>/dev/null || aplay "$tmpfile" 2>/dev/null
     rm -f "$tmpfile"
 }
