@@ -22,7 +22,7 @@ Mod = Super/Windows-Taste
 | Tastenkombination | Aktion |
 |-------------------|--------|
 | `Mod + Q` | Fenster schließen |
-| `Mod + W` | Fenster floating/tiling umschalten (Floating = 60% Breite, zentriert) |
+| `Mod + W` | Fenster floating/tiling umschalten |
 | `Mod + E` | Fenster in Spalte einfügen/auswerfen |
 | `Mod + O` | Overview (Übersicht) anzeigen |
 | `Mod + M` | Spalte maximieren |
@@ -73,6 +73,7 @@ Mod = Super/Windows-Taste
 |--------|----------|
 | `Mod + Linke Maustaste` | **Fenster verschieben** (ziehen) ✨ |
 | `Mod + Rechte Maustaste` | **Fenster Größe ändern** (ziehen) ✨ |
+| `Mod + Alt + Linke Maustaste` | **Fenster Größe ändern** (alternative Methode) ✨ |
 | `Mod + Mausrad ↑/↓` | Workspace wechseln |
 | `Mod + Mausrad ←/→` | Spalte links/rechts wechseln |
 
@@ -153,13 +154,8 @@ Drücke `Mod + Shift + /` um eine vollständige Übersicht aller Keybindings dir
 ### Fenster mit Maus verschieben/anpassen
 - **Verschieben:** Halte `Super` gedrückt und ziehe das Fenster mit der **linken Maustaste**
 - **Größe ändern:** Halte `Super` gedrückt und ziehe mit der **rechten Maustaste**
+- **Größe ändern (alternativ):** Halte `Super + Alt` gedrückt und ziehe mit der **linken Maustaste**
 - Funktioniert überall im Fenster, nicht nur an den Rändern!
-
-### Floating-Modus (Mod + W)
-- Beim Umschalten auf Floating wird das Fenster automatisch auf **60% Breite** gesetzt
-- Das Fenster wird automatisch **zentriert**
-- Mit `Super + Rechte Maustaste` kannst du die Größe jederzeit anpassen
-- Mit `Super + Linke Maustaste` kannst du es verschieben
 
 ### Scripts in ~/.local/bin/
 Alle Apollo OS Scripts werden nach `~/.local/bin/` installiert und sind über den PATH verfügbar.
