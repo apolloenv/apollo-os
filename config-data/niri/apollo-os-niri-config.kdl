@@ -217,6 +217,12 @@ binds {
     
     Mod+Tab { focus-window-down-or-column-right; }
     Mod+Shift+Tab { focus-window-up-or-column-left; }
+    
+    // Maus-Bindings (Scroll)
+    Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
+    Mod+WheelScrollRight { focus-column-right; }
+    Mod+WheelScrollLeft { focus-column-left; }
 }
 
 // -----------------------------------------------------------------------------

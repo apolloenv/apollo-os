@@ -67,6 +67,19 @@ Mod = Super/Windows-Taste
 
 ---
 
+## 🖱️ Maus-Interaktionen
+
+| Aktion | Funktion |
+|--------|----------|
+| `Mod + Linke Maustaste` | **Fenster verschieben** (ziehen) ✨ |
+| `Mod + Rechte Maustaste` | **Fenster Größe ändern** (ziehen) ✨ |
+| `Mod + Mausrad ↑/↓` | Workspace wechseln |
+| `Mod + Mausrad ←/→` | Spalte links/rechts wechseln |
+
+> ✨ = Eingebaute Niri-Funktion, keine zusätzliche Konfiguration erforderlich
+
+---
+
 ## 🔢 Workspaces
 
 | Tastenkombination | Aktion |
@@ -136,6 +149,11 @@ Das Quick Menu bietet folgende Optionen:
 
 ### Keybinding Hilfe anzeigen
 Drücke `Mod + Shift + /` um eine vollständige Übersicht aller Keybindings direkt in Niri anzuzeigen.
+
+### Fenster mit Maus verschieben/anpassen
+- **Verschieben:** Halte `Super` gedrückt und ziehe das Fenster mit der **linken Maustaste**
+- **Größe ändern:** Halte `Super` gedrückt und ziehe mit der **rechten Maustaste**
+- Funktioniert überall im Fenster, nicht nur an den Rändern!
 
 ### Scripts in ~/.local/bin/
 Alle Apollo OS Scripts werden nach `~/.local/bin/` installiert und sind über den PATH verfügbar.
