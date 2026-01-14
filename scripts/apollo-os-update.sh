@@ -142,6 +142,96 @@ if [ ! -f "$VOICE_DIR/luna.onnx" ]; then
     echo
 fi
 
+# Install/Update additional applications
+echo -e "${GREEN}Prüfe und installiere zusätzliche Anwendungen...${NC}"
+
+# Browsers
+command -v google-chrome-stable &>/dev/null || {
+    echo "Installiere Google Chrome..."
+    sudo dnf install -y fedora-workstation-repositories 2>/dev/null || true
+    sudo dnf config-manager setopt google-chrome.enabled=1 2>/dev/null || sudo dnf config-manager --set-enabled google-chrome 2>/dev/null || true
+    sudo dnf install -y google-chrome-stable 2>/dev/null || echo "Chrome übersprungen"
+}
+
+command -v microsoft-edge-stable &>/dev/null || {
+    echo "Installiere Microsoft Edge..."
+    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc 2>/dev/null || true
+    sudo bash -c 'cat > /etc/yum.repos.d/microsoft-edge.repo << EOF
+[microsoft-edge]
+name=Microsoft Edge
+baseurl=https://packages.microsoft.com/yumrepos/edge
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+EOF'
+    sudo dnf install -y microsoft-edge-stable 2>/dev/null || echo "Edge übersprungen"
+}
+
+# Development Tools
+command -v code &>/dev/null || {
+    echo "Installiere Visual Studio Code..."
+    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc 2>/dev/null || true
+    sudo bash -c 'cat > /etc/yum.repos.d/vscode.repo << EOF
+[code]
+name=Visual Studio Code
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+EOF'
+    sudo dnf install -y code 2>/dev/null || echo "VS Code übersprungen"
+}
+
+# Node.js and npm
+command -v npm &>/dev/null || {
+    echo "Installiere Node.js und npm..."
+    sudo dnf install -y nodejs npm 2>/dev/null || echo "Node.js übersprungen"
+}
+
+# CLI AI Tools (only if npm is available)
+if command -v npm &>/dev/null; then
+    echo "Prüfe CLI AI Tools..."
+    npm list -g @google/gemini-cli &>/dev/null || sudo npm install -g @google/gemini-cli 2>/dev/null || true
+    npm list -g @anthropic-ai/claude-code &>/dev/null || sudo npm install -g @anthropic-ai/claude-code 2>/dev/null || true
+    npm list -g opencode-ai &>/dev/null || sudo npm install -g opencode-ai 2>/dev/null || true
+    npm list -g @github/copilot &>/dev/null || sudo npm install -g @github/copilot 2>/dev/null || true
+fi
+
+# FileZilla
+command -v filezilla &>/dev/null || {
+    echo "Installiere FileZilla..."
+    sudo dnf install -y filezilla 2>/dev/null || echo "FileZilla übersprungen"
+}
+
+# Remmina with VNC plugin
+rpm -q remmina-plugins-vnc &>/dev/null || {
+    echo "Installiere Remmina mit VNC..."
+    sudo dnf install -y remmina remmina-plugins-vnc 2>/dev/null || echo "Remmina übersprungen"
+}
+
+# Steam
+command -v steam &>/dev/null || {
+    echo "Installiere Steam..."
+    sudo dnf install -y steam 2>/dev/null || echo "Steam übersprungen"
+}
+
+# Synology Drive
+command -v synology-drive &>/dev/null || {
+    echo "Installiere Synology Drive..."
+    sudo dnf copr enable -y emixampp/synology-drive 2>/dev/null || true
+    sudo dnf install -y synology-drive 2>/dev/null || echo "Synology Drive übersprungen"
+}
+
+# Tailscale
+command -v tailscale &>/dev/null || {
+    echo "Installiere Tailscale..."
+    curl -fsSL https://tailscale.com/install.sh | sh 2>/dev/null || echo "Tailscale übersprungen"
+    sudo systemctl enable --now tailscaled 2>/dev/null || true
+}
+
+echo -e "${GREEN}✓${NC} Anwendungen geprüft"
+echo
+
 # Update wallpapers if exist
 if [ -d "$INSTALL_DIR/assets/wallpapers" ]; then
     echo -e "${GREEN}Aktualisiere Wallpapers...${NC}"

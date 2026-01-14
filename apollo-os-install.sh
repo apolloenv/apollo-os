@@ -271,7 +271,7 @@ install_packages() {
     
     # Remote Desktop & VPN
     log "Installing remote desktop and VPN tools..."
-    sudo dnf install -y remmina || warn "Remmina installation failed"
+    sudo dnf install -y remmina remmina-plugins-vnc || warn "Remmina installation failed"
     
     # Tailscale VPN
     if [ ! -f /etc/yum.repos.d/tailscale.repo ]; then
@@ -289,6 +289,80 @@ EOF'
     fi
     sudo dnf install -y tailscale || warn "Tailscale installation failed"
     sudo systemctl enable --now tailscaled 2>/dev/null || warn "Tailscale service enablement failed"
+
+    # Browsers
+    log "Installing web browsers..."
+    
+    # Google Chrome
+    if ! command -v google-chrome-stable &>/dev/null; then
+        log "Adding Google Chrome repository..."
+        sudo dnf install -y fedora-workstation-repositories 2>/dev/null || true
+        sudo dnf config-manager setopt google-chrome.enabled=1 2>/dev/null || sudo dnf config-manager --set-enabled google-chrome 2>/dev/null || true
+        sudo dnf install -y google-chrome-stable || warn "Google Chrome installation failed"
+    else
+        log "Google Chrome already installed ✓"
+    fi
+    
+    # Microsoft Edge
+    if ! command -v microsoft-edge-stable &>/dev/null; then
+        log "Adding Microsoft Edge repository..."
+        sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc 2>/dev/null || true
+        sudo bash -c 'cat > /etc/yum.repos.d/microsoft-edge.repo << EOF
+[microsoft-edge]
+name=Microsoft Edge
+baseurl=https://packages.microsoft.com/yumrepos/edge
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+EOF'
+        sudo dnf install -y microsoft-edge-stable || warn "Microsoft Edge installation failed"
+    else
+        log "Microsoft Edge already installed ✓"
+    fi
+
+    # Development Tools
+    log "Installing development tools..."
+    
+    # Visual Studio Code
+    if ! command -v code &>/dev/null; then
+        log "Adding Visual Studio Code repository..."
+        sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc 2>/dev/null || true
+        sudo bash -c 'cat > /etc/yum.repos.d/vscode.repo << EOF
+[code]
+name=Visual Studio Code
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+EOF'
+        sudo dnf install -y code || warn "Visual Studio Code installation failed"
+    else
+        log "Visual Studio Code already installed ✓"
+    fi
+    
+    # Node.js and npm
+    log "Installing Node.js and npm..."
+    sudo dnf install -y nodejs npm || warn "Node.js/npm installation failed"
+    
+    # CLI AI Tools
+    log "Installing CLI AI tools..."
+    sudo npm install -g @google/gemini-cli 2>/dev/null || warn "Gemini CLI installation failed"
+    sudo npm install -g @anthropic-ai/claude-code 2>/dev/null || warn "Claude Code installation failed"
+    sudo npm install -g opencode-ai 2>/dev/null || warn "OpenCode AI installation failed"
+    sudo npm install -g @github/copilot 2>/dev/null || warn "GitHub Copilot CLI installation failed"
+    
+    # FileZilla
+    log "Installing FileZilla..."
+    sudo dnf install -y filezilla || warn "FileZilla installation failed"
+    
+    # Steam (Gaming)
+    log "Installing Steam..."
+    sudo dnf install -y steam || warn "Steam installation failed (RPM Fusion required)"
+    
+    # Synology Drive
+    log "Installing Synology Drive..."
+    sudo dnf copr enable -y emixampp/synology-drive 2>/dev/null || warn "Synology Drive COPR enablement failed"
+    sudo dnf install -y synology-drive 2>/dev/null || warn "Synology Drive installation failed"
 
     # Fonts
     log "Installing fonts..."
