@@ -19,9 +19,9 @@ fi
 # Define actions (v0.5.0 - without AI features)
 actions=(
     " Lock Screen"
-    " Show Statistics"
     " Next Wallpaper"
     " Power Profiles"
+    " APOLLO OS Update"
     " Reload Infobar"
     " Reload Notifications"
     " Reload Apollo OS Orbit"
@@ -44,8 +44,8 @@ case "$selected" in
         fi
         ;;
 
-    " Show Statistics")
-        "$HOME/.local/bin/apollo-os-stats.sh"
+    " APOLLO OS Update")
+        alacritty -e bash -c "$HOME/.local/bin/apollo-os-update.sh"
         ;;
 
     " Next Wallpaper")
