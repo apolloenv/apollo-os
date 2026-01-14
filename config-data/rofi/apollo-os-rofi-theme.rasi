@@ -8,17 +8,16 @@ configuration {
 }
 
 * {
-    /* Mako-Style Dark Theme */
-    background:     #000000CC;
-    background-alt: #1a1a1aCC;
+    /* Apollo OS Dark Theme - Mako Style */
+    background:     #000000E6;
+    background-alt: #1a1a1a;
     foreground:     #ffffff;
-    selected:       #333333;
-    active:         #ffffff;
+    selected:       #ffffff20;
+    active:         #4A90E2;
     urgent:         #ff0000;
 
-    /* Spacing */
     border-colour:  #ffffff;
-    spacing:        2px;
+    spacing:        0px;
 }
 
 window {
@@ -27,7 +26,7 @@ window {
     anchor:         center;
     fullscreen:     false;
     width:          600px;
-    border:         2px;
+    border:         2px solid;
     border-color:   @border-colour;
     border-radius:  12px;
     background-color: @background;
@@ -35,17 +34,18 @@ window {
 
 mainbox {
     enabled:        true;
-    spacing:        10px;
+    spacing:        0px;
     margin:         0px;
-    padding:        20px;
+    padding:        15px;
     background-color: transparent;
-    children:       [ "inputbar", "message", "listview" ];
+    children:       [ "inputbar", "listview" ];
 }
 
 inputbar {
     enabled:        true;
     spacing:        10px;
-    padding:        15px;
+    margin:         0px 0px 15px 0px;
+    padding:        12px 15px;
     border:         0px;
     border-radius:  8px;
     background-color: @background-alt;
@@ -56,15 +56,16 @@ inputbar {
 textbox-prompt-colon {
     enabled:        true;
     expand:         false;
-    str:            "";
-    background-color: inherit;
-    text-color:     inherit;
+    str:            "🔍";
+    background-color: transparent;
+    text-color:     @foreground;
+    padding:        0px 5px 0px 0px;
 }
 
 entry {
     enabled:        true;
-    background-color: inherit;
-    text-color:     inherit;
+    background-color: transparent;
+    text-color:     @foreground;
     cursor:         text;
     placeholder:    "Type to search...";
     placeholder-color: #808080;
@@ -81,17 +82,17 @@ listview {
     reverse:        false;
     fixed-height:   true;
     fixed-columns:  true;
-    spacing:        5px;
+    spacing:        4px;
     margin:         0px;
-    padding:        10px 0px 0px 0px;
+    padding:        0px;
     background-color: transparent;
 }
 
 element {
     enabled:        true;
-    spacing:        10px;
+    spacing:        12px;
     margin:         0px;
-    padding:        12px;
+    padding:        10px 12px;
     border:         0px;
     border-radius:  8px;
     background-color: transparent;
@@ -99,15 +100,26 @@ element {
     cursor:         pointer;
 }
 
+element normal.normal {
+    background-color: transparent;
+    text-color:     @foreground;
+}
+
 element selected.normal {
     background-color: @selected;
     text-color:     @foreground;
-    border:         1px;
+    border:         1px solid;
     border-color:   @border-colour;
+}
+
+element alternate.normal {
+    background-color: transparent;
+    text-color:     @foreground;
 }
 
 element-icon {
     background-color: transparent;
+    text-color:     inherit;
     size:           32px;
     cursor:         inherit;
 }
@@ -122,21 +134,25 @@ element-text {
 
 message {
     enabled:        true;
-    margin:         0px;
-    padding:        15px;
+    margin:         0px 0px 10px 0px;
+    padding:        12px;
     border-radius:  8px;
     background-color: @background-alt;
+    text-color:     @foreground;
 }
 
 textbox {
-    background-color: inherit;
+    background-color: transparent;
     text-color:     @foreground;
     vertical-align: 0.5;
     horizontal-align: 0.0;
 }
 
 error-message {
-    padding:        20px;
+    padding:        15px;
     background-color: @background;
     text-color:     @urgent;
+    border:         2px solid;
+    border-color:   @urgent;
+    border-radius:  12px;
 }
