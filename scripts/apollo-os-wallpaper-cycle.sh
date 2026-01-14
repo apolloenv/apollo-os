@@ -1,47 +1,29 @@
 #!/bin/bash
 
-#####################################################################
-# Apollo OS - Wallpaper Cycle
-# Copyright © 2026 by Manuel Kraibacher
-#
-# Description: Cycle through wallpapers in ~/System/Wallpaper/
-# Keybinding: Ctrl+Super+Space
-#####################################################################
-
 WALLPAPER_DIR="$HOME/System/Wallpaper"
 CURRENT_LINK="$WALLPAPER_DIR/current.jpg"
 
-# Check if wallpaper directory exists
-if [ ! -d "$WALLPAPER_DIR" ]; then
-    notify-send "Apollo OS" "Wallpaper directory not found: $WALLPAPER_DIR"
-    exit 1
-fi
+# Get all wallpapers - exclude current.jpg
+mapfile -t wallpapers < <(find "$WALLPAPER_DIR" -maxdepth 1 -type f \( -name "*.jpg" -o -name "*.png" -o -name "*.jpeg" \) ! -name "current.jpg" | sort)
 
-# Get all wallpapers (jpg, png, jpeg)
-mapfile -t wallpapers < <(find "$WALLPAPER_DIR" -type f \( -name "*.jpg" -o -name "*.png" -o -name "*.jpeg" \) | sort)
-
-# Check if we have wallpapers
 if [ ${#wallpapers[@]} -eq 0 ]; then
-    notify-send "Apollo OS" "No wallpapers found in $WALLPAPER_DIR"
+    notify-send "Apollo OS" "No wallpapers found"
     exit 1
 fi
 
 # Get current wallpaper
+current=""
 if [ -L "$CURRENT_LINK" ]; then
     current=$(readlink -f "$CURRENT_LINK")
-else
-    current=""
 fi
 
 # Find next wallpaper
-next_wallpaper="${wallpapers[0]}"  # Default to first
-found=false
+next_wallpaper="${wallpapers[0]}"
 
 for i in "${!wallpapers[@]}"; do
     if [[ "${wallpapers[$i]}" == "$current" ]]; then
         next_index=$(( (i + 1) % ${#wallpapers[@]} ))
         next_wallpaper="${wallpapers[$next_index]}"
-        found=true
         break
     fi
 done
@@ -49,28 +31,21 @@ done
 # Update symlink
 ln -sf "$next_wallpaper" "$CURRENT_LINK"
 
-# Copy to login/lockscreen wallpaper (requires sudo)
-if [ -f "$next_wallpaper" ]; then
-    sudo cp "$next_wallpaper" /usr/share/backgrounds/apollo-login.jpg 2>/dev/null || true
-    sudo chmod 644 /usr/share/backgrounds/apollo-login.jpg 2>/dev/null || true
+# Copy to login wallpaper
+sudo cp "$next_wallpaper" /usr/share/backgrounds/apollo-login.jpg 2>/dev/null || true
+
+# Kill old swaybg by PID
+SWAYBG_PID=$(pgrep -x swaybg)
+if [ -n "$SWAYBG_PID" ]; then
+    kill $SWAYBG_PID 2>/dev/null
+    sleep 0.5
 fi
 
-# Reload wallpaper based on WM
-if pgrep -x swaybg >/dev/null; then
-    # Niri uses swaybg - kill and restart
-    pkill -x swaybg
-    sleep 0.3
-    nohup swaybg -i "$CURRENT_LINK" -m fill >/dev/null 2>&1 &
-    disown
-elif pgrep -x sway >/dev/null; then
-    # Sway uses output bg
-    swaymsg output "*" bg "$CURRENT_LINK" fill
-else
-    # swaybg not running, start it
-    nohup swaybg -i "$CURRENT_LINK" -m fill >/dev/null 2>&1 &
-    disown
-fi
+# Start swaybg - use spawn from niri
+swaybg -i "$next_wallpaper" -m fill &
 
-# Get wallpaper name for notification
+# Notification
 wallpaper_name=$(basename "$next_wallpaper")
-notify-send "Apollo OS" "Wallpaper: $wallpaper_name" -i dialog-information
+notify-send "Apollo OS" "Wallpaper: $wallpaper_name"
+
+exit 0
