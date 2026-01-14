@@ -28,25 +28,8 @@ if ! echo "$SCALE" | grep -qE '^[0-9]+\.?[0-9]*$'; then
     exit 1
 fi
 
-# Calculate cursor size based on scale (default 24px base size)
-BASE_CURSOR_SIZE=24
-CURSOR_SIZE=$(echo "$SCALE * $BASE_CURSOR_SIZE" | bc | cut -d. -f1)
-
 # Update scale in niri config for all outputs
 sed -i "/^output /,/^}/ s/^\(    scale \)[0-9.]\+$/\1$SCALE/" "$NIRI_CONFIG"
 
-# Update cursor size in niri config
-if grep -q "xcursor-size" "$NIRI_CONFIG"; then
-    sed -i "s/^\(    xcursor-size \)[0-9]\+$/\1$CURSOR_SIZE/" "$NIRI_CONFIG"
-elif grep -q "^cursor {" "$NIRI_CONFIG"; then
-    sed -i "/^cursor {/a\    xcursor-size $CURSOR_SIZE" "$NIRI_CONFIG"
-else
-    # Add cursor section if not present
-    echo -e "\ncursor {\n    xcursor-size $CURSOR_SIZE\n}" >> "$NIRI_CONFIG"
-fi
-
-# Also set via gsettings for GTK apps
-gsettings set org.gnome.desktop.interface cursor-size "$CURSOR_SIZE" 2>/dev/null
-
 # Notify user that they need to logout/login
-notify-send "Apollo OS" "Display scaling set to ${SCALE}x\nCursor size: ${CURSOR_SIZE}px\nLogout/Login required" -t 5000
+notify-send "Apollo OS" "Display scaling set to ${SCALE}x\nLogout/Login required for changes" -t 5000
