@@ -243,20 +243,6 @@ binds {
     Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
     Mod+WheelScrollRight { focus-column-right; }
     Mod+WheelScrollLeft { focus-column-left; }
-    
-    // ─── Mouse Window Control ──────────────────────────────────────────────
-    // Super + Left Click: Move window
-    // Super + Right Click: Resize window
-    // Super + Alt + Left Click: Resize window (alternative)
-    // Super + Middle Click: Close window
-    Mod+LeftClick { move-window; }
-    Mod+RightClick { resize-window; }
-    Mod+Alt+LeftClick { resize-window; }
-    Mod+MiddleClick { close-window; }
-    
-    // ─── Touchpad Gestures (3-Finger Swipe) ────────────────────────────────
-    TouchpadScrollDown { focus-workspace-down; }
-    TouchpadScrollUp { focus-workspace-up; }
 }
 
 // -----------------------------------------------------------------------------
