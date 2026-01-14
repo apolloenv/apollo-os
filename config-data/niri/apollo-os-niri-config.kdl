@@ -120,6 +120,12 @@ window-rule {
     default-column-width { proportion 1.0; }
 }
 
+// Floating Fenster: 60% Breite x 80% Höhe, zentriert
+window-rule {
+    match is-floating=true
+    default-column-width { proportion 0.6; }
+}
+
 // -----------------------------------------------------------------------------
 // STARTUP (Programme die beim Start ausgeführt werden)
 // -----------------------------------------------------------------------------
@@ -151,7 +157,7 @@ binds {
     
     // Fenster Management
     Mod+Q { close-window; }
-    Mod+W { toggle-window-floating; }
+    Mod+W { spawn "sh" "-c" "$HOME/.config/niri/toggle-floating-sized.sh"; }
     Mod+E { consume-or-expel-window-right; } // Fenster in Spalte einfügen/auswerfen
     Mod+O { toggle-overview; }
     Mod+M { maximize-column; }
