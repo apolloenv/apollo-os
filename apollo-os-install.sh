@@ -239,9 +239,7 @@ install_packages() {
     sudo dnf install -y \
         NetworkManager \
         nm-connection-editor \
-        blueman \
         pavucontrol \
-        brightnessctl \
         playerctl \
         power-profiles-daemon \
         btop \
@@ -250,6 +248,10 @@ install_packages() {
         wget \
         unzip \
         || warn "Some system tools failed to install"
+    
+    # Critical UI tools (separate to ensure installation)
+    log "Installing critical UI tools..."
+    sudo dnf install -y blueman brightnessctl || error "Critical tools (blueman, brightnessctl) failed to install"
 
     # Fonts
     log "Installing fonts..."
