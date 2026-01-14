@@ -19,14 +19,13 @@ fi
 # Define actions (v0.5.0 - without AI features)
 actions=(
     " Lock Screen"
-    " Toggle Theme"
     " Show Statistics"
     " Next Wallpaper"
     " Power Profiles"
-    " Reload Waybar"
-    " Reload Mako"
+    " Reload Infobar"
+    " Reload Notifications"
+    " Reload Apollo OS Orbit"
     " Logout"
-    " Restart WM"
     " Shutdown"
     " Reboot"
 )
@@ -43,10 +42,6 @@ case "$selected" in
         else
             notify-send "Apollo OS" "swaylock not installed"
         fi
-        ;;
-
-    " Toggle Theme")
-        "$HOME/.local/bin/apollo-os-theme-switcher.sh" toggle
         ;;
 
     " Show Statistics")
@@ -71,18 +66,35 @@ case "$selected" in
         fi
         ;;
 
-    " Reload Waybar")
-        pkill -x waybar 2>/dev/null || true
+    " Reload Infobar")
+        WPID=$(pgrep -x waybar)
+        if [ -n "$WPID" ]; then
+            kill $WPID 2>/dev/null || true
+        fi
         sleep 0.5
-        waybar -c "$HOME/.config/waybar/config" -s "$HOME/.config/waybar/style.css" &
-        notify-send "Apollo OS" "Waybar reloaded"
+        waybar -c "$HOME/.config/waybar/config-niri" &
+        notify-send "Apollo OS" "Infobar reloaded"
         ;;
 
-    " Reload Mako")
-        pkill -x mako 2>/dev/null || true
+    " Reload Notifications")
+        MPID=$(pgrep -x mako)
+        if [ -n "$MPID" ]; then
+            kill $MPID 2>/dev/null || true
+        fi
         sleep 0.2
         mako --config "$HOME/.config/mako/config" &
-        notify-send "Apollo OS" "Mako reloaded"
+        notify-send "Apollo OS" "Notifications reloaded"
+        ;;
+
+    " Reload Apollo OS Orbit")
+        # Confirm
+        confirm=$(echo -e "No\nYes" | rofi -dmenu -p "Reload Window Manager?")
+        if [ "$confirm" = "Yes" ]; then
+            if pgrep -x niri >/dev/null; then
+                niri msg action quit
+                # Note: This will exit to login manager, user needs to re-login
+            fi
+        fi
         ;;
 
     " Logout")
@@ -91,17 +103,6 @@ case "$selected" in
         if [ "$confirm" = "Yes" ]; then
             if pgrep -x niri >/dev/null; then
                 niri msg action quit
-            fi
-        fi
-        ;;
-
-    " Restart WM")
-        # Confirm
-        confirm=$(echo -e "No\nYes" | rofi -dmenu -p "Restart Window Manager?")
-        if [ "$confirm" = "Yes" ]; then
-            if pgrep -x niri >/dev/null; then
-                niri msg action quit
-                # Note: This will exit to login manager, user needs to re-login
             fi
         fi
         ;;
