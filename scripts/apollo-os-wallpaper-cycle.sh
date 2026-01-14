@@ -57,13 +57,18 @@ fi
 
 # Reload wallpaper based on WM
 if pgrep -x swaybg >/dev/null; then
-    # Niri uses swaybg
+    # Niri uses swaybg - kill and restart
     pkill -x swaybg
-    sleep 0.2
-    swaybg -i "$CURRENT_LINK" -m fill &
+    sleep 0.3
+    nohup swaybg -i "$CURRENT_LINK" -m fill >/dev/null 2>&1 &
+    disown
 elif pgrep -x sway >/dev/null; then
     # Sway uses output bg
     swaymsg output "*" bg "$CURRENT_LINK" fill
+else
+    # swaybg not running, start it
+    nohup swaybg -i "$CURRENT_LINK" -m fill >/dev/null 2>&1 &
+    disown
 fi
 
 # Get wallpaper name for notification
