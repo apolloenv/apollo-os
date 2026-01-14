@@ -20,14 +20,24 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
+# TTS function
+tts_notify() {
+    local script="$HOME/.local/bin/apollo-os-tts-notify.sh"
+    [ -x "$script" ] && "$script" "$@" &
+}
+
 echo -e "${BLUE}================================================"
 echo "  Apollo OS - Automatisches Update"
 echo -e "================================================${NC}"
 echo
 
+# TTS: Update started
+tts_notify update-start
+
 # Check if git is installed
 if ! command -v git &>/dev/null; then
     echo -e "${RED}Error: git ist nicht installiert${NC}"
+    tts_notify update-failed
     read -p "Drücke Enter zum Beenden..."
     exit 1
 fi
@@ -42,6 +52,7 @@ fi
 echo -e "${GREEN}Lade neueste Version von GitHub...${NC}"
 git clone --depth 1 --branch "$BRANCH" "$REPO_URL" "$INSTALL_DIR" || {
     echo -e "${RED}Fehler beim Klonen des Repositories${NC}"
+    tts_notify update-failed
     read -p "Drücke Enter zum Beenden..."
     exit 1
 }
@@ -292,6 +303,9 @@ echo -e "================================================${NC}"
 echo
 echo -e "${BLUE}Backup: $BACKUP_DIR${NC}"
 echo
+
+# TTS: Update complete
+tts_notify update-complete
 
 read -p "Drücke Enter zum Beenden..."
 

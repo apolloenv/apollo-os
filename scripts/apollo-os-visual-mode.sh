@@ -20,6 +20,12 @@ WAYBAR_CONFIG_MODERN="$HOME/.config/waybar/config-niri-modern"
 WAYBAR_STYLE_CLASSIC="$HOME/.config/waybar/style-classic.css"
 WAYBAR_STYLE_MODERN="$HOME/.config/waybar/style-modern.css"
 
+# TTS function
+tts_notify() {
+    local script="$HOME/.local/bin/apollo-os-tts-notify.sh"
+    [ -x "$script" ] && "$script" "$@" &
+}
+
 # Get current mode
 get_current_mode() {
     if [ -f "$CONFIG_FILE" ]; then
@@ -101,18 +107,22 @@ if [ "$1" = "toggle" ] || [ -z "$1" ]; then
     if [ "$current_mode" = "classic" ]; then
         switch_to "modern"
         notify-send "Apollo OS" "Visual Mode: Modern"
+        tts_notify visual-modern
     else
         switch_to "classic"
         notify-send "Apollo OS" "Visual Mode: Classic"
+        tts_notify visual-classic
     fi
     reload_ui
 elif [ "$1" = "modern" ]; then
     switch_to "modern"
     notify-send "Apollo OS" "Visual Mode: Modern"
+    tts_notify visual-modern
     reload_ui
 elif [ "$1" = "classic" ]; then
     switch_to "classic"
     notify-send "Apollo OS" "Visual Mode: Classic"
+    tts_notify visual-classic
     reload_ui
 elif [ "$1" = "status" ]; then
     echo "$current_mode"
