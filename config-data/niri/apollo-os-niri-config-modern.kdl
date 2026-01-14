@@ -206,7 +206,7 @@ binds {
     Mod+Ctrl+Down  { set-window-height "+10%"; }
 
     // ─── System ────────────────────────────────────────────────────────────
-    Mod+L { spawn "swaylock" "-i" "/usr/share/backgrounds/apollo-login.jpg"; }
+    Mod+L { spawn "sh" "-c" "$HOME/.local/bin/apollo-os-lock.sh"; }
     Mod+Shift+E { quit; }
     Mod+Shift+R { spawn "sh" "-c" "pkill waybar; sleep 0.5; waybar -c $HOME/.config/waybar/config-niri & disown"; }
     
