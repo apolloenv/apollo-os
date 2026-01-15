@@ -1,0 +1,78 @@
+/* Apollo OS Login Theme - Minimal */
+
+window {
+    background-image: url("/usr/share/backgrounds/apollo-login.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+box#body {
+    background-color: transparent;
+    border: none;
+    padding: 40px 50px;
+    min-width: 350px;
+    min-height: 180px;
+}
+
+entry {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 8px 0;
+    min-height: 26px;
+    min-width: 320px;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+entry:focus {
+    border-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(0, 0, 0, 0.75);
+    outline: none;
+    box-shadow: none;
+}
+
+/* Hide all buttons */
+button {
+    opacity: 0;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+}
+
+/* Hide session selector completely */
+combobox, combobox * {
+    opacity: 0;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+}
+
+label {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 6px 0;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+#clock {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 48px;
+    margin-bottom: 20px;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    font-weight: bold;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+/* Remove focus ring */
+*:focus {
+    outline: none;
+    box-shadow: none;
+}

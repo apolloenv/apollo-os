@@ -1,0 +1,12 @@
+[Unit]
+Description=Apollo OS Wake TTS Notification
+After=suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
+
+[Service]
+Type=oneshot
+User=apollo
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+ExecStart=/home/apollo/.local/bin/apollo-os-tts-notify.sh wake
+
+[Install]
+WantedBy=suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target

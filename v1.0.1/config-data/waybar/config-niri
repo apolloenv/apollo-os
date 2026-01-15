@@ -1,0 +1,247 @@
+[
+    {
+        "layer": "top",
+        "position": "top",
+        "height": 44,
+        "margin-top": 16,
+        "margin-left": 16,
+        "margin-right": 16,
+        "spacing": 0,
+
+        "modules-left": [],
+        "modules-center": [
+            "niri/workspaces",
+            "group/drawer",
+            "group/ip-drawer",
+            "group/network-drawer",
+            "bluetooth",
+            "network",
+            "pulseaudio",
+            "backlight",
+            "custom/power-profile",
+            "battery",
+            "group/stats-drawer",
+            "custom/notifications",
+            "clock"
+        ],
+        "modules-right": [],
+
+        "niri/workspaces": {
+            "format": "{index}",
+            "format-icons": {
+                "active": "",
+                "default": ""
+            }
+        },
+
+        "group/drawer": {
+            "orientation": "horizontal",
+            "drawer": {
+                "transition-duration": 600,
+                "transition-left-to-right": false
+            },
+            "modules": ["custom/synology", "custom/btop", "tray"]
+        },
+
+        "group/ip-drawer": {
+            "orientation": "horizontal",
+            "drawer": {
+                "transition-duration": 500,
+                "transition-left-to-right": false
+            },
+            "modules": [
+                "custom/ip-icon",
+                "custom/localip",
+                "custom/publicip"
+            ]
+        },
+
+        "custom/ip-icon": {
+            "format": "󰩟",
+            "tooltip": true,
+            "tooltip-format": "IP Adressen"
+        },
+
+        "group/network-drawer": {
+            "orientation": "horizontal",
+            "drawer": {
+                "transition-duration": 500,
+                "transition-left-to-right": false
+            },
+            "modules": [
+                "custom/network-icon",
+                "network#speed",
+                "network#vpn"
+            ]
+        },
+
+        "custom/network-icon": {
+            "format": "󰛳",
+            "tooltip": true,
+            "tooltip-format": "Netzwerk Details"
+        },
+
+        "network#vpn": {
+            "interface": "tailscale0",
+            "format": "󰖂  Tailscale",
+            "format-disconnected": "󰖂  VPN Off",
+            "tooltip-format": "Tailscale: {ifname}\nIP: {ipaddr}",
+            "interval": 5
+        },
+
+        "custom/localip": {
+            "format": "󰩟  {}",
+            "exec": "ip -4 addr show $(ip route | grep default | awk '{print $5}' | head -n1) | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}' | head -n1",
+            "interval": 10,
+            "tooltip-format": "Lokale IP-Adresse"
+        },
+
+        "custom/publicip": {
+            "format": "󰞉  {}",
+            "exec": "curl -s ifconfig.me",
+            "interval": 300,
+            "tooltip-format": "Öffentliche IP-Adresse"
+        },
+
+        "network#speed": {
+            "format": "󰓅  {bandwidthDownBits}  󰓂  {bandwidthUpBits}",
+            "format-disconnected": "󰤮  Offline",
+            "tooltip-format": "Download: {bandwidthDownBits}\nUpload: {bandwidthUpBits}",
+            "interval": 2
+        },
+
+        "group/stats-drawer": {
+            "orientation": "horizontal",
+            "drawer": {
+                "transition-duration": 500,
+                "transition-left-to-right": false
+            },
+            "modules": [
+                "custom/hostname",
+                "cpu",
+                "memory",
+                "disk",
+                "temperature"
+            ]
+        },
+
+        "custom/hostname": {
+            "format": "󰌢",
+            "tooltip": true,
+            "tooltip-format": "System Ressourcen"
+        },
+
+        "cpu": {
+            "format": "󰻠  {usage}%",
+            "format-alt": "󰻠  {avg_frequency} GHz",
+            "tooltip-format": "CPU: {usage}%\nFrequenz: {avg_frequency} GHz\nKerne: {load}",
+            "interval": 2,
+            "on-click": "gnome-terminal -e btop"
+        },
+
+        "memory": {
+            "format": "󰍛  {percentage}%",
+            "format-alt": "󰍛  {used:0.1f}G/{total:0.1f}G",
+            "tooltip-format": "RAM: {used:0.2f}GB / {total:0.2f}GB ({percentage}%)\nSwap: {swapUsed:0.2f}GB / {swapTotal:0.2f}GB",
+            "interval": 5,
+            "on-click": "gnome-terminal -e btop"
+        },
+
+        "disk": {
+            "format": "󰋊  {percentage_used}%",
+            "format-alt": "󰋊  {used}/{total}",
+            "path": "/",
+            "tooltip-format": "Verwendet: {used} / {total} ({percentage_used}%)\nFrei: {free}",
+            "interval": 30
+        },
+
+        "temperature": {
+            "format": "󰔏  {temperatureC}°C",
+            "tooltip-format": "Temperatur: {temperatureC}°C",
+            "critical-threshold": 80,
+            "interval": 5,
+            "on-click": "gnome-terminal -e 'watch -n 1 sensors'"
+        },
+
+        "custom/notifications": {
+            "format": "󰂚",
+            "tooltip": true,
+            "tooltip-format": "System Benachrichtigungen",
+            "on-click": "swaync-client -t"
+        },
+
+        "custom/synology": {
+            "format": "",
+            "tooltip": true,
+            "tooltip-format": "Synology Drive",
+            "on-click": "synology-drive"
+        },
+
+        "custom/btop": {
+            "format": "󰍛",
+            "tooltip": "System Monitor",
+            "on-click": "gnome-terminal -e btop"
+        },
+
+        "tray": {
+            "icon-size": 18,
+            "spacing": 10
+        },
+
+        "clock": {
+            "format": "󰥔  {:%H:%M:%S   APOLLO OS ORBIT}",
+            "format-alt": "  {:%d. %b %Y   󰥔  %H:%M:%S   APOLLO OS ORBIT}",
+            "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+            "interval": 1
+        },
+
+        "battery": {
+            "format": "{icon}  {capacity}%",
+            "format-discharging": "{icon}  {capacity}%",
+            "format-charging": "󰂄  {capacity}%",
+            "format-plugged": "󱐥  {capacity}%",
+            "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+            "tooltip-format": "{power}W",
+            "states": { "warning": 30, "critical": 10 },
+            "on-click": "~/.config/waybar/scripts/power-profile-toggle.sh"
+        },
+
+        "network": {
+            "format-wifi": "󰖩",
+            "format-ethernet": "󰈀",
+            "format-disconnected": "󰤮",
+            "tooltip-format": "{essid} ({signalStrength}%)\n{ipaddr}",
+            "interval": 5,
+            "on-click": "nm-connection-editor"
+        },
+
+        "bluetooth": {
+            "format": "󰂯",
+            "format-connected": "󰂱  {num_connections}",
+            "format-disabled": "󰂲",
+            "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+            "on-click": "blueman-manager"
+        },
+
+        "pulseaudio": {
+            "format": "{icon}  {volume}%",
+            "format-muted": "󰝟  Muted",
+            "format-icons": { "default": ["󰕿", "󰖀", "󰕾"] },
+            "on-click": "pavucontrol"
+        },
+
+        "backlight": {
+            "format": "{icon}  {percent}%",
+            "format-icons": ["󰃞", "󰃝", "󰃟", "󰃠"]
+        },
+
+        "custom/power-profile": {
+            "format": "{}",
+            "exec": "~/.config/waybar/scripts/power-profile-status.sh",
+            "interval": 5,
+            "tooltip": true,
+            "tooltip-format": "Power Profile wechseln",
+            "on-click": "~/.config/waybar/scripts/power-profile-toggle.sh"
+        }
+    }
+]

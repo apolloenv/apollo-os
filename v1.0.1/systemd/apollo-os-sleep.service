@@ -1,0 +1,13 @@
+[Unit]
+Description=Apollo OS Sleep TTS Notification
+Before=sleep.target
+
+[Service]
+Type=oneshot
+User=apollo
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+ExecStart=/home/apollo/.local/bin/apollo-os-tts-notify.sh sleep
+ExecStartPost=/bin/sleep 3
+
+[Install]
+WantedBy=sleep.target
