@@ -815,7 +815,7 @@ EOF'
     
     # Clone and build whisper.cpp if not already installed
     if [[ ! -f "$HOME/.local/bin/whisper-cpp" ]]; then
-        log "Building whisper.cpp from source..."
+        log "Building whisper.cpp from source (static linking)..."
         cd /tmp
         if [[ -d whisper.cpp ]]; then
             rm -rf whisper.cpp
@@ -824,15 +824,24 @@ EOF'
         git clone https://github.com/ggerganov/whisper.cpp.git || warn "whisper.cpp clone failed"
         if [[ -d whisper.cpp ]]; then
             cd whisper.cpp
-            make -j$(nproc) || warn "whisper.cpp build failed"
             
-            # Install binary and libraries
+            # Build with cmake and static linking to avoid library issues
+            cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF 2>/dev/null || {
+                warn "cmake configuration failed, trying make fallback"
+                make -j$(nproc) || warn "whisper.cpp build failed"
+            }
+            
+            if [[ -d build ]]; then
+                cmake --build build --config Release -j$(nproc) || warn "whisper.cpp cmake build failed"
+            fi
+            
+            # Install binary
             mkdir -p "$HOME/.local/bin"
-            mkdir -p "$HOME/.local/lib"
             
-            # Note: 'make' builds to main (deprecated) or whisper-cli in root directory
-            # Try both for compatibility
-            if [[ -f "./whisper-cli" ]]; then
+            # Try cmake build output first, then make output
+            if [[ -f "./build/bin/whisper-cli" ]]; then
+                cp ./build/bin/whisper-cli "$HOME/.local/bin/whisper-cpp" || warn "whisper.cpp installation failed"
+            elif [[ -f "./whisper-cli" ]]; then
                 cp ./whisper-cli "$HOME/.local/bin/whisper-cpp" || warn "whisper.cpp installation failed"
             elif [[ -f "./main" ]]; then
                 cp ./main "$HOME/.local/bin/whisper-cpp" || warn "whisper.cpp installation failed"
@@ -840,10 +849,6 @@ EOF'
                 warn "whisper.cpp binary not found after build"
             fi
             chmod +x "$HOME/.local/bin/whisper-cpp" 2>/dev/null
-            
-            # Copy shared libraries (if present)
-            find . -maxdepth 1 -name "libwhisper.so*" -exec cp {} "$HOME/.local/lib/" \; 2>/dev/null
-            find . -maxdepth 1 -name "libggml*.so*" -exec cp {} "$HOME/.local/lib/" \; 2>/dev/null
             
             # Download German base model
             log "Downloading German whisper model..."
