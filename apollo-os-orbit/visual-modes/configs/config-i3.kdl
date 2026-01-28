@@ -118,18 +118,12 @@ window-rule {
 // STARTUP
 // -----------------------------------------------------------------------------
 spawn-at-startup "xwayland-satellite"
-spawn-at-startup "sh" "-c" "waybar -c $HOME/.config/waybar/config-niri"
 spawn-at-startup "sh" "-c" "swaybg -i $HOME/System/Wallpaper/current.jpg -m fill"
-spawn-at-startup "sh" "-c" "mako --config $HOME/.config/mako/config"
 spawn-at-startup "nm-applet" "--indicator"
 spawn-at-startup "blueman-applet"
 spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1"
 spawn-at-startup "sh" "-c" "swayidle -w before-sleep 'hyprlock'"
 spawn-at-startup "sh" "-c" "sleep 4 && notify-send 'APOLLO OS' 'System initialized. All services operational.'"
-spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-welcome-tts.sh"
-spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-power-monitor.sh"
-spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-network-monitor.sh"
-spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-sleep-monitor.sh"
 
 layer-rule {
     match namespace="^wallpaper$"
@@ -242,6 +236,8 @@ environment {
     CLUTTER_BACKEND "wayland"
     SDL_VIDEODRIVER "wayland"
     MOZ_ENABLE_WAYLAND "1"
+    GTK_THEME "adw-gtk3-dark"
+    ADW_DEBUG_COLOR_SCHEME "prefer-dark"
     GTK_THEME "adw-gtk3-dark"
     ADW_DEBUG_COLOR_SCHEME "prefer-dark"
 }
