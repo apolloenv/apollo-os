@@ -2,8 +2,19 @@
 # Spracheingabe-Script für niri mit whisper.cpp
 # Verwendung: Super+V zum Starten/Stoppen der Aufnahme
 
+# Ensure Wayland display is set (needed for wtype)
+if [ -z "$WAYLAND_DISPLAY" ]; then
+    # Try to find Wayland display from running compositor
+    for socket in /run/user/$(id -u)/wayland-*; do
+        if [ -S "$socket" ]; then
+            export WAYLAND_DISPLAY=$(basename "$socket")
+            break
+        fi
+    done
+fi
+
 # Konfiguration
-RUNTIME_DIR="${XDG_RUNTIME_DIR:-/tmp}"
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 PID_FILE="$RUNTIME_DIR/voice-input.pid"
 AUDIO_FILE="$RUNTIME_DIR/voice-input.wav"
 WHISPER_MODEL="${WHISPER_MODEL:-$HOME/.local/share/whisper/ggml-base.bin}"

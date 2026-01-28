@@ -9,6 +9,9 @@ Restart=on-failure
 RestartSec=5
 StandardOutput=journal
 StandardError=journal
+# Import environment from graphical session for wtype/notify-send
+Environment=XDG_RUNTIME_DIR=/run/user/%U
+PassEnvironment=WAYLAND_DISPLAY DISPLAY XDG_SESSION_TYPE
 
 [Install]
 WantedBy=default.target
