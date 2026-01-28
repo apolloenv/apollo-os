@@ -1006,7 +1006,7 @@ deploy_configs() {
 gtk-theme-name="adw-gtk3-dark"
 gtk-icon-theme-name="kora"
 gtk-font-name="Cantarell 11"
-gtk-cursor-theme-name="breeze_cursors"
+gtk-cursor-theme-name="Bibata-Modern-Classic"
 gtk-cursor-theme-size=24
 GTKEOF
 
@@ -2194,7 +2194,7 @@ finalize_installation() {
     log "Applying dark theme settings..."
     gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark' 2>/dev/null || true
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
-    gsettings set org.gnome.desktop.interface cursor-theme 'breeze_cursors' 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Classic' 2>/dev/null || true
 
     # Fix GNOME apps that use gapplication launch (doesn't work well with Niri)
     log "Fixing GNOME app launchers for Niri compatibility..."
