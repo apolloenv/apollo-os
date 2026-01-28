@@ -27,10 +27,10 @@ speak() {
 
 case "$ACTION" in
     sleep)
-        speak "Apollo OS wechselt in Ruhemodus."
+        speak "Ruhemodus."
         ;;
     wake)
         sleep 1
-        speak "Apollo OS Reaktivierung abgeschlossen."
+        speak "System bereit."
         ;;
 esac

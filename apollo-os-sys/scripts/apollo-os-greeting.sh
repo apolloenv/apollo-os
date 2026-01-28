@@ -16,22 +16,22 @@ export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-1}"
 HOUR=$(date +%H)
 USER_NAME="${USER^}"  # Capitalize first letter (for notification only)
 
-# Determine greeting based on time (English only for TTS)
+# Determine greeting based on time (German for TTS)
 if [[ $HOUR -ge 5 && $HOUR -lt 12 ]]; then
     GREETING_EN="Good morning"
-    TTS_GREETING="Good morning"
+    TTS_GREETING="Guten Morgen"
     ICON="weather-clear"
 elif [[ $HOUR -ge 12 && $HOUR -lt 18 ]]; then
     GREETING_EN="Good afternoon"
-    TTS_GREETING="Good afternoon"
+    TTS_GREETING="Guten Tag"
     ICON="weather-clear"
 elif [[ $HOUR -ge 18 && $HOUR -lt 22 ]]; then
     GREETING_EN="Good evening"
-    TTS_GREETING="Good evening"
+    TTS_GREETING="Guten Abend"
     ICON="weather-clear-night"
 else
     GREETING_EN="Good night"
-    TTS_GREETING="Good night"
+    TTS_GREETING="Gute Nacht"
     ICON="weather-clear-night"
 fi
 
@@ -52,7 +52,7 @@ fi
 # Wait a moment for audio system to be ready
 sleep 2
 
-# TTS greeting (English, NO username for privacy)
+# TTS greeting (German, NO username for privacy)
 if command -v apollo-speak &>/dev/null; then
-    apollo-speak "$TTS_GREETING. Welcome to Apollo OS. All systems operational." &
+    apollo-speak "$TTS_GREETING. Systeme bereit." &
 fi

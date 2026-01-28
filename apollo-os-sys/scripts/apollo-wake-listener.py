@@ -68,42 +68,41 @@ def execute_command(command_text):
         weekday = get_german_weekday(now.weekday())
         day = now.day
         month = get_german_month(now.month)
-        year = now.year
-        date_text = f"Heute ist {weekday} der {day}. {month} {year}"
+        date_text = f"Heute ist {weekday} der {day}. {month}"
         subprocess.Popen([os.path.expanduser("~/.local/bin/apollo-speak.sh"), date_text])
     
     elif "terminal" in command_text and "öffnen" in command_text:
         log("→ Executing: Open Terminal (Alacritty)")
-        subprocess.Popen([os.path.expanduser("~/.local/bin/apollo-speak.sh"), "Terminal wird geöffnet"])
+        subprocess.Popen([os.path.expanduser("~/.local/bin/apollo-speak.sh"), "Terminal startet."])
         subprocess.Popen(["alacritty"])
     
     elif ("browser" in command_text or "web" in command_text) and "start" in command_text:
         log("→ Executing: Open Browser (Microsoft Edge)")
-        subprocess.Popen([os.path.expanduser("~/.local/bin/apollo-speak.sh"), "Web Browser wird gestartet"])
+        subprocess.Popen([os.path.expanduser("~/.local/bin/apollo-speak.sh"), "Browser startet."])
         subprocess.Popen(["microsoft-edge-stable", "--new-window"])
     
     elif "sperren" in command_text or "sperre" in command_text:
         log("→ Executing: Lock screen")
-        subprocess.Popen([os.path.expanduser("~/.local/bin/apollo-speak.sh"), "System wird gesperrt"])
+        subprocess.Popen([os.path.expanduser("~/.local/bin/apollo-speak.sh"), "Sperre System."])
         time.sleep(1)
         # Use hyprlock (standard Apollo OS lock screen)
         subprocess.Popen(["hyprlock"])
         
     elif "ausschalten" in command_text or "herunterfahren" in command_text or "beenden" in command_text:
         log("→ Executing: Suspend/Sleep")
-        subprocess.Popen([os.path.expanduser("~/.local/bin/apollo-speak.sh"), "System wird in den Ruhemodus versetzt"])
+        subprocess.Popen([os.path.expanduser("~/.local/bin/apollo-speak.sh"), "Ruhemodus."])
         time.sleep(2)
         subprocess.run(["systemctl", "suspend"])
         
     elif "neustart" in command_text or "neu starten" in command_text:
         log("→ Executing: Reboot")
-        subprocess.Popen([os.path.expanduser("~/.local/bin/apollo-speak.sh"), "System wird neu gestartet"])
+        subprocess.Popen([os.path.expanduser("~/.local/bin/apollo-speak.sh"), "Neustart."])
         time.sleep(2)
         subprocess.run(["systemctl", "reboot"])
         
     else:
         log("→ No specific command found, acknowledging")
-        subprocess.Popen([os.path.expanduser("~/.local/bin/apollo-speak.sh"), "Ich bin hier und bereit"])
+        subprocess.Popen([os.path.expanduser("~/.local/bin/apollo-speak.sh"), "Bereit."])
 
 log("Starting audio stream...")
 try:

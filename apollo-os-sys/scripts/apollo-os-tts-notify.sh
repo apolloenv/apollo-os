@@ -41,109 +41,94 @@ EVENT="$1"
 case "$EVENT" in
     # Network events
     wifi-connected)
-        speak "Netzwerkverbindung etabliert. Apollo OS Datenlink aktiv."
+        speak "Netzwerk verbunden."
         ;;
     wifi-disconnected)
-        speak "Verbindung getrennt. Apollo OS im Offline-Modus."
+        speak "Netzwerk getrennt."
         ;;
     vpn-connected)
-        speak "Verschlüsselter Tunnel aktiv. Apollo OS Tarnmodus eingeschaltet."
+        speak "VPN aktiv."
         ;;
     vpn-disconnected)
-        speak "VPN-Verbindung beendet. Apollo OS Standardnetzwerk aktiv."
+        speak "VPN deaktiviert."
         ;;
     
     # Power events
     power-connected)
-        speak "Energieversorgung aktiv. Apollo OS Ladeprotokoll gestartet."
+        speak "Stromversorgung aktiv."
         ;;
     power-disconnected)
-        speak "Batteriemodus aktiv. Apollo OS optimiert Ressourcen."
+        speak "Batteriemodus aktiv."
         ;;
     battery-low)
-        speak "Warnung. Apollo OS Energiereserven kritisch. Stromversorgung erforderlich."
+        speak "Warnung. Akku kritisch."
         ;;
     battery-full)
-        speak "Apollo OS Energiespeicher vollständig aufgeladen. Maximale Kapazität erreicht."
+        speak "Akku vollständig geladen."
         ;;
     
     # Performance modes
     power-saver)
-        speak "Apollo OS Energiesparmodus aktiviert. Ressourcen werden optimiert."
+        speak "Energiesparmodus aktiv."
         ;;
     balanced)
-        speak "Apollo OS Balance-Modus aktiviert. Leistung und Effizienz optimiert."
+        speak "Balancemodus aktiv."
         ;;
     performance)
-        speak "Apollo OS Leistungsmodus aktiviert. Maximale Systemleistung freigegeben."
+        speak "Leistungsmodus aktiv."
         ;;
     
     # Bluetooth
     bluetooth-connected)
-        speak "Bluetooth-Gerät gekoppelt. Apollo OS Peripherie erweitert."
+        speak "Bluetooth verbunden."
         ;;
     bluetooth-disconnected)
-        speak "Bluetooth-Gerät getrennt. Verbindung deaktiviert."
+        speak "Bluetooth getrennt."
         ;;
     
     # USB/Storage
     usb-connected)
-        speak "Externes Modul erkannt. Apollo OS Schnittstelle aktiviert."
+        speak "Gerät erkannt."
         ;;
     usb-removed)
-        speak "Externes Modul sicher entfernt."
+        speak "Gerät entfernt."
         ;;
     
     # System events
     screenshot)
-        speak "Bildschirmaufnahme gespeichert."
+        speak "Screenshot gespeichert."
         ;;
     shutdown)
-        speak "Apollo OS Abschaltsequenz eingeleitet. Alle Prozesse werden gesichert. Auf Wiedersehen."
+        speak "System wird heruntergefahren."
         ;;
     reboot)
-        speak "Apollo OS Systemneustart initialisiert. System Core wird neu geladen."
+        speak "Neustart wird eingeleitet."
         ;;
     lock)
-        speak "Apollo OS System Core verschlüsselt und gesichert."
+        speak "System gesperrt."
         ;;
     unlock)
-        speak "Identität bestätigt. System freigegeben. Apollo OS Systeme online."
+        speak "System entsperrt."
         ;;
     
     # Sleep/Suspend events
     sleep)
-        speak "Apollo OS Kryoschlaf eingeleitet. System Core versiegelt. Datenkern ist verschlüsselt und geschützt."
+        speak "Ruhemodus aktiv."
         ;;
     wake)
-        speak "Apollo OS Reaktivierungssequenz gestartet. System Core entsiegelt. Datenkern ist hochgefahren. Integrität aller Systeme bestätigt. System ist einsatzbereit."
+        speak "System reaktiviert."
         ;;
     
     # Audio
     muted)
-        speak "Audio deaktiviert."
+        speak "Stumm."
         ;;
     unmuted)
-        speak "Audio reaktiviert."
+        speak "Audio aktiv."
         ;;
     
     # Visual modes
-    visual-classic)
-        speak "Interface geladen."
-        ;;
-    visual-developer)
-        speak "Interface geladen."
-        ;;
-    visual-modern)
-        speak "Interface geladen."
-        ;;
-    visual-orbit)
-        speak "Interface geladen."
-        ;;
-    visual-professional)
-        speak "Interface geladen."
-        ;;
-    visual-tech-blue)
+    visual-*)
         speak "Interface geladen."
         ;;
     
