@@ -1,0 +1,12 @@
+[Unit]
+Description=Screen Corners - Rounded Corner Effects for Wayland
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/screen-corners.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

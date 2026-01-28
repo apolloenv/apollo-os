@@ -1046,6 +1046,22 @@ PORTALEOF
         chmod +x "$HOME/.config/niri/apollo-autostart.sh" 2>/dev/null
         chmod +x "$HOME/.config/niri/toggle-center.sh" 2>/dev/null
 
+        # Copy Kitty config for Niri
+        log "Deploying Kitty terminal configuration..."
+        mkdir -p "$HOME/.config/kitty"
+        if [ -f "$SCRIPT_DIR/apollo-os-sys/config/kitty/kitty.conf" ]; then
+            cp "$SCRIPT_DIR/apollo-os-sys/config/kitty/kitty.conf" "$HOME/.config/kitty/" || warn "Failed to copy kitty config"
+            log "Kitty config copied ✓"
+        fi
+
+        # Copy Foot config for Niri
+        log "Deploying Foot terminal configuration..."
+        mkdir -p "$HOME/.config/foot"
+        if [ -f "$SCRIPT_DIR/apollo-os-sys/config/foot/foot.ini" ]; then
+            cp "$SCRIPT_DIR/apollo-os-sys/config/foot/foot.ini" "$HOME/.config/foot/" || warn "Failed to copy foot config"
+            log "Foot config copied ✓"
+        fi
+
         # Add GTK_THEME and portal to Apollo OS Orbit config
         if [ -f "$HOME/.config/niri/config.kdl" ]; then
             # Add autostart if not present
@@ -1499,6 +1515,14 @@ setup_systemd() {
             fi
         fi
     done
+
+    # Install screen-corners script and service
+    log "Installing screen-corners (rounded screen edges)..."
+    if [ -f "$SCRIPT_DIR/apollo-os-sys/scripts/screen-corners/screen-corners.py" ]; then
+        cp "$SCRIPT_DIR/apollo-os-sys/scripts/screen-corners/screen-corners.py" "$HOME/.local/bin/" || warn "Failed to copy screen-corners script"
+        chmod +x "$HOME/.local/bin/screen-corners.py"
+        log "Screen-corners script installed ✓"
+    fi
 
     # Reload systemd
     systemctl --user daemon-reload
@@ -2106,6 +2130,47 @@ configure_login_manager() {
     sudo rm -f /usr/share/wayland-sessions/gnome*.desktop 2>/dev/null
     sudo rm -f /usr/share/wayland-sessions/sway.desktop 2>/dev/null
     sudo mv /usr/share/wayland-sessions/plasma.desktop /usr/share/wayland-sessions/plasma.desktop.bak 2>/dev/null || true
+
+    # Configure SDDM theme and wallpaper
+    log "Configuring SDDM theme and wallpaper..."
+    sudo mkdir -p /usr/share/wallpapers/apollo-os
+    
+    # Copy Black Dots wallpaper for SDDM
+    if [ -f "$SCRIPT_DIR/apollo-os-sys/assets/wallpapers/Basic-Black-Dots.jpg" ]; then
+        sudo cp "$SCRIPT_DIR/apollo-os-sys/assets/wallpapers/Basic-Black-Dots.jpg" \
+            /usr/share/wallpapers/apollo-os/sddm-background.jpg || warn "Failed to copy SDDM wallpaper"
+    fi
+    
+    # Create SDDM config
+    sudo mkdir -p /etc/sddm.conf.d
+    sudo tee /etc/sddm.conf.d/apollo-os.conf >/dev/null << 'SDDMEOF'
+[Theme]
+Current=breeze
+CursorTheme=Bibata-Modern-Classic
+
+[General]
+InputMethod=
+
+[Users]
+MaximumUid=65535
+MinimumUid=1000
+SDDMEOF
+
+    # Configure breeze theme to use our wallpaper
+    local BREEZE_THEME="/usr/share/sddm/themes/breeze"
+    if [ -d "$BREEZE_THEME" ]; then
+        sudo mkdir -p "$BREEZE_THEME/backgrounds"
+        sudo ln -sf /usr/share/wallpapers/apollo-os/sddm-background.jpg \
+            "$BREEZE_THEME/backgrounds/apollo-os.jpg" 2>/dev/null || true
+        
+        # Update theme.conf.user if exists, otherwise create it
+        if [ -f "$BREEZE_THEME/theme.conf.user" ]; then
+            sudo sed -i 's|^background=.*|background=backgrounds/apollo-os.jpg|' "$BREEZE_THEME/theme.conf.user"
+        else
+            echo "background=backgrounds/apollo-os.jpg" | sudo tee "$BREEZE_THEME/theme.conf.user" >/dev/null
+        fi
+        log "SDDM wallpaper configured ✓"
+    fi
 
     log "SDDM configured - Apollo OS Desktop login ready ✓"
 }
