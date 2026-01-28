@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=Apollo OS Orbit
-Comment=Apollo OS Enterprise - Niri-based Scrollable Tiling Desktop
-Exec=/usr/bin/niri-session
-Type=Application
-DesktopNames=niri
