@@ -1,0 +1,12 @@
+[SddmGreeterTheme]
+Name=Apollo Modern
+Description=Modern minimal login theme for Apollo OS
+Author=Apollo OS Team
+Version=1.0
+Website=https://github.com/apolloenv/apollo-os
+License=MIT
+Type=sddm-theme
+Screenshot=screenshot.png
+MainScript=Main.qml
+ConfigFile=theme.conf
+TranslationsDirectory=translations

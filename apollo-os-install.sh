@@ -2140,20 +2140,23 @@ configure_login_manager() {
     sudo mv /usr/share/wayland-sessions/plasma.desktop /usr/share/wayland-sessions/plasma.desktop.bak 2>/dev/null || true
 
     # Configure SDDM theme and wallpaper
-    log "Configuring SDDM theme and wallpaper..."
-    sudo mkdir -p /usr/share/wallpapers/apollo-os
+    log "Installing Apollo Modern SDDM theme..."
     
-    # Copy Black Dots wallpaper for SDDM
-    if [ -f "$SCRIPT_DIR/apollo-os-sys/assets/wallpapers/Basic-Black-Dots.jpg" ]; then
-        sudo cp "$SCRIPT_DIR/apollo-os-sys/assets/wallpapers/Basic-Black-Dots.jpg" \
-            /usr/share/wallpapers/apollo-os/sddm-background.jpg || warn "Failed to copy SDDM wallpaper"
+    # Install Apollo Modern SDDM theme
+    if [ -d "$SCRIPT_DIR/apollo-os-sys/sddm/apollo-modern" ]; then
+        sudo mkdir -p /usr/share/sddm/themes/apollo-modern
+        sudo cp -r "$SCRIPT_DIR/apollo-os-sys/sddm/apollo-modern/"* /usr/share/sddm/themes/apollo-modern/
+        sudo chown -R root:root /usr/share/sddm/themes/apollo-modern/
+        log "Apollo Modern SDDM theme installed ✓"
+    else
+        warn "Apollo Modern SDDM theme not found"
     fi
     
-    # Create SDDM config
+    # Create SDDM config to use Apollo Modern theme
     sudo mkdir -p /etc/sddm.conf.d
     sudo tee /etc/sddm.conf.d/apollo-os.conf >/dev/null << 'SDDMEOF'
 [Theme]
-Current=breeze
+Current=apollo-modern
 CursorTheme=Bibata-Modern-Classic
 
 [General]
@@ -2164,23 +2167,7 @@ MaximumUid=65535
 MinimumUid=1000
 SDDMEOF
 
-    # Configure breeze theme to use our wallpaper
-    local BREEZE_THEME="/usr/share/sddm/themes/breeze"
-    if [ -d "$BREEZE_THEME" ]; then
-        sudo mkdir -p "$BREEZE_THEME/backgrounds"
-        sudo ln -sf /usr/share/wallpapers/apollo-os/sddm-background.jpg \
-            "$BREEZE_THEME/backgrounds/apollo-os.jpg" 2>/dev/null || true
-        
-        # Update theme.conf.user if exists, otherwise create it
-        if [ -f "$BREEZE_THEME/theme.conf.user" ]; then
-            sudo sed -i 's|^background=.*|background=backgrounds/apollo-os.jpg|' "$BREEZE_THEME/theme.conf.user"
-        else
-            echo "background=backgrounds/apollo-os.jpg" | sudo tee "$BREEZE_THEME/theme.conf.user" >/dev/null
-        fi
-        log "SDDM wallpaper configured ✓"
-    fi
-
-    log "SDDM configured - Apollo OS Desktop login ready ✓"
+    log "SDDM configured with Apollo Modern theme ✓"
 }
 
 #####################################################################
