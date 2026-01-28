@@ -1771,20 +1771,11 @@ WantedBy=default.target
 WAKEEOF
 
     # Install Right Ctrl Push-to-Talk systemd service
-    cat > "$HOME/.config/systemd/user/apollo-rightctrl-voice.service" << 'CTRLEOF'
-[Unit]
-Description=Apollo OS Right Ctrl Voice Input Trigger
-After=graphical-session.target
-
-[Service]
-Type=simple
-ExecStart=/usr/bin/python3 %h/.local/bin/apollo-os-rightctrl-voice.py
-Restart=always
-RestartSec=3
-
-[Install]
-WantedBy=default.target
-CTRLEOF
+    if [ -f "$SCRIPT_DIR/apollo-os-sys/systemd/apollo-rightctrl-voice.service" ]; then
+        cp "$SCRIPT_DIR/apollo-os-sys/systemd/apollo-rightctrl-voice.service" "$HOME/.config/systemd/user/" || warn "Failed to copy rightctrl service"
+    else
+        warn "apollo-rightctrl-voice.service not found in project"
+    fi
 
     # Reload and enable services
     systemctl --user daemon-reload
