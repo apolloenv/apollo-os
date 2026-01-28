@@ -86,12 +86,8 @@ def execute_command(command_text):
         log("→ Executing: Lock screen")
         subprocess.Popen([os.path.expanduser("~/.local/bin/apollo-speak.sh"), "System wird gesperrt"])
         time.sleep(1)
-        # Try multiple methods to lock
-        # Method 1: swaylock with proper environment
-        wayland_display = os.environ.get('WAYLAND_DISPLAY', 'wayland-1')
-        env = os.environ.copy()
-        env['WAYLAND_DISPLAY'] = wayland_display
-        subprocess.Popen(["swaylock", "-i", "/usr/share/backgrounds/apollo-login.jpg"], env=env)
+        # Use hyprlock (standard Apollo OS lock screen)
+        subprocess.Popen(["hyprlock"])
         
     elif "ausschalten" in command_text or "herunterfahren" in command_text or "beenden" in command_text:
         log("→ Executing: Suspend/Sleep")
