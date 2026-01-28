@@ -27,6 +27,7 @@ actions=(
     " External Monitor Scaling"
     " Power Profiles"
     " TTS Voice"
+    "󰗊 TTS On/Off"
     " Edit Configs"
     " Keyboard Shortcuts"
     " APOLLO OS Update"
@@ -192,6 +193,36 @@ case "$selected" in
 
     " TTS Voice")
         "$HOME/.local/bin/apollo-os-voice-switcher.sh"
+        ;;
+
+    "󰗊 TTS On/Off")
+        # Get current TTS status
+        tts_status=$("$HOME/.local/bin/apollo-os-tts-notify.sh" tts-status 2>/dev/null || echo "enabled")
+        
+        if [ "$tts_status" = "enabled" ]; then
+            current="✓ Aktiviert"
+            options="󰗊 Deaktivieren - Sprachausgabe ausschalten
+󰗊 Aktiviert lassen"
+        else
+            current="✗ Deaktiviert"
+            options="󰗊 Aktivieren - Sprachausgabe einschalten
+󰗊 Deaktiviert lassen"
+        fi
+        
+        selected_option=$(echo -e "$options" | rofi -dmenu -p "> TTS [$current]" -i)
+        
+        if [ -n "$selected_option" ]; then
+            case "$selected_option" in
+                *"Deaktivieren"*)
+                    "$HOME/.local/bin/apollo-os-tts-notify.sh" tts-disable
+                    notify-send "Apollo OS" "Sprachausgabe deaktiviert"
+                    ;;
+                *"Aktivieren"*)
+                    "$HOME/.local/bin/apollo-os-tts-notify.sh" tts-enable
+                    notify-send "Apollo OS" "Sprachausgabe aktiviert"
+                    ;;
+            esac
+        fi
         ;;
 
     " Display Scaling")

@@ -9,6 +9,23 @@
 # Ensure PipeWire/PulseAudio can be reached
 export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 
+# TTS Enable/Disable config
+TTS_CONFIG="$HOME/.config/apollo-os/tts.conf"
+
+# Check if TTS is enabled (default: enabled)
+tts_enabled() {
+    if [ -f "$TTS_CONFIG" ]; then
+        grep -q "^TTS_ENABLED=false" "$TTS_CONFIG" && return 1
+    fi
+    return 0
+}
+
+# Exit early if TTS is disabled (except for status/toggle commands)
+EVENT="$1"
+if [[ "$EVENT" != "tts-status" && "$EVENT" != "tts-enable" && "$EVENT" != "tts-disable" && "$EVENT" != "tts-toggle" ]]; then
+    tts_enabled || exit 0
+fi
+
 # Fixed voice: Amala (German)
 VOICE_MODEL="de-DE-AmalaNeural"
 
@@ -34,9 +51,6 @@ speak() {
         rm -f "$tmpfile"
     fi
 }
-
-# Event type from argument
-EVENT="$1"
 
 case "$EVENT" in
     # Network events
@@ -130,6 +144,37 @@ case "$EVENT" in
     # Visual modes
     visual-*)
         speak "Interface geladen."
+        ;;
+    
+    # TTS Control commands
+    tts-status)
+        if tts_enabled; then
+            echo "enabled"
+        else
+            echo "disabled"
+        fi
+        ;;
+    tts-enable)
+        mkdir -p "$(dirname "$TTS_CONFIG")"
+        echo "TTS_ENABLED=true" > "$TTS_CONFIG"
+        speak "Sprachausgabe aktiviert."
+        ;;
+    tts-disable)
+        mkdir -p "$(dirname "$TTS_CONFIG")"
+        echo "TTS_ENABLED=false" > "$TTS_CONFIG"
+        # One last message before disabling
+        speak "Sprachausgabe deaktiviert."
+        ;;
+    tts-toggle)
+        if tts_enabled; then
+            mkdir -p "$(dirname "$TTS_CONFIG")"
+            echo "TTS_ENABLED=false" > "$TTS_CONFIG"
+            speak "Sprachausgabe deaktiviert."
+        else
+            mkdir -p "$(dirname "$TTS_CONFIG")"
+            echo "TTS_ENABLED=true" > "$TTS_CONFIG"
+            speak "Sprachausgabe aktiviert."
+        fi
         ;;
     
     *)
