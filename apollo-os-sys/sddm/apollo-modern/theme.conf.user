@@ -2,15 +2,11 @@
 passwordCharacter=●
 passwordMask=true
 passwordInputWidth=0.3
-passwordInputBackground=#16213e
+passwordInputBackground=#ffffff11
 passwordInputRadius=25
-passwordInputBorderWidth=2
-passwordInputBorderColor=#4a4a6a
-passwordInputCursorVisible=true
 passwordFontSize=24
 passwordCursorColor=#ffffff
 passwordTextColor=#ffffff
-passwordAllowEmpty=false
 
 wrongPasswordBorderRadius=25
 wrongPasswordBorderColor=#ff6b6b
