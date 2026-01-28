@@ -1564,15 +1564,10 @@ install_audio_system() {
     if ! command -v edge-tts &>/dev/null; then
         if command -v uv &>/dev/null; then
             uv tool install edge-tts || warn "Failed to install edge-tts with uv"
-        elif command -v pip &>/dev/null; then
-            pip install --user edge-tts || warn "Failed to install edge-tts with pip"
-        elif command -v pip3 &>/dev/null; then
-            pip3 install --user edge-tts || warn "Failed to install edge-tts with pip3"
         else
-            warn "No pip/uv found - installing uv first"
-            curl -LsSf https://astral.sh/uv/install.sh | sh
-            source "$HOME/.cargo/env" 2>/dev/null || true
-            uv tool install edge-tts || warn "Failed to install edge-tts"
+            # Ensure pip is available
+            sudo dnf install -y python3-pip python3-devel 2>/dev/null || true
+            python3 -m pip install --user edge-tts || warn "Failed to install edge-tts with pip"
         fi
     else
         log "edge-tts already installed ✓"
@@ -1678,9 +1673,13 @@ install_voice_control() {
     echo -e "${CYAN}  Apollo Voice Control - Wake Word System${NC}"
     echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}\n"
 
+    # Ensure Python pip is installed (critical for voice control)
+    log "Ensuring Python pip is installed..."
+    sudo dnf install -y python3-pip python3-devel || warn "Failed to install Python pip"
+
     # Install Python dependencies
     log "Installing Python dependencies (vosk, sounddevice)..."
-    pip3 install --user vosk sounddevice || warn "Failed to install Python dependencies"
+    python3 -m pip install --user vosk sounddevice || warn "Failed to install Python dependencies"
 
     # Create vosk models directory
     mkdir -p "$HOME/.local/share/vosk-models"
@@ -1747,7 +1746,8 @@ install_voice_control() {
     fi
 
     # Install Python evdev for Right Ctrl detection
-    pip3 install --user evdev || warn "Failed to install evdev"
+    log "Installing Python evdev for Right Ctrl push-to-talk..."
+    python3 -m pip install --user evdev || warn "Failed to install evdev"
 
     # Install systemd service
     log "Installing wake word systemd service..."
