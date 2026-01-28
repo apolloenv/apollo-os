@@ -1,0 +1,206 @@
+/* ============================================
+   WAYBAR STYLE - APOLLO OS ORBIT MODE
+   Copyright 2025 by Manuel Kraibacher
+   Single Bar Edition - Centered & Dynamic
+   ============================================ */
+
+/* === GLOBALE SETTINGS === */
+* {
+    border: none;
+    border-radius: 16px;
+    font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", sans-serif;
+    min-height: 0;
+}
+
+/* Bar selbst transparent und volle Breite */
+window#waybar {
+    background-color: rgba(0, 0, 0, 0.0);
+    color: #ffffff;
+    border: none;
+    border-radius: 0px;
+    padding: 0;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+/* ============================================
+   OBERE BAR (TOP) - ZENTRIERT & DYNAMISCH
+   ============================================ */
+
+window#waybar.top * {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* --- Zentrierter Module Container mit Styling --- */
+window#waybar.top .modules-center {
+    background-color: rgba(0, 0, 0, 0.0);
+    border: none;
+    border-radius: 0px;
+    margin: 0;
+    padding: 0;
+}
+
+/* Leere Container verstecken */
+window#waybar.top .modules-left,
+window#waybar.top .modules-right {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* --- Workspaces --- */
+window#waybar.top #workspaces {
+    margin: 4px 2px;
+    background-color: transparent;
+    border-radius: 16px;
+}
+
+window#waybar.top #workspaces button {
+    padding: 0 12px;
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+window#waybar.top #workspaces button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+window#waybar.top #workspaces button.active {
+    background-color: rgba(255, 255, 255, 0.85);
+    color: #000000;
+    padding: 0 22px;
+}
+
+window#waybar.top #workspaces button.urgent {
+    background-color: #FF340F;
+    color: #000000;
+}
+
+/* --- Alle Module mit einheitlichem Styling --- */
+window#waybar.top #bluetooth,
+window#waybar.top #network,
+window#waybar.top #pulseaudio,
+window#waybar.top #backlight,
+window#waybar.top #custom-btop,
+window#waybar.top #custom-power-profile,
+window#waybar.top #battery,
+window#waybar.top #clock,
+window#waybar.top #custom-ip-icon,
+window#waybar.top #custom-network-icon,
+window#waybar.top #custom-localip,
+window#waybar.top #custom-publicip,
+window#waybar.top #custom-hostname,
+window#waybar.top #custom-notifications,
+window#waybar.top #custom-synology,
+window#waybar.top #cpu,
+window#waybar.top #memory,
+window#waybar.top #disk,
+window#waybar.top #temperature {
+    padding: 4px 14px;
+    margin: 2px 3px;
+    color: #ffffff;
+    background-color: transparent;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+/* --- Network Module (mit #identifier) --- */
+window#waybar.top #network.speed,
+window#waybar.top #network.vpn {
+    padding: 4px 14px;
+    margin: 2px 3px;
+    color: #ffffff;
+    background-color: transparent;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+/* --- Hover-Effekte für ALLE Module --- */
+window#waybar.top #bluetooth:hover,
+window#waybar.top #network:hover,
+window#waybar.top #pulseaudio:hover,
+window#waybar.top #backlight:hover,
+window#waybar.top #custom-btop:hover,
+window#waybar.top #custom-power-profile:hover,
+window#waybar.top #battery:hover,
+window#waybar.top #clock:hover,
+window#waybar.top #custom-ip-icon:hover,
+window#waybar.top #custom-network-icon:hover,
+window#waybar.top #custom-localip:hover,
+window#waybar.top #custom-publicip:hover,
+window#waybar.top #custom-hostname:hover,
+window#waybar.top #custom-notifications:hover,
+window#waybar.top #custom-synology:hover,
+window#waybar.top #cpu:hover,
+window#waybar.top #memory:hover,
+window#waybar.top #disk:hover,
+window#waybar.top #temperature:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* --- Hover für Network Module mit #identifier --- */
+window#waybar.top #network.speed:hover,
+window#waybar.top #network.vpn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* --- Status-Farben --- */
+window#waybar.top #battery.charging {
+    color: #88CC00;
+}
+
+window#waybar.top #battery.warning:not(.charging) {
+    color: #ffaa00;
+}
+
+window#waybar.top #battery.critical:not(.charging) {
+    color: #FF340F;
+    animation: blink-battery 0.5s infinite alternate;
+}
+
+@keyframes blink-battery {
+    to { color: #ffffff; }
+}
+
+window#waybar.top #network.disconnected {
+    color: #ffaa00;
+}
+
+window#waybar.top #pulseaudio.muted {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* --- CPU/Memory/Disk/Temp Status --- */
+window#waybar.top #cpu.warning,
+window#waybar.top #memory.warning,
+window#waybar.top #disk.warning {
+    color: #ffaa00;
+}
+
+window#waybar.top #cpu.critical,
+window#waybar.top #memory.critical,
+window#waybar.top #disk.critical {
+    color: #FF340F;
+}
+
+window#waybar.top #temperature.critical {
+    color: #FF340F;
+    animation: blink-temp 0.5s infinite alternate;
+}
+
+@keyframes blink-temp {
+    to { color: #ffffff; }
+}
+
+/* --- Tray --- */
+window#waybar.top #tray {
+    margin-right: 10px;
+    padding: 4px 10px;
+}

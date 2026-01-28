@@ -1,0 +1,281 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   APOLLO OS - WAYBAR TECH BLUE STYLE
+   Modernes professionelles Design in Blautönen
+   Ruhig, technisch, elegant
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "Inter", "Roboto", "SF Pro Display", sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: #0a0f1a;
+    color: #e0e8f0;
+}
+
+/* ─── Workspaces (Modern Blue) ─────────────────────────────────────────────── */
+
+#workspaces {
+    padding: 0;
+    margin: 0;
+}
+
+#workspaces button {
+    padding: 0 14px;
+    margin: 0;
+    background-color: transparent;
+    color: #4a5568;
+    transition: all 0.3s ease;
+}
+
+#workspaces button.active {
+    background-color: #0088ff;
+    color: #ffffff;
+    border-bottom: 3px solid #00aaff;
+    font-weight: 600;
+}
+
+#workspaces button:hover {
+    background-color: #1a2533;
+    color: #e0e8f0;
+}
+
+#workspaces button.urgent {
+    background-color: #ff4444;
+    color: #ffffff;
+}
+
+/* ─── System Stats (Professional Blue Theme) ──────────────────────────────── */
+
+#cpu {
+    padding: 0 12px;
+    background-color: #1a3a5a;
+    color: #e0e8f0;
+    
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#cpu.warning {
+    background-color: #cc8800;
+    color: #ffffff;
+}
+
+#cpu.critical {
+    background-color: #dd0000;
+    color: #ffffff;
+}
+
+#memory {
+    padding: 0 12px;
+    background-color: #1a4a3a;
+    color: #e0e8f0;
+    
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#memory.warning {
+    background-color: #cc8800;
+    color: #ffffff;
+}
+
+#memory.critical {
+    background-color: #dd0000;
+    color: #ffffff;
+}
+
+#disk {
+    padding: 0 12px;
+    background-color: #2a3544;
+    color: #e0e8f0;
+    
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#disk.warning {
+    background-color: #cc8800;
+    color: #ffffff;
+}
+
+#disk.critical {
+    background-color: #dd0000;
+    color: #ffffff;
+}
+
+#temperature {
+    padding: 0 12px;
+    background-color: #1a2533;
+    color: #e0e8f0;
+    
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#temperature.critical {
+    background-color: #dd0000;
+    color: #ffffff;
+}
+
+/* ─── Network (Blue Gradient) ─────────────────────────────────────────────── */
+
+#network.speed,
+#network#speed {
+    padding: 0 12px;
+    background-color: #2a3544;
+    color: #e0e8f0;
+    
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#custom-localip {
+    padding: 0 12px;
+    background-color: #1a2533;
+    color: #e0e8f0;
+    
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#custom-externalip {
+    padding: 0 12px;
+    background-color: #1a2533;
+    color: #e0e8f0;
+    
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#network {
+    padding: 0 12px;
+    background-color: #2a3544;
+    color: #e0e8f0;
+    
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#network.disconnected {
+    background-color: #dd0000;
+    color: #ffffff;
+}
+
+/* ─── Audio & Interface ───────────────────────────────────────────────────── */
+
+#pulseaudio {
+    padding: 0 12px;
+    background-color: #1a3a5a;
+    color: #e0e8f0;
+    
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#pulseaudio.muted {
+    background-color: #2a3544;
+    color: #6a7588;
+}
+
+#backlight {
+    padding: 0 12px;
+    background-color: #1a2533;
+    color: #e0e8f0;
+    
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#battery {
+    padding: 0 12px;
+    background-color: #1a4a3a;
+    color: #e0e8f0;
+    
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#battery.charging {
+    background-color: #1a5a3a;
+    color: #ffffff;
+}
+
+#battery.warning {
+    background-color: #cc8800;
+    color: #ffffff;
+}
+
+#battery.critical {
+    background-color: #dd0000;
+    color: #ffffff;
+}
+
+/* ─── Clock (Highlight) ────────────────────────────────────────────────────── */
+
+#clock {
+    padding: 0 14px;
+    background-color: #1a2533;
+    color: #e0e8f0;
+    
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+/* ─── Tray (Subtle) ─────────────────────────────────────────────────────────── */
+
+#tray {
+    padding: 0 10px;
+    background-color: #0f1419;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    background-color: #ff4444;
+    padding: 4px;
+    border-radius: 2px;
+}
+
+/* ─── Tooltip ────────────────────────────────────────────────────────────────── */
+
+tooltip {
+    background: #0a0f1a;
+    border: 2px solid #0088ff;
+}
+
+tooltip label {
+    color: #e0e8f0;
+    padding: 8px 12px;
+}
+
+/* ─── Logo & Separatoren ─────────────────────────────────────────────────────── */
+
+#custom-logo {
+    padding: 0 16px 0 12px;
+    color: #0088ff;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+#custom-sep {
+    padding: 0 8px;
+    color: #1a2533;
+}
+
+/* ─── Power Profile (Professionell) ─────────────────────────────────────────── */
+
+#custom-power-profile {
+    padding: 0 12px;
+    background-color: #1a2533;
+    color: #00aaff;
+    font-weight: 600;
+    font-family: "JetBrains Mono", monospace;
+}

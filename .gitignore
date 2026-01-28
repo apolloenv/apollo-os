@@ -1,0 +1,28 @@
+# Backup files
+*.backup/
+*~
+*.swp
+*.swo
+
+# Build artifacts
+*.o
+*.so
+*.a
+build/
+dist/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

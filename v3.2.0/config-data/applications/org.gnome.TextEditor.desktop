@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Text Editor
+Comment=Edit text files
+Categories=GNOME;GTK;Utility;TextEditor;
+Exec=gnome-text-editor %U
+Icon=org.gnome.TextEditor
+Terminal=false
+Type=Application
+StartupNotify=true
+MimeType=text/plain;text/css;text/x-csrc;text/html;text/markdown;text/x-markdown;application/x-shellscript;application/json;application/xml;

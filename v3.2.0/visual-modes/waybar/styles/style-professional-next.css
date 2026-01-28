@@ -1,0 +1,291 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   APOLLO OS - PROFESSIONAL NEXT
+   3-Bar Layout: Links | Oben | Unten
+   Ultra-futuristisch │ Maximaler Kontrast │ Maximale Information
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "JetBrains Mono", "Symbols Nerd Font", monospace;
+    font-size: 10px;
+    font-weight: 600;
+    min-height: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LINKE BAR - Workspaces Quadratisch
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+window#waybar.left-bar {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+window#waybar.left-bar #workspaces {
+    margin: 0;
+    padding: 0;
+}
+
+window#waybar.left-bar #workspaces button {
+    padding: 0;
+    margin: 0;
+    min-width: 36px;
+    min-height: 36px;
+    background-color: #000000;
+    color: #666666;
+    border-bottom: 1px solid #222222;
+    transition: all 0.1s linear;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+window#waybar.left-bar #workspaces button:hover {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+window#waybar.left-bar #workspaces button.active {
+    background-color: #ffffff;
+    color: #000000;
+    font-weight: 900;
+    box-shadow: inset 0 0 0 2px #000000;
+}
+
+window#waybar.left-bar #workspaces button.urgent {
+    background-color: #ff0000;
+    color: #ffffff;
+    animation: urgent-pulse 0.5s linear infinite;
+}
+
+window#waybar.left-bar #custom-separator-left {
+    padding: 8px 0;
+    margin: 0;
+    color: #333333;
+    font-weight: 300;
+}
+
+window#waybar.left-bar #custom-power {
+    padding: 12px 0;
+    margin: 0;
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 16px;
+    border-top: 2px solid #ffffff;
+}
+
+window#waybar.left-bar #custom-power:hover {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   OBERE BAR - Window Title & System Info
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+window#waybar.top-bar {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+window#waybar.top-bar #window {
+    padding: 0 16px;
+    margin: 0;
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 11px;
+}
+
+window#waybar.top-bar #clock {
+    padding: 0 20px;
+    margin: 0;
+    background-color: #000000;
+    color: #ffffff;
+    font-weight: 900;
+    letter-spacing: 3px;
+    font-size: 12px;
+    border-left: 1px solid #333333;
+    border-right: 1px solid #333333;
+}
+
+window#waybar.top-bar #custom-kernel,
+window#waybar.top-bar #custom-power-profile,
+window#waybar.top-bar #custom-uptime {
+    padding: 0 12px;
+    margin: 0;
+    color: #aaaaaa;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+window#waybar.top-bar #custom-power-profile {
+    color: #ffffff;
+}
+
+window#waybar.top-bar #tray {
+    padding: 0 12px;
+    background-color: #000000;
+}
+
+window#waybar.top-bar #tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+window#waybar.top-bar #tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: #ff0000;
+}
+
+window#waybar.top-bar #custom-sep-t1,
+window#waybar.top-bar #custom-sep-t2,
+window#waybar.top-bar #custom-sep-t3 {
+    padding: 0 8px;
+    color: #333333;
+    font-weight: 300;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   UNTERE BAR - System Monitoring & Media
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+window#waybar.bottom-bar {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+window#waybar.bottom-bar #cpu,
+window#waybar.bottom-bar #memory,
+window#waybar.bottom-bar #disk,
+window#waybar.bottom-bar #temperature,
+window#waybar.bottom-bar #network,
+window#waybar.bottom-bar #bluetooth,
+window#waybar.bottom-bar #pulseaudio,
+window#waybar.bottom-bar #backlight,
+window#waybar.bottom-bar #battery,
+window#waybar.bottom-bar #custom-localip,
+window#waybar.bottom-bar #custom-wanip {
+    padding: 0 10px;
+    margin: 0;
+    background-color: #000000;
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 11px;
+}
+
+/* System Monitoring States */
+window#waybar.bottom-bar #cpu.warning,
+window#waybar.bottom-bar #memory.warning,
+window#waybar.bottom-bar #disk.warning {
+    color: #ffaa00;
+}
+
+window#waybar.bottom-bar #cpu.critical,
+window#waybar.bottom-bar #memory.critical,
+window#waybar.bottom-bar #disk.critical,
+window#waybar.bottom-bar #temperature.critical {
+    color: #ff0000;
+    animation: critical-pulse 0.5s linear infinite;
+}
+
+window#waybar.bottom-bar #battery.charging {
+    color: #00ff00;
+}
+
+window#waybar.bottom-bar #battery.warning:not(.charging) {
+    color: #ffaa00;
+}
+
+window#waybar.bottom-bar #battery.critical:not(.charging) {
+    color: #ff0000;
+    animation: critical-pulse 0.5s linear infinite;
+}
+
+window#waybar.bottom-bar #network.disconnected {
+    color: #ff0000;
+}
+
+window#waybar.bottom-bar #pulseaudio.muted {
+    color: #666666;
+}
+
+/* Media Player - Center */
+window#waybar.bottom-bar #custom-media {
+    padding: 0 20px;
+    margin: 0;
+    color: #aaaaaa;
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 11px;
+    border-left: 1px solid #333333;
+    border-right: 1px solid #333333;
+}
+
+/* IP Addresses */
+window#waybar.bottom-bar #custom-localip {
+    color: #aaaaaa;
+    font-size: 9px;
+}
+
+window#waybar.bottom-bar #custom-wanip {
+    color: #aaaaaa;
+    font-size: 9px;
+}
+
+/* Separators */
+window#waybar.bottom-bar #custom-sep-b1,
+window#waybar.bottom-bar #custom-sep-b2,
+window#waybar.bottom-bar #custom-sep-b3,
+window#waybar.bottom-bar #custom-sep-b4,
+window#waybar.bottom-bar #custom-sep-b5,
+window#waybar.bottom-bar #custom-sep-b6,
+window#waybar.bottom-bar #custom-sep-b7,
+window#waybar.bottom-bar #custom-sep-b8,
+window#waybar.bottom-bar #custom-sep-b9,
+window#waybar.bottom-bar #custom-sep-b10 {
+    padding: 0 6px;
+    color: #333333;
+    font-weight: 300;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes urgent-pulse {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0.5;
+    }
+}
+
+@keyframes critical-pulse {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0.3;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TOOLTIP
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+tooltip {
+    background: #000000;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 0;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    padding: 4px;
+}
+
+tooltip label {
+    color: #ffffff;
+    padding: 4px 8px;
+}

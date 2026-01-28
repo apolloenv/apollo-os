@@ -1,0 +1,12 @@
+[Unit]
+Description=Apollo OS Sleep TTS Notification
+Before=sleep.target
+
+[Service]
+Type=oneshot
+# Dynamic user detection - uses the first logged-in user on the graphical session
+ExecStart=/bin/bash -c 'ACTIVE_USER=$(loginctl list-users --no-legend | head -1 | awk "{print \\$2}"); ACTIVE_UID=$(id -u "$ACTIVE_USER" 2>/dev/null || echo 1000); XDG_RUNTIME_DIR="/run/user/$ACTIVE_UID" sudo -u "$ACTIVE_USER" /home/$ACTIVE_USER/.local/bin/apollo-os-tts-notify.sh sleep'
+ExecStartPost=/bin/sleep 3
+
+[Install]
+WantedBy=sleep.target

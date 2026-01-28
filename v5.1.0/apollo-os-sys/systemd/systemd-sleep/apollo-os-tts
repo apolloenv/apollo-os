@@ -1,0 +1,26 @@
+#!/bin/bash
+# Apollo OS Sleep/Wake TTS Hook
+# Called by systemd before sleep ($1=pre) and after wake ($1=post)
+
+APOLLO_USER="apollo"
+APOLLO_UID=$(id -u $APOLLO_USER)
+
+# Run as the apollo user
+run_as_user() {
+    sudo -u "$APOLLO_USER" \
+        XDG_RUNTIME_DIR="/run/user/$APOLLO_UID" \
+        DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$APOLLO_UID/bus" \
+        "$@"
+}
+
+case "$1" in
+    pre)
+        # Before sleep
+        run_as_user /home/apollo/.local/bin/apollo-os-sleep-tts.sh sleep
+        ;;
+    post)
+        # After wake
+        sleep 1
+        run_as_user /home/apollo/.local/bin/apollo-os-sleep-tts.sh wake
+        ;;
+esac

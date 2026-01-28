@@ -1,0 +1,314 @@
+[
+    {
+        "name": "left-bar",
+        "layer": "top",
+        "position": "left",
+        "width": 36,
+        "spacing": 0,
+        "margin-left": 0,
+        "margin-top": 0,
+        "margin-bottom": 0,
+
+        "modules-left": ["niri/workspaces"],
+        "modules-center": ["custom/separator-left"],
+        "modules-right": ["custom/power"],
+
+        "niri/workspaces": {
+            "format": "{index}"
+        },
+
+        "custom/separator-left": {
+            "format": "━",
+            "tooltip": false
+        },
+
+        "custom/power": {
+            "format": "⏻",
+            "tooltip": true,
+            "tooltip-format": "Power Menu",
+            "on-click": "~/.local/bin/apollo-os-quickmenu.sh"
+        }
+    },
+    {
+        "name": "top-bar",
+        "layer": "top",
+        "position": "top",
+        "height": 32,
+        "spacing": 0,
+        "margin-left": 0,
+
+        "modules-left": ["niri/window", "custom/sep-t1"],
+        "modules-center": ["clock"],
+        "modules-right": [
+            "custom/kernel",
+            "custom/sep-t2",
+            "custom/power-profile",
+            "custom/sep-t3",
+            "custom/uptime",
+            "custom/sep-t4",
+            "tray"
+        ],
+
+        "niri/window": {
+            "format": "▸ {}",
+            "max-length": 80,
+            "separate-outputs": true,
+            "rewrite": {
+                "(.*) — Mozilla Firefox": "󰈹 $1",
+                "(.*) - Visual Studio Code": " $1",
+                "(.*)Alacritty": " $1"
+            }
+        },
+
+        "clock": {
+            "format": "{:%H:%M:%S}",
+            "format-alt": "{:%A  %d.%m.%Y  %H:%M:%S}",
+            "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+            "locale": "de_DE.UTF-8",
+            "interval": 1
+        },
+
+        "custom/kernel": {
+            "format": "KERNEL {}",
+            "exec": "uname -r | cut -d'-' -f1",
+            "interval": 3600,
+            "tooltip-format": "Linux Kernel Version"
+        },
+
+        "custom/uptime": {
+            "format": "⏱ {}",
+            "exec": "uptime -p | sed 's/up //'",
+            "interval": 60,
+            "tooltip-format": "System Uptime"
+        },
+
+        "custom/sep-t1": {
+            "format": "│",
+            "tooltip": false
+        },
+
+        "custom/sep-t2": {
+            "format": "│",
+            "tooltip": false
+        },
+
+        "custom/power-profile": {
+            "format": "{}",
+            "exec": "~/.local/bin/apollo-power-profile-waybar.sh",
+            "interval": 5,
+            "tooltip": true,
+            "tooltip-format": "Power Profile (Klick zum Wechseln)",
+            "on-click": "~/.local/bin/apollo-os-power-profile.sh"
+        },
+
+        "custom/sep-t3": {
+            "format": "│",
+            "tooltip": false
+        },
+
+        "custom/sep-t4": {
+            "format": "│",
+            "tooltip": false
+        },
+
+        "tray": {
+            "icon-size": 14,
+            "spacing": 8
+        }
+    },
+    {
+        "name": "bottom-bar",
+        "layer": "top",
+        "position": "bottom",
+        "height": 32,
+        "spacing": 0,
+        "margin-left": 0,
+
+        "modules-left": [
+            "cpu",
+            "custom/sep-b1",
+            "memory",
+            "custom/sep-b2",
+            "disk",
+            "custom/sep-b3",
+            "temperature",
+            "custom/sep-b4",
+            "network#speed"
+        ],
+        "modules-center": [
+            "custom/media"
+        ],
+        "modules-right": [
+            "custom/localip",
+            "custom/sep-b5",
+            "custom/wanip",
+            "custom/sep-b6",
+            "network",
+            "custom/sep-b7",
+            "bluetooth",
+            "custom/sep-b8",
+            "pulseaudio",
+            "custom/sep-b9",
+            "backlight",
+            "custom/sep-b10",
+            "battery"
+        ],
+
+        "cpu": {
+            "format": "CPU {usage}%",
+            "format-alt": "CPU {avg_frequency}GHz",
+            "tooltip-format": "Load: {load}\nUsage: {usage}%\nFrequency: {avg_frequency}GHz",
+            "interval": 1,
+            "states": {
+                "warning": 70,
+                "critical": 90
+            },
+            "on-click": "alacritty -e btop"
+        },
+
+        "memory": {
+            "format": "RAM {percentage}%",
+            "format-alt": "RAM {used:0.1f}G/{total:0.1f}G",
+            "tooltip-format": "Used: {used:0.2f}GB / {total:0.2f}GB\nAvail: {avail:0.2f}GB\nSwap: {swapUsed:0.2f}GB / {swapTotal:0.2f}GB",
+            "interval": 2,
+            "states": {
+                "warning": 70,
+                "critical": 90
+            },
+            "on-click": "alacritty -e btop"
+        },
+
+        "disk": {
+            "format": "DSK {percentage_used}%",
+            "format-alt": "DSK {used}/{total}",
+            "path": "/",
+            "tooltip-format": "Used: {used} / {total}\nFree: {free}\nMount: {path}",
+            "interval": 30,
+            "states": {
+                "warning": 80,
+                "critical": 95
+            }
+        },
+
+        "temperature": {
+            "format": "{temperatureC}°C",
+            "tooltip-format": "Temperature: {temperatureC}°C",
+            "critical-threshold": 80,
+            "interval": 2
+        },
+
+        "network#speed": {
+            "format": "↓{bandwidthDownBytes} ↑{bandwidthUpBytes}",
+            "format-disconnected": "NET OFFLINE",
+            "tooltip-format": "Interface: {ifname}\nIP: {ipaddr}\nGateway: {gwaddr}",
+            "interval": 1
+        },
+
+        "network": {
+            "format-wifi": "NET {signalStrength}%",
+            "format-ethernet": "NET ETH",
+            "format-disconnected": "NET OFF",
+            "tooltip-format-wifi": "WLAN: {essid}\nSignal: {signalStrength}%\nIP: {ipaddr}",
+            "tooltip-format-ethernet": "Ethernet\nIP: {ipaddr}",
+            "interval": 5,
+            "on-click": "nm-connection-editor"
+        },
+
+        "bluetooth": {
+            "format": "BT",
+            "format-connected": "BT {num_connections}",
+            "format-disabled": "BT OFF",
+            "tooltip-format": "{controller_alias}\n{num_connections} connected",
+            "on-click": "blueman-manager"
+        },
+
+        "pulseaudio": {
+            "format": "VOL {volume}%",
+            "format-muted": "MUTE",
+            "on-click": "pavucontrol",
+            "tooltip-format": "Volume: {volume}%"
+        },
+
+        "backlight": {
+            "format": "LCD {percent}%",
+            "tooltip-format": "Brightness: {percent}%"
+        },
+
+        "battery": {
+            "format": "BAT {capacity}%",
+            "format-discharging": "BAT {capacity}%",
+            "format-charging": "CHG {capacity}%",
+            "format-plugged": "PWR {capacity}%",
+            "tooltip-format": "Power: {power}W\nTime: {time}",
+            "states": {
+                "warning": 30,
+                "critical": 15
+            }
+        },
+
+        "custom/localip": {
+            "format": "LAN {}",
+            "exec": "ip -4 addr show $(ip route | grep default | awk '{print $5}' | head -n1) | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}' | head -n1",
+            "interval": 10,
+            "tooltip-format": "Local IP Address"
+        },
+
+        "custom/wanip": {
+            "format": "WAN {}",
+            "exec": "curl -s ifconfig.me 2>/dev/null || echo 'N/A'",
+            "interval": 300,
+            "tooltip-format": "Public IP Address"
+        },
+
+        "custom/media": {
+            "format": "♫ {}",
+            "max-length": 70,
+            "escape": true,
+            "exec": "playerctl metadata --format '{{ artist }} - {{ title }}' 2>/dev/null || echo 'Keine Wiedergabe'",
+            "on-click": "playerctl play-pause",
+            "on-click-right": "playerctl next",
+            "interval": 2
+        },
+
+        "custom/sep-b1": {
+            "format": "┊",
+            "tooltip": false
+        },
+        "custom/sep-b2": {
+            "format": "┊",
+            "tooltip": false
+        },
+        "custom/sep-b3": {
+            "format": "┊",
+            "tooltip": false
+        },
+        "custom/sep-b4": {
+            "format": "┊",
+            "tooltip": false
+        },
+        "custom/sep-b5": {
+            "format": "┊",
+            "tooltip": false
+        },
+        "custom/sep-b6": {
+            "format": "┊",
+            "tooltip": false
+        },
+        "custom/sep-b7": {
+            "format": "┊",
+            "tooltip": false
+        },
+        "custom/sep-b8": {
+            "format": "┊",
+            "tooltip": false
+        },
+        "custom/sep-b9": {
+            "format": "┊",
+            "tooltip": false
+        },
+        "custom/sep-b10": {
+            "format": "┊",
+            "tooltip": false
+        }
+    }
+]

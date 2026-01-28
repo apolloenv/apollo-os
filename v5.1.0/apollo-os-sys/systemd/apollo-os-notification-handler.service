@@ -1,0 +1,16 @@
+[Unit]
+Description=Apollo OS Notification Handler
+Documentation=man:apollo-os-notification-handler(1)
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/apollo-os-notification-handler.sh
+Restart=on-failure
+RestartSec=5
+
+# Environment
+Environment="DISPLAY=:0"
+
+[Install]
+WantedBy=default.target

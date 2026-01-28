@@ -1,0 +1,103 @@
+[
+    {
+        "layer": "top",
+        "position": "top",
+        "height": 30,
+        "spacing": 0,
+
+        "modules-left": [
+            "niri/workspaces"
+        ],
+        "modules-center": [],
+        "modules-right": [
+            "cpu",
+            "memory",
+            "disk",
+            "temperature",
+            "network",
+            "pulseaudio",
+            "backlight",
+            "battery",
+            "clock",
+            "tray"
+        ],
+
+        "niri/workspaces": {
+            "format": "{index}"
+        },
+
+        "cpu": {
+            "format": "CPU {usage}%",
+            "interval": 2,
+            "states": {
+                "warning": 70,
+                "critical": 90
+            }
+        },
+
+        "memory": {
+            "format": "MEM {percentage}%",
+            "interval": 5,
+            "states": {
+                "warning": 70,
+                "critical": 90
+            }
+        },
+
+        "disk": {
+            "format": "DSK {percentage_used}%",
+            "path": "/",
+            "interval": 30,
+            "states": {
+                "warning": 80,
+                "critical": 95
+            }
+        },
+
+        "temperature": {
+            "format": "{temperatureC}°C",
+            "critical-threshold": 80,
+            "interval": 5
+        },
+
+        "network": {
+            "format-wifi": "NET {essid}",
+            "format-ethernet": "ETH {ipaddr}",
+            "format-disconnected": "OFFLINE",
+            "interval": 5,
+            "on-click": "nm-connection-editor"
+        },
+
+        "pulseaudio": {
+            "format": "VOL {volume}%",
+            "format-muted": "MUTE",
+            "on-click": "pavucontrol"
+        },
+
+        "backlight": {
+            "format": "BRI {percent}%"
+        },
+
+        "battery": {
+            "format": "BAT {capacity}%",
+            "format-charging": "CHG {capacity}%",
+            "format-plugged": "AC {capacity}%",
+            "states": {
+                "warning": 30,
+                "critical": 15
+            }
+        },
+
+        "clock": {
+            "format": "{:%H:%M:%S}",
+            "format-alt": "{:%a %d.%m.%Y %H:%M:%S}",
+            "locale": "de_DE.UTF-8",
+            "interval": 1
+        },
+
+        "tray": {
+            "icon-size": 14,
+            "spacing": 8
+        }
+    }
+]

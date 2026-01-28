@@ -1,0 +1,101 @@
+#!/bin/bash
+# Spracheingabe-Script für niri mit whisper.cpp
+# Verwendung: Super+V zum Starten/Stoppen der Aufnahme
+
+# Konfiguration
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-/tmp}"
+PID_FILE="$RUNTIME_DIR/voice-input.pid"
+AUDIO_FILE="$RUNTIME_DIR/voice-input.wav"
+WHISPER_MODEL="${WHISPER_MODEL:-$HOME/.local/share/whisper/ggml-base.bin}"
+WHISPER_BIN="${WHISPER_BIN:-$HOME/.local/bin/whisper-cpp}"
+LANGUAGE="de"
+
+# Prüfe ob bereits eine Aufnahme läuft
+if [ -f "$PID_FILE" ]; then
+    # Stoppe die Aufnahme
+    PID=$(cat "$PID_FILE")
+    if kill -0 "$PID" 2>/dev/null; then
+        kill "$PID"
+        rm "$PID_FILE"
+        
+        # Stoppe Animation
+        "$HOME/.local/bin/voice-input-notification" stop
+        
+        # Warte kurz, damit die Datei fertig geschrieben wird
+        sleep 0.5
+        
+        # Transkribiere mit whisper.cpp
+        if [ -f "$WHISPER_BIN" ] && [ -f "$WHISPER_MODEL" ]; then
+            notify-send "🎙️ Spracheingabe" "Transkribiere..." -t 2000
+            
+            # Konvertiere zu 16kHz mono WAV (whisper.cpp benötigt das)
+            ffmpeg -i "$AUDIO_FILE" -ar 16000 -ac 1 -f wav "$AUDIO_FILE.tmp" -y 2>/dev/null
+            mv "$AUDIO_FILE.tmp" "$AUDIO_FILE"
+            
+            # Transkribiere
+            TEXT=$("$WHISPER_BIN" -m "$WHISPER_MODEL" -l "$LANGUAGE" -nt -f "$AUDIO_FILE" 2>/dev/null | grep -v "^whisper_" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '\n')
+            
+            if [ -n "$TEXT" ]; then
+                # Füge Text ein + Enter drücken
+                printf "%s" "$TEXT" | wtype -
+                sleep 0.1
+                wtype -k Return
+                notify-send "✅ Spracheingabe" "Text eingefügt" -t 1500
+            else
+                notify-send "❌ Spracheingabe" "Keine Sprache erkannt" -t 2000
+            fi
+        else
+            notify-send "❌ Spracheingabe" "Whisper nicht installiert!\nFühre Installation aus." -t 4000
+            # Starte Installation im Hintergrund
+            "$0" --install &
+        fi
+        
+        # Aufräumen
+        rm -f "$AUDIO_FILE"
+    else
+        # PID-Datei existiert, aber Prozess läuft nicht mehr
+        rm "$PID_FILE"
+    fi
+else
+    # Starte neue Aufnahme mit animierter Benachrichtigung
+    
+    # Starte Animation
+    "$HOME/.local/bin/voice-input-notification" &
+    
+    # Kurze Pause damit Animation startet
+    sleep 0.2
+    
+    # Starte Aufnahme im Hintergrund
+    parecord --channels=1 --rate=16000 --format=s16le "$AUDIO_FILE" &
+    echo $! > "$PID_FILE"
+fi
+
+# Installations-Funktion
+if [ "$1" = "--install" ]; then
+    notify-send "📦 Whisper Installation" "Starte Installation..." -t 3000
+    
+    # Erstelle Verzeichnisse
+    mkdir -p "$HOME/.local/bin"
+    mkdir -p "$HOME/.local/share/whisper"
+    
+    # Clone und baue whisper.cpp
+    cd /tmp
+    if [ ! -d "whisper.cpp" ]; then
+        git clone https://github.com/ggerganov/whisper.cpp.git
+    fi
+    cd whisper.cpp
+    git pull
+    make -j$(nproc)
+    
+    # Kopiere Binary
+    cp main "$HOME/.local/bin/whisper-cpp"
+    chmod +x "$HOME/.local/bin/whisper-cpp"
+    
+    # Lade Modell herunter (base model - guter Kompromiss aus Geschwindigkeit und Qualität)
+    if [ ! -f "$HOME/.local/share/whisper/ggml-base.bin" ]; then
+        bash ./models/download-ggml-model.sh base
+        mv models/ggml-base.bin "$HOME/.local/share/whisper/"
+    fi
+    
+    notify-send "✅ Installation abgeschlossen" "Whisper ist jetzt einsatzbereit!" -t 3000
+fi

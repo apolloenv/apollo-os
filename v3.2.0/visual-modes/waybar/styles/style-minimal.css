@@ -1,0 +1,145 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   APOLLO OS - WAYBAR MINIMAL STYLE
+   Vertikale Bar, links, schwarz, minimalistisch
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "JetBrains Mono", "Font Awesome 6 Free", monospace;
+    font-size: 14px;
+    font-weight: 500;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+/* Vertikales Layout für alle Module */
+.modules-left,
+.modules-center,
+.modules-right {
+    padding: 8px 0;
+}
+
+/* Launcher oben */
+#custom-launcher {
+    font-size: 18px;
+    padding: 12px 0;
+    padding-top: 12px;
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #ffffff;
+}
+
+#custom-launcher:hover {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Basis-Styling für alle Module */
+#workspaces,
+#network,
+#bluetooth,
+#battery,
+#custom-clock-vertical {
+    padding: 8px 0;
+    margin: 4px 0;
+    color: #ffffff;
+    background: transparent;
+}
+
+/* Workspaces als Punkte */
+#workspaces button {
+    padding: 4px 0;
+    margin: 2px 0;
+    color: rgba(255, 255, 255, 0.4);
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    min-width: 28px;
+    min-height: 20px;
+    font-size: 10px;
+}
+
+#workspaces button.active {
+    color: #ffffff;
+}
+
+#workspaces button:hover {
+    color: rgba(255, 255, 255, 0.8);
+    background: transparent;
+    box-shadow: none;
+}
+
+/* Netzwerk */
+#network {
+    font-size: 14px;
+    padding: 8px 0;
+    margin: 4px 0;
+}
+
+#network.disconnected {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Bluetooth */
+#bluetooth {
+    font-size: 14px;
+    padding: 8px 0;
+    margin: 4px 0;
+}
+
+#bluetooth.disabled {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Batterie */
+#battery {
+    font-size: 14px;
+    padding: 8px 0;
+    margin: 4px 0;
+    margin-bottom: 16px;
+}
+
+#battery.warning {
+    color: #f9e2af;
+}
+
+#battery.critical {
+    color: #f38ba8;
+}
+
+#battery.charging,
+#battery.plugged {
+    color: #a6e3a1;
+}
+
+/* Vertikale Uhr - HH MM SS untereinander */
+#custom-clock-hours,
+#custom-clock-minutes,
+#custom-clock-seconds {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 4px 0;
+    margin: 0;
+    color: #ffffff;
+}
+
+#custom-clock-seconds {
+    margin-bottom: 12px;
+}
+
+/* Tooltip Styling */
+tooltip {
+    background-color: #000000;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0;
+    color: #ffffff;
+}
+
+tooltip label {
+    color: #ffffff;
+    padding: 8px;
+}

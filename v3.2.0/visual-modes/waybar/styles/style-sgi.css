@@ -1,0 +1,217 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   APOLLO OS - WAYBAR SGI IRIX STYLE
+   Silicon Graphics Indigo Magic Design
+   Classic Unix Workstation Aesthetic
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    font-size: 12px;
+    font-weight: 500;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: #2d2d4a;
+    color: #d8d8e8;
+    border-bottom: 2px solid #5050a0;
+}
+
+/* ─── Workspaces (SGI Style) ───────────────────────────────────────────────── */
+
+#workspaces {
+    padding: 0;
+    margin: 0;
+}
+
+#workspaces button {
+    padding: 0 14px;
+    margin: 0;
+    background-color: #383860;
+    color: #9090b0;
+    border-right: 1px solid #202040;
+}
+
+#workspaces button.active {
+    background-color: #008888;
+    color: #ffffff;
+    border-bottom: 2px solid #00b8b8;
+}
+
+#workspaces button:hover {
+    background-color: #454578;
+    color: #d8d8e8;
+}
+
+#workspaces button.urgent {
+    background-color: #cc6060;
+    color: #ffffff;
+}
+
+/* ─── Rechte Module - SGI Farbige Blöcke ───────────────────────────────────── */
+
+.modules-right {
+    margin: 0;
+    padding: 0;
+}
+
+/* CPU - Teal */
+#cpu {
+    padding: 0 12px;
+    background-color: #008888;
+    color: #ffffff;
+    border-right: 1px solid #202040;
+}
+
+#cpu.warning {
+    background-color: #b89000;
+    color: #202040;
+}
+
+#cpu.critical {
+    background-color: #cc6060;
+    color: #ffffff;
+}
+
+/* Memory - Indigo */
+#memory {
+    padding: 0 12px;
+    background-color: #5050a0;
+    color: #d8d8e8;
+    border-right: 1px solid #202040;
+}
+
+#memory.warning {
+    background-color: #b89000;
+    color: #202040;
+}
+
+#memory.critical {
+    background-color: #cc6060;
+    color: #ffffff;
+}
+
+/* Disk - Darker Teal */
+#disk {
+    padding: 0 12px;
+    background-color: #007070;
+    color: #d8d8e8;
+    border-right: 1px solid #202040;
+}
+
+#disk.warning {
+    background-color: #b89000;
+    color: #202040;
+}
+
+#disk.critical {
+    background-color: #cc6060;
+    color: #ffffff;
+}
+
+/* Temperature - Purple */
+#temperature {
+    padding: 0 12px;
+    background-color: #6060a0;
+    color: #d8d8e8;
+    border-right: 1px solid #202040;
+}
+
+#temperature.critical {
+    background-color: #cc6060;
+    color: #ffffff;
+}
+
+/* Network - Bright Teal */
+#network {
+    padding: 0 12px;
+    background-color: #00a8a8;
+    color: #202040;
+    border-right: 1px solid #202040;
+}
+
+#network.disconnected {
+    background-color: #cc6060;
+    color: #ffffff;
+}
+
+/* Pulseaudio - Light Indigo */
+#pulseaudio {
+    padding: 0 12px;
+    background-color: #7070b0;
+    color: #ffffff;
+    border-right: 1px solid #202040;
+}
+
+#pulseaudio.muted {
+    background-color: #404060;
+    color: #808090;
+}
+
+/* Backlight - Gold */
+#backlight {
+    padding: 0 12px;
+    background-color: #b89000;
+    color: #202040;
+    border-right: 1px solid #202040;
+}
+
+/* Battery - Teal */
+#battery {
+    padding: 0 12px;
+    background-color: #008888;
+    color: #ffffff;
+    border-right: 1px solid #202040;
+}
+
+#battery.charging {
+    background-color: #00a8a8;
+    color: #202040;
+}
+
+#battery.warning {
+    background-color: #b89000;
+    color: #202040;
+}
+
+#battery.critical {
+    background-color: #cc6060;
+    color: #ffffff;
+}
+
+/* Clock - Highlight Teal */
+#clock {
+    padding: 0 14px;
+    background-color: #00b8b8;
+    color: #202040;
+    border-right: 1px solid #202040;
+    font-weight: 700;
+}
+
+/* Tray */
+#tray {
+    padding: 0 10px;
+    background-color: #383860;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    background-color: #cc6060;
+}
+
+/* ─── Tooltip ──────────────────────────────────────────────────────────────── */
+
+tooltip {
+    background: #2d2d4a;
+    border: 2px solid #5050a0;
+}
+
+tooltip label {
+    color: #d8d8e8;
+    padding: 6px 10px;
+}

@@ -1,0 +1,189 @@
+#!/usr/bin/env python3
+"""
+Voice Input Visualizer - Live Waveform Display
+Zeigt Echtzeit-Audio-Waveform während der Sprachaufnahme
+"""
+
+import gi
+import sys
+import signal
+import threading
+import queue
+import struct
+import subprocess
+
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gdk, GLib
+import cairo
+
+class WaveformWindow(Gtk.Window):
+    def __init__(self):
+        super().__init__(title="🎙️ Spracheingabe läuft...")
+        
+        # Fenster-Einstellungen
+        self.set_default_size(600, 200)
+        self.set_position(Gtk.WindowPosition.CENTER)
+        self.set_keep_above(True)
+        self.set_decorated(False)
+        self.set_app_paintable(True)
+        
+        # Transparenter Hintergrund
+        screen = self.get_screen()
+        visual = screen.get_rgba_visual()
+        if visual:
+            self.set_visual(visual)
+        
+        # Audio-Daten Queue
+        self.audio_queue = queue.Queue(maxsize=100)
+        self.waveform_data = [0] * 200  # Letzte 200 Samples
+        self.is_recording = True
+        
+        # Drawing Area
+        self.drawing_area = Gtk.DrawingArea()
+        self.drawing_area.connect('draw', self.on_draw)
+        self.add(self.drawing_area)
+        
+        # Update Timer (60 FPS)
+        GLib.timeout_add(16, self.update_waveform)
+        
+        # Escape zum Schließen
+        self.connect("key-press-event", self.on_key_press)
+        
+        # Audio-Thread starten
+        self.audio_thread = threading.Thread(target=self.capture_audio, daemon=True)
+        self.audio_thread.start()
+        
+        self.show_all()
+    
+    def on_key_press(self, widget, event):
+        if event.keyval == Gdk.KEY_Escape:
+            self.close_window()
+    
+    def capture_audio(self):
+        """Erfasst Audio-Input und schreibt in Queue"""
+        try:
+            # parecord für Audio-Erfassung
+            proc = subprocess.Popen(
+                ['parecord', '--channels=1', '--rate=16000', '--format=s16le'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL
+            )
+            
+            while self.is_recording:
+                # Lese 256 Bytes (128 Samples bei 16-bit)
+                data = proc.stdout.read(256)
+                if not data:
+                    break
+                
+                # Konvertiere zu Amplituden-Werten
+                samples = struct.unpack(f'{len(data)//2}h', data)
+                
+                # Durchschnittliche Amplitude
+                if samples:
+                    avg_amplitude = sum(abs(s) for s in samples) / len(samples)
+                    normalized = avg_amplitude / 32768.0  # Normalisiere auf 0-1
+                    
+                    try:
+                        self.audio_queue.put_nowait(normalized)
+                    except queue.Full:
+                        pass
+            
+            proc.terminate()
+            proc.wait()
+            
+        except Exception as e:
+            print(f"Audio capture error: {e}", file=sys.stderr)
+    
+    def update_waveform(self):
+        """Aktualisiert Waveform-Daten aus Queue"""
+        if not self.is_recording:
+            return False
+        
+        # Hole alle verfügbaren Samples aus Queue
+        updated = False
+        while not self.audio_queue.empty():
+            try:
+                amplitude = self.audio_queue.get_nowait()
+                self.waveform_data.pop(0)
+                self.waveform_data.append(amplitude)
+                updated = True
+            except queue.Empty:
+                break
+        
+        if updated:
+            self.drawing_area.queue_draw()
+        
+        return True
+    
+    def on_draw(self, widget, cr):
+        """Zeichnet die Waveform"""
+        width = widget.get_allocated_width()
+        height = widget.get_allocated_height()
+        
+        # Hintergrund (Dunkelblau mit Transparenz)
+        cr.set_source_rgba(0.04, 0.06, 0.1, 0.95)
+        cr.paint()
+        
+        # Rahmen (Blau)
+        cr.set_source_rgb(0, 0.53, 1)
+        cr.set_line_width(3)
+        cr.rectangle(0, 0, width, height)
+        cr.stroke()
+        
+        # Text oben
+        cr.set_source_rgb(0.88, 0.91, 0.94)
+        cr.select_font_face("Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+        cr.set_font_size(18)
+        text = "🎙️  Spracheingabe läuft... (Super+V zum Beenden)"
+        x_bearing, y_bearing, text_width, text_height = cr.text_extents(text)[:4]
+        cr.move_to((width - text_width) / 2, 35)
+        cr.show_text(text)
+        
+        # Waveform zeichnen
+        if not self.waveform_data:
+            return
+        
+        center_y = height / 2
+        waveform_height = height - 80
+        points_count = len(self.waveform_data)
+        point_width = width / points_count
+        
+        # Waveform-Linie (Blau mit Gradient)
+        cr.set_line_width(2)
+        
+        # Zeichne Waveform
+        for i, amplitude in enumerate(self.waveform_data):
+            x = i * point_width
+            y_offset = amplitude * (waveform_height / 2)
+            
+            # Gradient-Farbe basierend auf Amplitude
+            intensity = min(1.0, amplitude * 2)
+            cr.set_source_rgb(0, 0.53 + intensity * 0.47, 1)
+            
+            # Vertikale Linie von Mitte nach oben/unten
+            cr.move_to(x, center_y - y_offset)
+            cr.line_to(x, center_y + y_offset)
+            cr.stroke()
+    
+    def close_window(self):
+        """Beendet Aufnahme und schließt Fenster"""
+        self.is_recording = False
+        Gtk.main_quit()
+
+def main():
+    # Signal-Handler für sauberes Beenden
+    def signal_handler(sig, frame):
+        Gtk.main_quit()
+        sys.exit(0)
+    
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+    
+    # Fenster erstellen und anzeigen
+    window = WaveformWindow()
+    window.connect("destroy", Gtk.main_quit)
+    
+    Gtk.main()
+
+if __name__ == "__main__":
+    main()

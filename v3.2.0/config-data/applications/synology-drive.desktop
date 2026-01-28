@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Synology Drive
+Comment=Synology Drive Client
+Icon=synology-drive
+Exec=sh -c '$HOME/.local/bin/apollo-os-synology-drive-launcher.sh'
+Terminal=false
+Categories=Network;FileTransfer;
+StartupNotify=true
+StartupWMClass=synology-drive

@@ -1,0 +1,247 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   APOLLO OS - WAYBAR NOVA STYLE
+   Futuristisches Design mit Cyan-Akzenten
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "JetBrains Mono", "Font Awesome 6 Free", monospace;
+    font-size: 13px;
+    font-weight: 500;
+    min-height: 0;
+}
+
+window#waybar {
+    background: linear-gradient(180deg, rgba(10, 10, 26, 0.95) 0%, rgba(15, 15, 35, 0.98) 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+/* ─── Module Container ─────────────────────────────────────────────────────── */
+
+.modules-left,
+.modules-center,
+.modules-right {
+    padding: 0 8px;
+}
+
+/* ─── Logo ─────────────────────────────────────────────────────────────────── */
+
+#custom-logo {
+    font-size: 18px;
+    color: #00ffff;
+    padding: 0 16px 0 12px;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+#custom-logo:hover {
+    color: #00ffaa;
+    text-shadow: 0 0 15px rgba(0, 255, 170, 0.7);
+}
+
+/* ─── Separator ────────────────────────────────────────────────────────────── */
+
+#custom-separator {
+    color: rgba(0, 255, 255, 0.3);
+    padding: 0 8px;
+    font-size: 14px;
+}
+
+/* ─── Workspaces ───────────────────────────────────────────────────────────── */
+
+#workspaces {
+    padding: 0 4px;
+}
+
+#workspaces button {
+    padding: 4px 8px;
+    margin: 4px 2px;
+    color: rgba(255, 255, 255, 0.4);
+    background: transparent;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+#workspaces button.active {
+    color: #00ffff;
+    background: rgba(0, 255, 255, 0.15);
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
+
+#workspaces button:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ─── Window Title ─────────────────────────────────────────────────────────── */
+
+#window {
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0 12px;
+    font-style: italic;
+}
+
+/* ─── Media Player ─────────────────────────────────────────────────────────── */
+
+#custom-media {
+    color: #ff00ff;
+    padding: 0 16px;
+    font-weight: 400;
+}
+
+#custom-media:hover {
+    color: #ff66ff;
+}
+
+/* ─── System Stats ─────────────────────────────────────────────────────────── */
+
+#cpu,
+#memory,
+#disk,
+#temperature {
+    padding: 4px 10px;
+    margin: 4px 2px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+#cpu {
+    color: #00ffff;
+}
+
+#memory {
+    color: #ff00ff;
+}
+
+#disk {
+    color: #ffff00;
+}
+
+#temperature {
+    color: #00ff88;
+}
+
+#temperature.critical {
+    color: #ff4444;
+}
+
+/* ─── Network & Connectivity ───────────────────────────────────────────────── */
+
+#network,
+#bluetooth {
+    padding: 4px 10px;
+    margin: 4px 2px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+#network {
+    color: #00ff88;
+}
+
+#network.disconnected {
+    color: #ff4444;
+}
+
+#bluetooth {
+    color: #00aaff;
+}
+
+#bluetooth.disabled {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* ─── Audio & Brightness ───────────────────────────────────────────────────── */
+
+#pulseaudio,
+#backlight {
+    padding: 4px 10px;
+    margin: 4px 2px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+#pulseaudio {
+    color: #ff8800;
+}
+
+#pulseaudio.muted {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+#backlight {
+    color: #ffcc00;
+}
+
+/* ─── Battery ──────────────────────────────────────────────────────────────── */
+
+#battery {
+    padding: 4px 12px;
+    margin: 4px 2px;
+    border-radius: 8px;
+    background: rgba(0, 255, 255, 0.1);
+    color: #00ffff;
+}
+
+#battery.charging,
+#battery.plugged {
+    color: #00ff88;
+    background: rgba(0, 255, 136, 0.15);
+}
+
+#battery.warning {
+    color: #ffcc00;
+    background: rgba(255, 204, 0, 0.15);
+}
+
+#battery.critical {
+    color: #ff4444;
+    background: rgba(255, 68, 68, 0.15);
+}
+
+/* ─── Clock ────────────────────────────────────────────────────────────────── */
+
+#clock {
+    padding: 4px 16px 4px 12px;
+    margin: 4px 4px 4px 2px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.2) 0%, rgba(255, 0, 255, 0.2) 100%);
+    color: #ffffff;
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+}
+
+/* ─── Tray ─────────────────────────────────────────────────────────────────── */
+
+#tray {
+    padding: 0 8px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+}
+
+/* ─── Tooltip ──────────────────────────────────────────────────────────────── */
+
+tooltip {
+    background: rgba(10, 10, 26, 0.95);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+tooltip label {
+    color: #ffffff;
+    padding: 8px 12px;
+}
+
+/* ─── Animations ───────────────────────────────────────────────────────────── */
+
+/* Pulse animation for critical states - handled by GTK */

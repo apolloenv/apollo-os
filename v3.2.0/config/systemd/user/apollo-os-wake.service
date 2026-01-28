@@ -1,0 +1,11 @@
+[Unit]
+Description=Apollo OS Wake TTS
+After=suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
+
+[Service]
+Type=oneshot
+Environment="XDG_RUNTIME_DIR=/run/user/1000"
+ExecStart=/home/apollo/.local/bin/apollo-os-sleep-tts.sh wake
+
+[Install]
+WantedBy=suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target

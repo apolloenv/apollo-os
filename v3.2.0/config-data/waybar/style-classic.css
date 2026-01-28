@@ -1,0 +1,255 @@
+/* ============================================
+   WAYBAR STYLE - APOLLO OS
+   Copyright 2025 by Manuel Kraibacher
+   ============================================ */
+
+/* === GLOBALE SETTINGS === */
+* {
+    border: none;
+    border-radius: 8px;
+    font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", sans-serif;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 0 0px;
+    transition-property: background-color;
+    transition-duration: 0.5s;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+
+/* ============================================
+   OBERE BAR (TOP)
+   ============================================ */
+
+window#waybar.top * {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* --- Workspaces --- */
+window#waybar.top #workspaces {
+    margin: 4px 2px;
+    background-color: transparent;
+    border-radius: 8px;
+}
+
+window#waybar.top #workspaces button {
+    padding: 0 10px;
+    background-color: transparent;
+    color: rgba(255, 255, 255, 1.0);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+window#waybar.top #workspaces button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+window#waybar.top #workspaces button.active {
+    background-color: rgba(255, 255, 255, 1.0);
+    color: #000000;
+    padding: 0 20px;
+}
+
+window#waybar.top #workspaces button.urgent {
+    background-color: #FF340F;
+    color: #000000;
+}
+
+/* --- Module rechts --- */
+window#waybar.top .modules-right {
+    margin: 5px 5px;
+    background-color: transparent;
+    border-radius: 8px;
+    padding: 0 0px;
+}
+
+window#waybar.top #bluetooth,
+window#waybar.top #network,
+window#waybar.top #pulseaudio,
+window#waybar.top #backlight,
+window#waybar.top #custom-btop,
+window#waybar.top #custom-power-profile,
+window#waybar.top #battery,
+window#waybar.top #clock {
+    padding: 4px 12px;
+    margin: 2px 2px;
+    color: #ffffff;
+    background-color: transparent;
+    border-radius: 8px;
+}
+
+/* Hover-Effekte oben */
+window#waybar.top #bluetooth:hover,
+window#waybar.top #network:hover,
+window#waybar.top #pulseaudio:hover,
+window#waybar.top #backlight:hover,
+window#waybar.top #custom-btop:hover,
+window#waybar.top #custom-power-profile:hover,
+window#waybar.top #battery:hover,
+window#waybar.top #clock:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* --- Status-Farben oben --- */
+window#waybar.top #battery.charging {
+    color: #88CC00;
+}
+
+window#waybar.top #battery.warning:not(.charging) {
+    color: rgba(255, 131, 36, 1.0);
+}
+
+window#waybar.top #battery.critical:not(.charging) {
+    color: #FF340F;
+    animation: blink-battery 0.5s infinite alternate;
+}
+
+@keyframes blink-battery {
+    to { color: #ffffff; }
+}
+
+window#waybar.top #network.disconnected {
+    color: rgba(255, 131, 36, 1.0);
+}
+
+window#waybar.top #pulseaudio.muted {
+    color: #FFFFFF;
+}
+
+/* --- Drawer-Module oben --- */
+window#waybar.top #custom-synology {
+    color: #ffffff;
+    padding: 0 15px;
+    font-size: 16px;
+}
+
+window#waybar.top #tray {
+    margin-right: 10px;
+}
+
+
+/* ============================================
+   UNTERE BAR (BOTTOM)
+   ============================================ */
+
+window#waybar.bottom * {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* --- Alle Module unten (inkl. Network) --- */
+window#waybar.bottom #cpu,
+window#waybar.bottom #memory,
+window#waybar.bottom #disk,
+window#waybar.bottom #temperature,
+window#waybar.bottom #custom-hostname,
+window#waybar.bottom #custom-localip,
+window#waybar.bottom #custom-publicip,
+window#waybar.bottom #custom-uptime,
+window#waybar.bottom #network {
+    padding: 4px 10px;
+    margin: 2px 2px;
+    color: #ffffff;
+    background-color: transparent;
+    border-radius: 8px;
+}
+
+/* Spacing für Network Module */
+window#waybar.bottom #network.speed {
+    margin-right: 6px;
+}
+
+window#waybar.bottom #network.vpn {
+    margin-right: 6px;
+}
+
+window#waybar.bottom #network.wifi {
+    margin-right: 4px;
+}
+
+/* --- Hover-Effekte unten --- */
+window#waybar.bottom #cpu:hover,
+window#waybar.bottom #memory:hover,
+window#waybar.bottom #disk:hover,
+window#waybar.bottom #temperature:hover,
+window#waybar.bottom #custom-localip:hover,
+window#waybar.bottom #custom-publicip:hover,
+window#waybar.bottom #custom-uptime:hover,
+window#waybar.bottom #network:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* --- Status-Farben unten --- */
+window#waybar.bottom #cpu.warning {
+    color: rgba(255, 131, 36, 1.0);
+}
+
+window#waybar.bottom #cpu.critical {
+    color: #FF340F;
+}
+
+window#waybar.bottom #memory.warning {
+    color: rgba(255, 131, 36, 1.0);
+}
+
+window#waybar.bottom #memory.critical {
+    color: #FF340F;
+}
+
+window#waybar.bottom #disk.warning {
+    color: rgba(255, 131, 36, 1.0);
+}
+
+window#waybar.bottom #disk.critical {
+    color: #FF340F;
+}
+
+window#waybar.bottom #temperature.critical {
+    color: #FF340F;
+    animation: blink-temp 0.5s infinite alternate;
+}
+
+@keyframes blink-temp {
+    to { color: #ffffff; }
+}
+
+/* --- Hostname Highlight --- */
+window#waybar.bottom #custom-hostname {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* --- IP Adressen & Uptime --- */
+window#waybar.bottom #custom-localip,
+window#waybar.bottom #custom-publicip,
+window#waybar.bottom #custom-uptime {
+    font-family: monospace;
+    font-size: 14px;
+}
+
+/* --- System Drawer unten --- */
+window#waybar.bottom #custom-notifications {
+    margin-right: 5px;
+    padding: 2px 8px;
+}
+
+/* --- Module Gruppierung --- */
+.modules-left,
+.modules-center,
+.modules-right {
+    margin: 2px 5px;
+}
+
+/* Optional override for hiding bottom bar */
+@import url('hide-bottom.css');

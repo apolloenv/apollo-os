@@ -1,0 +1,210 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   APOLLO OS - WAYBAR ENTERPRISE STYLE
+   Terminal-Ästhetik mit farbigen Werten
+   Klar, effizient, informativ
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
+    font-size: 12px;
+    font-weight: 500;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: #0d0d0d;
+    color: #ffffff;
+}
+
+/* ─── Containers ───────────────────────────────────────────────────────────── */
+
+.modules-left,
+.modules-center,
+.modules-right {
+    padding: 0 4px;
+}
+
+/* ─── Logo ─────────────────────────────────────────────────────────────────── */
+
+#custom-logo {
+    color: #00ff00;
+    font-size: 14px;
+    padding: 0 12px 0 8px;
+}
+
+#custom-logo:hover {
+    color: #00ff88;
+}
+
+/* ─── Separator ────────────────────────────────────────────────────────────── */
+
+#custom-sep {
+    color: #444444;
+    padding: 0 6px;
+}
+
+/* ─── Workspaces ───────────────────────────────────────────────────────────── */
+
+#workspaces {
+    padding: 0 4px;
+}
+
+#workspaces button {
+    padding: 0 10px;
+    margin: 0 1px;
+    color: #666666;
+    background: transparent;
+}
+
+#workspaces button.active {
+    color: #00ff00;
+    background: #1a1a1a;
+}
+
+#workspaces button:hover {
+    color: #ffffff;
+    background: #222222;
+}
+
+/* ─── System Stats ─────────────────────────────────────────────────────────── */
+
+#cpu,
+#memory,
+#disk,
+#temperature {
+    padding: 0 8px;
+    color: #00ff00;
+}
+
+#cpu.warning,
+#memory.warning,
+#disk.warning {
+    color: #ffff00;
+}
+
+#cpu.critical,
+#memory.critical,
+#disk.critical {
+    color: #ff0000;
+}
+
+#temperature {
+    color: #00ffff;
+}
+
+#temperature.critical {
+    color: #ff0000;
+}
+
+/* ─── Clock ────────────────────────────────────────────────────────────────── */
+
+#clock {
+    color: #ffffff;
+    font-weight: 700;
+    padding: 0 16px;
+}
+
+/* ─── Network ──────────────────────────────────────────────────────────────── */
+
+#network {
+    padding: 0 8px;
+    color: #00ffff;
+}
+
+#network.disconnected {
+    color: #ff0000;
+}
+
+#network.speed {
+    color: #00ff00;
+}
+
+#custom-localip {
+    padding: 0 8px;
+    color: #888888;
+    font-size: 11px;
+}
+
+/* ─── Bluetooth ────────────────────────────────────────────────────────────── */
+
+#bluetooth {
+    padding: 0 8px;
+    color: #00ffff;
+}
+
+#bluetooth.disabled {
+    color: #444444;
+}
+
+/* ─── Audio & Brightness ───────────────────────────────────────────────────── */
+
+#pulseaudio {
+    padding: 0 8px;
+    color: #ffff00;
+}
+
+#pulseaudio.muted {
+    color: #ff0000;
+}
+
+#backlight {
+    padding: 0 8px;
+    color: #ffff00;
+}
+
+/* ─── Battery ──────────────────────────────────────────────────────────────── */
+
+#battery {
+    padding: 0 8px;
+    color: #00ff00;
+}
+
+#battery.charging {
+    color: #00ffff;
+}
+
+#battery.warning {
+    color: #ffff00;
+}
+
+#battery.critical {
+    color: #ff0000;
+}
+
+/* ─── Power Profile ────────────────────────────────────────────────────────── */
+
+#custom-power-profile {
+    padding: 0 8px;
+    color: #888888;
+    font-size: 11px;
+}
+
+/* ─── Tray ─────────────────────────────────────────────────────────────────── */
+
+#tray {
+    padding: 0 8px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+}
+
+/* ─── Tooltip ──────────────────────────────────────────────────────────────── */
+
+tooltip {
+    background: #0d0d0d;
+    border: 1px solid #00ff00;
+}
+
+tooltip label {
+    color: #ffffff;
+    padding: 6px 10px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+}

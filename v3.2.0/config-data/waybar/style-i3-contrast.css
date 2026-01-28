@@ -1,0 +1,272 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   APOLLO OS - WAYBAR i3 CONTRAST STYLE
+   High Contrast i3bar-Design mit leuchtenden Farben
+   Maximale Lesbarkeit und Klarheit
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    font-size: 12px;
+    font-weight: 600;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+/* ─── Workspaces (High Contrast i3 Style) ──────────────────────────────────── */
+
+#workspaces {
+    padding: 0;
+    margin: 0;
+}
+
+#workspaces button {
+    padding: 0 12px;
+    margin: 0;
+    background-color: #1a1a1a;
+    color: #666666;
+    border-right: 1px solid #000000;
+    transition: all 0.2s ease;
+}
+
+#workspaces button.active {
+    background-color: #0088ff;
+    color: #ffffff;
+    border-bottom: 3px solid #00aaff;
+    font-weight: 700;
+}
+
+#workspaces button:hover {
+    background-color: #2a2a2a;
+    color: #ffffff;
+}
+
+#workspaces button.urgent {
+    background-color: #ff0000;
+    color: #ffffff;
+    animation: blink 1s ease-in-out infinite;
+}
+
+/* ─── Rechte Module - High Contrast Blöcke ──────────────────────────────────── */
+
+.modules-right {
+    margin: 0;
+    padding: 0;
+}
+
+/* CPU - Blau wie Workspaces */
+#cpu {
+    padding: 0 10px;
+    background-color: #0088ff;
+    color: #ffffff;
+    border-right: 1px solid #000000;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+#cpu.warning {
+    background-color: #dd8800;
+    color: #ffffff;
+}
+
+#cpu.critical {
+    background-color: #dd0000;
+    color: #ffffff;
+}
+
+/* Memory - Grün */
+#memory {
+    padding: 0 10px;
+    background-color: #00bb44;
+    color: #ffffff;
+    border-right: 1px solid #000000;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+#memory.warning {
+    background-color: #dd8800;
+    color: #ffffff;
+}
+
+#memory.critical {
+    background-color: #dd0000;
+    color: #ffffff;
+}
+
+/* Disk - Grau */
+#disk {
+    padding: 0 10px;
+    background-color: #666666;
+    color: #ffffff;
+    border-right: 1px solid #000000;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+#disk.warning {
+    background-color: #dd8800;
+    color: #ffffff;
+}
+
+#disk.critical {
+    background-color: #dd0000;
+    color: #ffffff;
+}
+
+/* Temperature - Grau (wie Clock) */
+#temperature {
+    padding: 0 10px;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border-right: 1px solid #000000;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+#temperature.critical {
+    background-color: #dd0000;
+    color: #ffffff;
+}
+
+/* Network Speed - Hellgrau wie Disk */
+#network.speed,
+#network#speed {
+    padding: 0 10px;
+    background-color: #666666;
+    color: #ffffff;
+    border-right: 1px solid #000000;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+/* Local IP - Dunkelgrau wie Clock */
+#custom-localip {
+    padding: 0 10px;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border-right: 1px solid #000000;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+/* External IP - Dunkelgrau wie Clock */
+#custom-externalip {
+    padding: 0 10px;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border-right: 1px solid #000000;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+/* Network - Hellgrau wie Disk */
+#network {
+    padding: 0 10px;
+    background-color: #666666;
+    color: #ffffff;
+    border-right: 1px solid #000000;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+#network.disconnected {
+    background-color: #dd0000;
+    color: #ffffff;
+}
+
+/* Pulseaudio - Blau */
+#pulseaudio {
+    padding: 0 10px;
+    background-color: #0088ff;
+    color: #ffffff;
+    border-right: 1px solid #000000;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+#pulseaudio.muted {
+    background-color: #333333;
+    color: #888888;
+}
+
+/* Backlight - Dunkelgrau wie Clock */
+#backlight {
+    padding: 0 10px;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border-right: 1px solid #000000;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+/* Battery - Grün (standard) */
+#battery {
+    padding: 0 10px;
+    background-color: #00bb44;
+    color: #ffffff;
+    border-right: 1px solid #000000;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+#battery.charging {
+    background-color: #00dd55;
+    color: #ffffff;
+}
+
+#battery.warning {
+    background-color: #dd8800;
+    color: #ffffff;
+}
+
+#battery.critical {
+    background-color: #dd0000;
+    color: #ffffff;
+}
+
+/* Clock - Dunkelgrau (wie Tray) */
+#clock {
+    padding: 0 12px;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border-right: 1px solid #000000;
+    font-weight: 900;
+    transition: all 0.2s ease;
+}
+
+/* Tray - Dunkel */
+#tray {
+    padding: 0 8px;
+    background-color: #1a1a1a;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+/* Großer roter Bereich bei Benachrichtigungen */
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: #ff0000;
+    padding: 4px 20px;
+    margin: 0 -16px;
+    border-radius: 0;
+}
+
+/* ─── Tooltip ──────────────────────────────────────────────────────────────── */
+
+tooltip {
+    background: #000000;
+    border: 2px solid #00ccff;
+}
+
+tooltip label {
+    color: #ffffff;
+    padding: 6px 10px;
+}

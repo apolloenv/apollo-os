@@ -1,0 +1,272 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   APOLLO OS - WAYBAR i3 RETRO MODERN STYLE
+   Modern take on classic i3 design with retro 70s/80s colors
+   Simple, blocky, but refined
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+* {
+    border: none;
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    font-size: 13px;
+    font-weight: 500;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: #2d2d2d;
+    color: #e8d5b7;
+    transition: all 0.2s ease;
+}
+
+/* ─── Workspaces (Modern i3 Blocks) ────────────────────────────────────────── */
+
+#workspaces {
+    padding: 4px 0px;
+    margin: 0 4px;
+}
+
+#workspaces button {
+    padding: 4px 14px;
+    margin: 0 2px;
+    background-color: #3a3a3a;
+    color: #888888;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+#workspaces button.active {
+    background: linear-gradient(to bottom, #4a8c8c, #5d9e7a);
+    color: #2d2d2d;
+    font-weight: 700;
+    box-shadow: 0 2px 4px rgba(74, 140, 140, 0.4);
+}
+
+#workspaces button:hover {
+    background-color: #4a4a4a;
+    color: #e8d5b7;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+#workspaces button.urgent {
+    background-color: #c94a3a;
+    color: #e8d5b7;
+}
+
+/* ─── Window Title ────────────────────────────────────────────────────────── */
+
+#window {
+    margin: 4px 8px;
+    padding: 4px 14px;
+    background-color: rgba(58, 58, 58, 0.6);
+    color: #e8d5b7;
+    border-radius: 3px;
+    font-weight: 400;
+}
+
+/* ─── Right Modules - Modern Retro Blocks ──────────────────────────────────── */
+
+.modules-right {
+    margin: 4px 4px 4px 0;
+}
+
+/* CPU - Retro Green */
+#cpu {
+    padding: 6px 8px;
+    margin: 0 2px;
+    background: linear-gradient(to bottom, #5d9e7a, #6bb08a);
+    color: #2d2d2d;
+    font-weight: 600;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+#cpu.warning {
+    background: linear-gradient(to bottom, #d4943a, #e0a550);
+    color: #2d2d2d;
+}
+
+#cpu.critical {
+    background: linear-gradient(to bottom, #c94a3a, #d55a4a);
+    color: #e8d5b7;
+}
+
+/* Memory - Retro Teal */
+#memory {
+    padding: 6px 8px;
+    margin: 0 2px;
+    background: linear-gradient(to bottom, #4a8c8c, #5a9c9c);
+    color: #2d2d2d;
+    font-weight: 600;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+#memory.warning {
+    background: linear-gradient(to bottom, #d4943a, #e0a550);
+    color: #2d2d2d;
+}
+
+#memory.critical {
+    background: linear-gradient(to bottom, #c94a3a, #d55a4a);
+    color: #e8d5b7;
+}
+
+/* Disk - Retro Orange/Mustard */
+#disk {
+    padding: 6px 8px;
+    margin: 0 2px;
+    background: linear-gradient(to bottom, #d4943a, #e0a550);
+    color: #2d2d2d;
+    font-weight: 600;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+#disk.warning {
+    background: linear-gradient(to bottom, #c94a3a, #d55a4a);
+    color: #e8d5b7;
+}
+
+#disk.critical {
+    background: linear-gradient(to bottom, #8b2020, #a02828);
+    color: #e8d5b7;
+}
+
+/* Temperature - Retro Red */
+#temperature {
+    padding: 6px 8px;
+    margin: 0 2px;
+    background: linear-gradient(to bottom, #c94a3a, #d55a4a);
+    color: #e8d5b7;
+    font-weight: 600;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+#temperature.critical {
+    background: linear-gradient(to bottom, #8b2020, #a02828);
+    color: #e8d5b7;
+}
+
+/* Network - Retro Green */
+#network {
+    padding: 6px 8px;
+    margin: 0 2px;
+    background: linear-gradient(to bottom, #5d9e7a, #6bb08a);
+    color: #2d2d2d;
+    font-weight: 600;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+#network.disconnected {
+    background: linear-gradient(to bottom, #c94a3a, #d55a4a);
+    color: #e8d5b7;
+}
+
+/* Pulseaudio - Retro Beige */
+#pulseaudio {
+    padding: 6px 8px;
+    margin: 0 2px;
+    background: linear-gradient(to bottom, #e8d5b7, #f0ddc7);
+    color: #2d2d2d;
+    font-weight: 600;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+#pulseaudio.muted {
+    background: linear-gradient(to bottom, #4a4a4a, #5a5a5a);
+    color: #888888;
+}
+
+/* Backlight - Retro Orange */
+#backlight {
+    padding: 6px 8px;
+    margin: 0 2px;
+    background: linear-gradient(to bottom, #d4943a, #e0a550);
+    color: #2d2d2d;
+    font-weight: 600;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+/* Battery - Retro Teal */
+#battery {
+    padding: 6px 8px;
+    margin: 0 2px;
+    background: linear-gradient(to bottom, #4a8c8c, #5a9c9c);
+    color: #2d2d2d;
+    font-weight: 600;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+#battery.charging {
+    background: linear-gradient(to bottom, #5d9e7a, #6bb08a);
+    color: #2d2d2d;
+}
+
+#battery.warning {
+    background: linear-gradient(to bottom, #d4943a, #e0a550);
+    color: #2d2d2d;
+}
+
+#battery.critical {
+    background: linear-gradient(to bottom, #c94a3a, #d55a4a);
+    color: #e8d5b7;
+}
+
+/* Clock - Retro Beige/Cream (Highlight) */
+#clock {
+    padding: 6px 8px;
+    margin: 0 2px;
+    background: linear-gradient(to bottom, #e8d5b7, #f0ddc7);
+    color: #2d2d2d;
+    font-weight: 700;
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(232, 213, 183, 0.3);
+    transition: all 0.2s ease;
+}
+
+/* Tray - Dark Block */
+#tray {
+    padding: 6px 8px;
+    margin: 0 2px;
+    background-color: #3a3a3a;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    background-color: #c94a3a;
+    border-radius: 3px;
+    padding: 2px;
+}
+
+/* ─── Tooltip ──────────────────────────────────────────────────────────────── */
+
+tooltip {
+    background: #2d2d2d;
+    border: 2px solid #4a8c8c;
+    border-radius: 4px;
+}
+
+tooltip label {
+    color: #e8d5b7;
+    padding: 8px 12px;
+}

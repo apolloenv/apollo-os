@@ -1,0 +1,93 @@
+# Apollo OS - Futuristic Hacker Theme
+# Cyberpunk/Matrix inspired with neon colors
+# Copyright © 2025 by Manuel Kraibacher
+
+# Main background - dark terminal for transparency
+theme[main_bg]="#0a0e14"
+
+# Main text color - bright cyan
+theme[main_fg]="#00ffff"
+
+# Title color for boxes - neon green
+theme[title]="#00ff00"
+
+# Highlight color for keyboard shortcuts - neon magenta
+theme[hi_fg]="#ff00ff"
+
+# Background color of selected item in processes box - electric blue
+theme[selected_bg]="#0080ff"
+
+# Foreground color of selected item in processes box - bright white
+theme[selected_fg]="#ffffff"
+
+# Color of inactive/disabled text - dark gray
+theme[inactive_fg]="#2d3748"
+
+# Color of text appearing on top of graphs - bright cyan
+theme[graph_text]="#00ffff"
+
+# Background color of the percentage meters - dark slate
+theme[meter_bg]="#1a202c"
+
+# Misc colors for processes box - neon purple
+theme[proc_misc]="#a855f7"
+
+# Cpu box outline color - neon green (Matrix style)
+theme[cpu_box]="#00ff00"
+
+# Memory/disks box outline color - electric cyan
+theme[mem_box]="#00ffff"
+
+# Net up/down box outline color - hot pink/magenta
+theme[net_box]="#ff00ff"
+
+# Processes box outline color - neon yellow
+theme[proc_box]="#ffff00"
+
+# Box divider line and small boxes line color - subtle blue
+theme[div_line]="#1e3a5f"
+
+# Temperature graph colors - hot gradient (blue to red)
+theme[temp_start]="#00ffff"
+theme[temp_mid]="#ff8800"
+theme[temp_end]="#ff0000"
+
+# CPU graph colors - Matrix green gradient
+theme[cpu_start]="#00ff00"
+theme[cpu_mid]="#00ffaa"
+theme[cpu_end]="#00ffff"
+
+# Mem/Disk free meter - cool cyan gradient
+theme[free_start]="#00ffff"
+theme[free_mid]="#0099ff"
+theme[free_end]="#0066ff"
+
+# Mem/Disk cached meter - electric purple gradient
+theme[cached_start]="#aa00ff"
+theme[cached_mid]="#ff00ff"
+theme[cached_end]="#ff66ff"
+
+# Mem/Disk available meter - warm yellow gradient
+theme[available_start]="#ffff00"
+theme[available_mid]="#ffaa00"
+theme[available_end]="#ff8800"
+
+# Mem/Disk used meter - Matrix green gradient (darker to brighter)
+theme[used_start]="#008800"
+theme[used_mid]="#00cc00"
+theme[used_end]="#00ff00"
+
+# Download graph colors - cool blue to cyan
+theme[download_start]="#0066ff"
+theme[download_mid]="#0099ff"
+theme[download_end]="#00ffff"
+
+# Upload graph colors - hot magenta to pink
+theme[upload_start]="#ff00ff"
+theme[upload_mid]="#ff66ff"
+theme[upload_end]="#ff99ff"
+
+# Process box color gradient for threads, mem and cpu usage - neon rainbow
+theme[process_start]="#00ff00"
+theme[process_mid]="#00ffff"
+theme[process_end]="#ff00ff"
