@@ -1,0 +1,14 @@
+[Unit]
+Description=Apollo OS Right Ctrl Voice Input Trigger
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 %h/.local/bin/apollo-os-rightctrl-voice.py
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

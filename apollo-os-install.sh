@@ -1736,6 +1736,12 @@ install_voice_control() {
 
     # Create sounds directory and copy sound files
     mkdir -p "$HOME/.local/share/apollo-os/sounds"
+    # Copy from apollo-os-sys (voice-start.wav, voice-end.wav, sleep.mp3, wake.mp3)
+    if [ -d "$SCRIPT_DIR/apollo-os-sys/sounds" ]; then
+        cp "$SCRIPT_DIR/apollo-os-sys/sounds/"*.wav "$HOME/.local/share/apollo-os/sounds/" 2>/dev/null || true
+        cp "$SCRIPT_DIR/apollo-os-sys/sounds/"*.mp3 "$HOME/.local/share/apollo-os/sounds/" 2>/dev/null || true
+    fi
+    # Copy from orbit extras if exists
     if [ -d "$SCRIPT_DIR/apollo-os-orbit/extras/sounds" ]; then
         cp "$SCRIPT_DIR/apollo-os-orbit/extras/sounds/"*.wav "$HOME/.local/share/apollo-os/sounds/" 2>/dev/null || true
     fi
