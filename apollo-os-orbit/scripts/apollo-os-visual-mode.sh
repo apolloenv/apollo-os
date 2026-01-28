@@ -77,7 +77,7 @@ tts_notify() {
 }
 
 # Screen corners control
-SCREEN_CORNERS_SCRIPT="$HOME/screen-corners/screen-corners.py"
+SCREEN_CORNERS_SCRIPT="$HOME/.local/bin/screen-corners.py"
 
 # macOS Dock control
 DOCK_CONFIG="$HOME/.config/waybar/config-niri-macos-dock"

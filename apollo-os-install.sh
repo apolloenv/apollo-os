@@ -480,8 +480,9 @@ install_packages() {
             log "Apollo OS Orbit already installed ✓"
         fi
 
-        # Install Hyprlock for Niri (lock screen)
+        # Install Hyprlock for Niri (lock screen) - from COPR
         log "Installing Hyprlock (lock screen)..."
+        sudo dnf copr enable -y solopasha/hyprland 2>/dev/null || true
         sudo dnf install -y hyprlock || warn "Hyprlock installation failed"
 
         # Install KDE System Settings for Niri
@@ -537,13 +538,15 @@ install_packages() {
     sudo -v  # Refresh sudo
 
     # Critical UI components
-    sudo dnf install -y rofi mako grim slurp wl-clipboard swaylock swaybg swayidle || error "Critical UI components failed"
+    sudo dnf install -y rofi mako grim slurp wl-clipboard swaylock swaybg swayidle wtype || error "Critical UI components failed"
 
     # Terminal Emulators
     log "Installing terminal emulators..."
     sudo dnf install -y \
         alacritty \
         kitty \
+        foot \
+        fish \
         || warn "Terminal installation failed"
 
     # System Tools
@@ -1530,6 +1533,10 @@ setup_systemd() {
     log "Enabling Sleep/Wake TTS notifications..."
     systemctl --user enable apollo-os-sleep.service || warn "Failed to enable sleep service"
     systemctl --user enable apollo-os-wake.service || warn "Failed to enable wake service"
+    
+    # Enable screen-corners service
+    log "Enabling screen-corners service..."
+    systemctl --user enable screen-corners.service || warn "Failed to enable screen-corners service"
     
     # Enable services (event monitor will be started by autostart script)
     # We don't enable it as systemd service to avoid race conditions
