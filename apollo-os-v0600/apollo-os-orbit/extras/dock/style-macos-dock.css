@@ -1,0 +1,90 @@
+/* ============================================
+   WAYBAR STYLE - APOLLO OS macOS DOCK
+   Copyright 2025 by Manuel Kraibacher
+   macOS Dock Style with Kora Icons
+   ============================================ */
+
+/* === GLOBALE SETTINGS === */
+* {
+    border: none;
+    font-family: "SF Pro Display", "Inter", sans-serif;
+    font-weight: 500;
+    min-height: 0;
+}
+
+/* Dock - macOS Style */
+window#waybar {
+    background-color: rgba(30, 30, 30, 0.5);
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* --- Module Container --- */
+window#waybar.bottom .modules-center {
+    background-color: transparent;
+    padding: 4px 12px;
+    margin: 0;
+}
+
+/* --- App Icons Base Style --- */
+window#waybar.bottom #custom-files,
+window#waybar.bottom #custom-kitty,
+window#waybar.bottom #custom-terminal,
+window#waybar.bottom #custom-edge,
+window#waybar.bottom #custom-vscode,
+window#waybar.bottom #custom-remmina,
+window#waybar.bottom #custom-neovim,
+window#waybar.bottom #custom-onlyoffice,
+window#waybar.bottom #custom-fresh,
+window#waybar.bottom #custom-google {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 4px;
+    margin: 0 4px;
+    background-color: transparent;
+    background-size: 36px 36px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 10px;
+}
+
+/* --- Individual App Icons (Kora Theme) --- */
+window#waybar.bottom #custom-files {
+    background-image: url('/usr/share/icons/kora/apps/scalable/org.gnome.Nautilus.svg');
+}
+
+window#waybar.bottom #custom-kitty {
+    background-image: url('/usr/share/icons/kora/apps/scalable/kitty.svg');
+}
+
+window#waybar.bottom #custom-terminal {
+    background-image: url('/usr/share/icons/kora/apps/scalable/kitty.svg');
+}
+
+window#waybar.bottom #custom-edge {
+    background-image: url('/usr/share/icons/kora/apps/scalable/microsoft-edge.svg');
+}
+
+window#waybar.bottom #custom-vscode {
+    background-image: url('/usr/share/icons/kora/apps/scalable/visual-studio-code.svg');
+}
+
+window#waybar.bottom #custom-remmina {
+    background-image: url('/usr/share/icons/kora/apps/scalable/org.remmina.Remmina.svg');
+}
+
+window#waybar.bottom #custom-neovim {
+    background-image: url('/usr/share/icons/kora/apps/scalable/neovim.svg');
+}
+
+window#waybar.bottom #custom-onlyoffice {
+    background-image: url('/usr/share/icons/kora/apps/scalable/libreoffice-main.svg');
+}
+
+window#waybar.bottom #custom-fresh {
+    background-image: url('/usr/share/icons/kora/apps/scalable/org.gnome.TextEditor.svg');
+}
+
+window#waybar.bottom #custom-google {
+    background-image: url('/usr/share/icons/kora/apps/scalable/google.svg');
+}
