@@ -294,89 +294,24 @@ Mit Desktop-Audio + Mikrofon"
         ;;
 
     "Security Status")
+        # Gather status
         status_lines=""
-
         fw=$(systemctl is-active firewalld 2>/dev/null || echo "inactive")
-        [ "$fw" = "active" ] && status_lines+="Firewall: Aktiv\n" || status_lines+="Firewall: INAKTIV\n"
-
+        [ "$fw" = "active" ] && status_lines+="✅ Firewall\n" || status_lines+="❌ Firewall\n"
         f2b=$(systemctl is-active fail2ban 2>/dev/null || echo "inactive")
-        if [ "$f2b" = "active" ]; then
-            banned=$(sudo -n fail2ban-client status sshd 2>/dev/null | grep "Currently banned" | awk '{print $NF}')
-            banned=${banned:-0}
-            status_lines+="fail2ban: Aktiv ($banned gebannte IPs)\n"
-        else
-            status_lines+="fail2ban: Inaktiv\n"
-        fi
-
+        [ "$f2b" = "active" ] && status_lines+="✅ fail2ban\n" || status_lines+="❌ fail2ban\n"
         clam=$(systemctl is-active clamav-freshclam 2>/dev/null || echo "inactive")
-        [ "$clam" = "active" ] && status_lines+="ClamAV: Signaturen aktuell\n" || status_lines+="ClamAV: Freshclam inaktiv\n"
-
-        se=$(getenforce 2>/dev/null || echo "Unknown")
-        status_lines+="SELinux: $se\n"
-
-        bd=$(systemctl is-active bdsec 2>/dev/null || systemctl is-active bdagentd 2>/dev/null || echo "inactive")
-        [ "$bd" = "active" ] && status_lines+="Bitdefender: Aktiv\n" || status_lines+="Bitdefender: Inaktiv\n"
-
-        pm=$(systemctl --user is-active apollo-os-port-monitor.timer 2>/dev/null || echo "inactive")
-        [ "$pm" = "active" ] && status_lines+="Port Monitor: Aktiv\n" || status_lines+="Port Monitor: Inaktiv\n"
-
-        sa=$(systemctl --user is-active apollo-os-security-audit.timer 2>/dev/null || echo "inactive")
-        [ "$sa" = "active" ] && status_lines+="Security Audit: Aktiv\n" || status_lines+="Security Audit: Inaktiv\n"
-
-        # DNS-over-TLS
-        [ -f /etc/systemd/resolved.conf.d/99-apollo-dns-tls.conf ] && status_lines+="DNS-over-TLS: Aktiv\n" || status_lines+="DNS-over-TLS: Inaktiv\n"
-
-        # MAC randomization
-        [ -f /etc/NetworkManager/conf.d/99-apollo-mac-random.conf ] && status_lines+="MAC Randomization: Aktiv\n" || status_lines+="MAC Randomization: Inaktiv\n"
-
-        # AIDE
-        if command -v aide &>/dev/null && [ -f /var/lib/aide/aide.db.gz ]; then
-            status_lines+="AIDE Integrity: Aktiv\n"
-        fi
-
-        # Watchdog
-        wd=$(systemctl --user is-active apollo-os-watchdog.service 2>/dev/null || echo "inactive")
-        [ "$wd" = "active" ] && status_lines+="Service Watchdog: Aktiv\n" || status_lines+="Service Watchdog: Inaktiv\n"
-
+        [ "$clam" = "active" ] && status_lines+="✅ ClamAV\n" || status_lines+="❌ ClamAV\n"
+        se=$(getenforce 2>/dev/null || echo "Disabled")
+        status_lines+="🔒 SELinux: $se\n"
+        bd=$(systemctl is-active bdsec 2>/dev/null || echo "inactive")
+        [ "$bd" = "active" ] && status_lines+="✅ Bitdefender\n" || status_lines+="❌ Bitdefender\n"
+        [ -f /etc/systemd/resolved.conf.d/99-apollo-dns-tls.conf ] && status_lines+="✅ DNS-over-TLS\n" || status_lines+="❌ DNS-over-TLS\n"
+        [ -f /etc/NetworkManager/conf.d/99-apollo-mac-random.conf ] && status_lines+="✅ MAC Randomization\n" || status_lines+="❌ MAC Randomization\n"
         open_ports=$(ss -tlnp 2>/dev/null | awk 'NR>1 {print $4}' | sort -u | tr '\n' ', ' | sed 's/,$//')
-        status_lines+="Offene Ports: ${open_ports:-keine}\n"
+        status_lines+="🌐 Ports: ${open_ports:-keine}"
 
-        actions_sec="Status anzeigen
-Port-Scan jetzt ausfuehren
-Security-Log anzeigen
-Lynis Audit jetzt starten
-ClamAV Home-Scan starten"
-
-        selected_sec=$(echo -e "$actions_sec" | rofi -dmenu -p "> Security" -i \
-            -theme-str 'window {width: 750px;} listview {lines: 6;}')
-
-        case "$selected_sec" in
-            *"Status anzeigen"*)
-                echo -e "$status_lines" | rofi -dmenu -p "> Security Status" -i \
-                    -theme-str 'window {width: 700px;} listview {lines: 10;}'
-                ;;
-            *"Port-Scan jetzt"*)
-                notify-send "Apollo Security" "Port-Scan wird ausgefuehrt..."
-                "$HOME/.local/bin/apollo-os-port-monitor.sh" &
-                ;;
-            *"Security-Log"*)
-                log_file="$HOME/.local/state/apollo-os/security-alerts.log"
-                if [ -f "$log_file" ]; then
-                    tail -30 "$log_file" | rofi -dmenu -p "> Security Log" -i \
-                        -theme-str 'window {width: 900px;} listview {lines: 15;} element {font: "JetBrainsMono Nerd Font 10";}'
-                else
-                    notify-send "Apollo Security" "Noch kein Security-Log vorhanden"
-                fi
-                ;;
-            *"Lynis Audit"*)
-                notify-send "Apollo Security" "Lynis Audit wird gestartet..."
-                alacritty -e bash -c 'sudo lynis audit system; echo ""; read -p "Enter zum Schliessen..."' &
-                ;;
-            *"ClamAV Home-Scan"*)
-                notify-send "Apollo Security" "ClamAV Scan wird gestartet..."
-                alacritty -e bash -c 'echo "ClamAV Scan: $HOME"; echo ""; clamscan -r --bell --infected "$HOME" 2>/dev/null | tail -20; echo ""; read -p "Enter zum Schliessen..."' &
-                ;;
-        esac
+        notify-send -t 10000 "Apollo OS - Security Status" "$(echo -e "$status_lines")"
         ;;
 
     "Power Profiles")
