@@ -2181,8 +2181,21 @@ install_bitdefender() {
     fi
 
     if [[ ! -f "$BD_RPM" ]]; then
-        warn "Bitdefender RPM not found at: $BD_RPM"
-        return 1
+        echo
+        echo -e "${YELLOW}╔══════════════════════════════════════════════════════════════╗${NC}"
+        echo -e "${YELLOW}║  Bitdefender RPM not found (too large for Git repository)   ║${NC}"
+        echo -e "${YELLOW}║                                                              ║${NC}"
+        echo -e "${YELLOW}║  To install Bitdefender, manually download the RPM from      ║${NC}"
+        echo -e "${YELLOW}║  your GravityZone Control Center and place it in:            ║${NC}"
+        echo -e "${YELLOW}║                                                              ║${NC}"
+        echo -e "${YELLOW}║    apollo-os-sys/packages/                                   ║${NC}"
+        echo -e "${YELLOW}║                                                              ║${NC}"
+        echo -e "${YELLOW}║  Then re-run the installer or install manually:              ║${NC}"
+        echo -e "${YELLOW}║    sudo dnf install ./bitdefender-*.rpm                      ║${NC}"
+        echo -e "${YELLOW}╚══════════════════════════════════════════════════════════════╝${NC}"
+        echo
+        warn "Skipping Bitdefender — RPM not found. System continues without it."
+        return 0
     fi
 
     # Check if already installed

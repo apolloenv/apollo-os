@@ -29,6 +29,19 @@ chmod +x apollo-os-install.sh
 sudo ./apollo-os-install.sh
 ```
 
+### Optional: Bitdefender Security Tools
+
+The Bitdefender RPM (~289 MB) exceeds GitHub's file size limit and is **not included** in the repository.
+To install Bitdefender alongside Apollo OS:
+
+1. Download the RPM from your [GravityZone Control Center](https://gravityzone.bitdefender.com) (Network → Packages → Linux)
+2. Place it in `apollo-os-v0600/apollo-os-sys/packages/` before running the installer
+3. The installer detects it automatically
+
+> Apollo OS works fully without Bitdefender — all other 16 security modules are included.
+
+### What the Installer Does
+
 The installer will:
 1. Ask which desktop(s) to install (Orbit / Glass / Both)
 2. Ask for editor preference (Neovim / Fresh Editor / Both)
