@@ -1439,7 +1439,7 @@ install_kora_icons() {
     echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}\n"
     
     local KORA_DIR="$HOME/.cache/kora-icons"
-    local ICONS_DIR="$HOME/.local/share/icons"
+    local ICONS_DIR="/usr/share/icons"
     
     # Clone the repository
     log "Cloning Kora icon theme repository..."
@@ -1449,26 +1449,23 @@ install_kora_icons() {
         return 1
     }
     
-    # Create icons directory
-    mkdir -p "$ICONS_DIR"
-    
-    # Copy icon themes
+    # Copy icon themes (system-wide for Waybar CSS compatibility)
     log "Installing Kora icons..."
     if [[ -d "$KORA_DIR/kora" ]]; then
-        cp -r "$KORA_DIR/kora" "$ICONS_DIR/"
+        sudo cp -r "$KORA_DIR/kora" "$ICONS_DIR/"
         log "Kora icon theme installed ✓"
     fi
     
     if [[ -d "$KORA_DIR/kora-pgrey" ]]; then
-        cp -r "$KORA_DIR/kora-pgrey" "$ICONS_DIR/"
+        sudo cp -r "$KORA_DIR/kora-pgrey" "$ICONS_DIR/"
         log "Kora-pgrey icon theme installed ✓"
     fi
     
     # Update icon cache
     if command -v gtk-update-icon-cache &>/dev/null; then
         log "Updating icon cache..."
-        gtk-update-icon-cache -f "$ICONS_DIR/kora" 2>/dev/null || true
-        gtk-update-icon-cache -f "$ICONS_DIR/kora-pgrey" 2>/dev/null || true
+        sudo gtk-update-icon-cache -f "$ICONS_DIR/kora" 2>/dev/null || true
+        sudo gtk-update-icon-cache -f "$ICONS_DIR/kora-pgrey" 2>/dev/null || true
     fi
     
     # Set kora as default icon theme via gsettings
