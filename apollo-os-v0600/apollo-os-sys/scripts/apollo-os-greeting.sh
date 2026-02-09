@@ -16,35 +16,31 @@ export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-1}"
 HOUR=$(date +%H)
 USER_NAME="${USER^}"  # Capitalize first letter (for notification only)
 
-# Determine greeting based on time (German for TTS)
+# Determine greeting based on time
 if [[ $HOUR -ge 5 && $HOUR -lt 12 ]]; then
-    GREETING_EN="Good morning"
-    TTS_GREETING="Guten Morgen"
+    GREETING="Guten Morgen"
     ICON="weather-clear"
 elif [[ $HOUR -ge 12 && $HOUR -lt 18 ]]; then
-    GREETING_EN="Good afternoon"
-    TTS_GREETING="Guten Tag"
+    GREETING="Guten Tag"
     ICON="weather-clear"
 elif [[ $HOUR -ge 18 && $HOUR -lt 22 ]]; then
-    GREETING_EN="Good evening"
-    TTS_GREETING="Guten Abend"
+    GREETING="Guten Abend"
     ICON="weather-clear-night"
 else
-    GREETING_EN="Good night"
-    TTS_GREETING="Gute Nacht"
+    GREETING="Gute Nacht"
     ICON="weather-clear-night"
 fi
 
 # Format current time
 CURRENT_TIME=$(date +"%H:%M")
-CURRENT_DATE=$(date +"%A, %d %B %Y")
+CURRENT_DATE=$(date +"%A, %d. %B %Y")
 
-# Show notification (English, with username)
+# Show notification
 if command -v notify-send &>/dev/null; then
     notify-send \
         --app-name="Apollo OS" \
         --icon="$ICON" \
         --urgency=low \
-        "$GREETING_EN, $USER_NAME!" \
-        "It's $CURRENT_TIME\n$CURRENT_DATE\n\nWelcome to Apollo OS"
+        "$GREETING, $USER_NAME!" \
+        "$CURRENT_TIME\n$CURRENT_DATE\n\nWillkommen bei Apollo OS"
 fi
