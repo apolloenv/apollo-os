@@ -2625,7 +2625,6 @@ LOGINEOF
     # Remove cockpit issue clutter
     sudo rm -f /etc/issue.d/cockpit.issue
     sudo tee /etc/issue > /dev/null << 'ISSUEEOF'
-
   \e[0;36m╔═══════════════════════════════════════════════════╗
   ║\e[1;37m          A P O L L O   O S   v 0 . 6 . 0          \e[0;36m║
   ║\e[0;90m          Enterprise Desktop Environment           \e[0;36m║
