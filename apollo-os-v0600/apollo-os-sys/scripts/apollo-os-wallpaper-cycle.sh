@@ -4,7 +4,7 @@ set -e
 WALLPAPER_DIR="$HOME/System/Wallpaper"
 CURRENT_LINK="$WALLPAPER_DIR/current.jpg"
 
-# Get all wallpapers - exclude current.jpg
+# Get all wallpapers - exclude current.jpg symlink
 mapfile -t wallpapers < <(find "$WALLPAPER_DIR" -maxdepth 1 -type f \( -name "*.jpg" -o -name "*.png" -o -name "*.jpeg" \) ! -name "current.jpg" | sort)
 
 if [ ${#wallpapers[@]} -eq 0 ]; then
@@ -20,7 +20,6 @@ fi
 
 # Find next wallpaper
 next_wallpaper="${wallpapers[0]}"
-
 for i in "${!wallpapers[@]}"; do
     if [[ "${wallpapers[$i]}" == "$current" ]]; then
         next_index=$(( (i + 1) % ${#wallpapers[@]} ))
@@ -32,18 +31,23 @@ done
 # Update symlink
 ln -sf "$next_wallpaper" "$CURRENT_LINK"
 
-# Copy to login wallpaper
-sudo cp "$next_wallpaper" /usr/share/backgrounds/apollo-login.jpg 2>/dev/null || true
-
-# Kill old swaybg by PID
-SWAYBG_PID=$(pgrep -x swaybg || true)
+# Restart swaybg with new wallpaper
+SWAYBG_PID=$(pgrep -x swaybg 2>/dev/null || true)
 if [ -n "$SWAYBG_PID" ]; then
-    kill $SWAYBG_PID 2>/dev/null
-    sleep 0.5
+    /bin/kill "$SWAYBG_PID" 2>/dev/null || true
+    sleep 0.3
 fi
-
-# Start swaybg - use spawn from niri
 swaybg -i "$next_wallpaper" -m fill &
+disown
+
+# If running under Hyprland with Quickshell, trigger color generation
+if [ "$APOLLO_WM" = "Hyprland" ] || [ "$XDG_CURRENT_DESKTOP" = "Hyprland" ]; then
+    SWITCHWALL="$HOME/.config/quickshell/ii/scripts/colors/switchwall.sh"
+    if [ -x "$SWITCHWALL" ]; then
+        bash "$SWITCHWALL" "$next_wallpaper" &>/dev/null &
+        disown
+    fi
+fi
 
 # Notification
 wallpaper_name=$(basename "$next_wallpaper")

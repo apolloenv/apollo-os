@@ -425,6 +425,9 @@ install_dots_hyprland() {
         warn "dots-hyprland installation may not have completed fully"
         warn "You may need to run './setup install' manually from $DOTS_DIR"
     fi
+
+    # Install materialyoucolor for Quickshell wallpaper theming
+    python3 -m pip install --user materialyoucolor 2>/dev/null || warn "Failed to install materialyoucolor"
     
     # Cleanup cloned repo
     cd "$HOME" || warn "Failed to return to home directory"
