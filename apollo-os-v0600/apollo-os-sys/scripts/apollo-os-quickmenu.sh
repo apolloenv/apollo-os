@@ -301,7 +301,8 @@ Mit Desktop-Audio + Mikrofon"
 
         f2b=$(systemctl is-active fail2ban 2>/dev/null || echo "inactive")
         if [ "$f2b" = "active" ]; then
-            banned=$(sudo fail2ban-client status sshd 2>/dev/null | grep "Currently banned" | awk '{print $NF}' || echo "0")
+            banned=$(sudo -n fail2ban-client status sshd 2>/dev/null | grep "Currently banned" | awk '{print $NF}')
+            banned=${banned:-0}
             status_lines+="fail2ban: Aktiv ($banned gebannte IPs)\n"
         else
             status_lines+="fail2ban: Inaktiv\n"
