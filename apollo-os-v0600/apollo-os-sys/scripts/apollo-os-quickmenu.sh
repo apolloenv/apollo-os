@@ -218,15 +218,15 @@ Mit Desktop-Audio + Mikrofon"
         ;;
 
     "Quick Note")
-        NOTES_DIR="$HOME/Documents/Apollo-Notes"
+        NOTES_DIR="$HOME/Notizen"
         mkdir -p "$NOTES_DIR"
-        note=$(rofi -dmenu -p "> Note" -i \
+        note=$(rofi -dmenu -p "> Notiz" -i \
             -theme-str 'window {width: 700px;}' \
-            -mesg "Type a note (Enter to save)")
+            -mesg "Notiz eingeben (Enter zum Speichern)")
         if [ -n "$note" ]; then
-            NOTES_FILE="$NOTES_DIR/quick-notes.md"
+            NOTES_FILE="$NOTES_DIR/Notizen.md"
             echo "- [$(date '+%Y-%m-%d %H:%M')] $note" >> "$NOTES_FILE"
-            notify-send "Apollo OS" "Note saved ✓" -t 1500
+            notify-send "Apollo OS" "Notiz gespeichert ✓" -t 1500
         fi
         ;;
 
