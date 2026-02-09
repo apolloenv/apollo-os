@@ -45,6 +45,13 @@ if [ -f "$HOME/.local/bin/apollo-os-welcome-tts.sh" ]; then
     "$HOME/.local/bin/apollo-os-welcome-tts.sh" &
 fi
 
+# Start screen-corners if crystal-bay (macOS) mode is active
+VISUAL_MODE=$(cat "$HOME/.config/apollo-os/visual-mode" 2>/dev/null)
+if [[ "$VISUAL_MODE" == "crystal-bay" ]] && [ -f "$HOME/.local/bin/screen-corners.py" ]; then
+    python3 "$HOME/.local/bin/screen-corners.py" >/dev/null 2>&1 &
+    disown $!
+fi
+
 # Start clipboard history daemon (cliphist)
 if command -v cliphist &>/dev/null && command -v wl-paste &>/dev/null; then
     wl-paste --type text --watch cliphist store &
