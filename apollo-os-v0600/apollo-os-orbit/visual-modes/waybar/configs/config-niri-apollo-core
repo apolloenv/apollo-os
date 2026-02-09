@@ -1,0 +1,263 @@
+[
+    {
+        "layer": "top",
+        "position": "top",
+        "height": 42,
+        "margin-top": 12,
+        "margin-left": 12,
+        "margin-right": 12,
+        "spacing": 0,
+        
+        "modules-left": ["niri/workspaces"],
+        "modules-center": [],
+        "modules-right": [
+            "group/drawer",
+            "bluetooth",
+            "network",
+            "pulseaudio",
+            "backlight",
+            "custom/power-profile",
+            "battery",
+            "custom/hostname",
+            "clock"
+        ],
+
+        "niri/workspaces": {
+            "format": "{index}",
+            "format-icons": {
+                "active": "",
+                "default": ""
+            }
+        },
+
+        "group/drawer": {
+            "orientation": "horizontal",
+            "drawer": {
+                "transition-duration": 500,
+                "transition-left-to-right": false
+            },
+            "modules": ["custom/synology", "custom/btop", "tray"]
+        },
+
+        "custom/hostname": {
+            "format": "  󰌢  {}  ",
+            "exec": "hostnamectl hostname",
+            "interval": 3600,
+            "tooltip": false
+        },
+
+
+        "custom/synology": {
+            "format": "", 
+            "tooltip": true,
+            "tooltip-format": "Synology Drive",
+            "on-click": "synology-drive"
+        },
+
+        "custom/btop": {
+            "format": "󰍛",
+            "tooltip": true, "tooltip-format": "System Monitor",
+            "on-click": "gnome-terminal -- btop"
+        },
+
+        "tray": {
+            "icon-size": 18,
+            "spacing": 10
+        },
+
+        "clock": {
+            "format": "󰥔  {:%H:%M:%S   APOLLO OS}",
+            "format-alt": "  {:%d. %b %Y   󰥔  %H:%M:%S   APOLLO OS}",
+            "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+            "interval": 1
+        },
+        
+        "battery": {
+            "format": "{icon}  {capacity}%",
+            "format-discharging": "{icon}  {capacity}%",
+            "format-charging": "󰂄  {capacity}%",
+            "format-plugged": "󱐥  {capacity}%",
+            "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+            "tooltip-format": "{power}W",
+            "states": { "warning": 30, "critical": 10 },
+            "on-click": "~/.local/bin/apollo-os-power-profile.sh"
+        },
+        
+        "network": {
+            "format-wifi": "󰖩",
+            "format-ethernet": "󰈀",
+            "format-disconnected": "󰤮",
+            "tooltip-format": "{essid} ({signalStrength}%)\n{ipaddr}",
+            "interval": 5,
+            "on-click": "~/.local/bin/apollo-os-wifi.sh"
+        },
+        
+        "bluetooth": {
+            "format": "󰂯",
+            "format-connected": "󰂱  {num_connections}",
+            "format-disabled": "󰂲",
+            "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+            "on-click": "~/.local/bin/apollo-os-bluetooth.sh"
+        },
+        
+        "pulseaudio": {
+            "format": "{icon}  {volume}%",
+            "format-muted": "󰝟  Muted",
+            "format-icons": { "default": ["󰕿", "󰖀", "󰕾"] },
+            "on-click": "pavucontrol"
+        },
+        
+        "backlight": {
+            "format": "{icon}  {percent}%",
+            "format-icons": ["󰃞", "󰃝", "󰃟", "󰃠"]
+        },
+
+        "custom/power-profile": {
+            "format": "{}",
+            "exec": "powerprofilesctl get 2>/dev/null | sed 's/power-saver/󰌪/;s/balanced/󰗑/;s/performance/󰓅/' || echo '󰂄'",
+            "interval": 5,
+            "tooltip": true,
+            "tooltip-format": "Power Profile wechseln",
+            "on-click": "~/.local/bin/apollo-os-power-profile.sh"
+        }
+    },
+    {
+        "layer": "top",
+        "position": "bottom",
+        "height": 42,
+        "margin-bottom": 12,
+        "margin-left": 12,
+        "margin-right": 12,
+        "spacing": 0,
+        
+        "modules-left": [
+            
+            "cpu",
+            "memory",
+            "disk",
+            "temperature",
+            "network#speed"
+        ],
+        "modules-center": [],
+        "modules-right": [
+            
+            "network#vpn",
+            "custom/localip",
+            "custom/publicip",
+            "custom/uptime",
+            "group/system-drawer"
+        ],
+
+        "cpu": {
+            "format": "󰻠  {usage}%",
+            "format-alt": "󰻠  {avg_frequency} GHz",
+            "tooltip-format": "CPU: {usage}%\nFrequenz: {avg_frequency} GHz\nKerne: {load}",
+            "interval": 2,
+            "on-click": "gnome-terminal -- btop"
+        },
+
+        "memory": {
+            "format": "󰍛  {percentage}%",
+            "format-alt": "󰍛  {used:0.1f}G/{total:0.1f}G",
+            "tooltip-format": "RAM: {used:0.2f}GB / {total:0.2f}GB ({percentage}%)\nSwap: {swapUsed:0.2f}GB / {swapTotal:0.2f}GB",
+            "interval": 5,
+            "on-click": "gnome-terminal -- btop"
+        },
+
+        "disk": {
+            "format": "󰋊  {percentage_used}%",
+            "format-alt": "󰋊  {used}/{total}",
+            "path": "/",
+            "tooltip-format": "Verwendet: {used} / {total} ({percentage_used}%)\nFrei: {free}",
+            "interval": 30
+        },
+
+        "temperature": {
+            "format": "󰔏  {temperatureC}°C",
+            "tooltip-format": "Temperatur: {temperatureC}°C",
+            "critical-threshold": 80,
+            "interval": 5,
+            "on-click": "gnome-terminal -- 'watch -n 1 sensors'"
+        },
+
+        "network#speed": {
+            "format": "󰓅  {bandwidthDownBits}  󰓂  {bandwidthUpBits}",
+            "format-disconnected": "󰤮  Offline",
+            "tooltip-format": "Download: {bandwidthDownBits}\nUpload: {bandwidthUpBits}",
+            "interval": 2
+        },
+
+        "network#vpn": {
+            "interface": "tailscale0",
+            "format": "󰖂  Tailscale",
+            "format-disconnected": "",
+            "tooltip-format": "Tailscale: {ifname}\nIP: {ipaddr}",
+            "interval": 5
+        },
+
+        "network#wifi": {
+            "format-wifi": "󰖩  {essid}",
+            "format-ethernet": "󰈀  Ethernet",
+            "format-disconnected": "",
+            "tooltip-format": "{essid} ({signalStrength}%)\n{ipaddr}",
+            "interval": 5
+        },
+
+
+
+        "custom/localip": {
+            "format": "󰩟  {}",
+            "exec": "ip -4 addr show $(ip route | grep default | awk '{print $5}' | head -n1) | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}' | head -n1",
+            "interval": 10,
+            "tooltip-format": "Lokale IP-Adresse"
+        },
+
+        "custom/publicip": {
+            "format": "󰞉  {}",
+            "exec": "curl -s --connect-timeout 3 --max-time 5 ifconfig.me || echo N/A",
+            "interval": 300,
+            "tooltip-format": "Öffentliche IP-Adresse"
+        },
+
+        "custom/uptime": {
+            "format": "󰥔  {}",
+            "exec": "uptime -p | sed 's/up //'",
+            "interval": 60,
+            "tooltip-format": "System Uptime"
+        },
+
+        "group/system-drawer": {
+            "orientation": "horizontal",
+            "drawer": {
+                "transition-duration": 500,
+                "transition-left-to-right": false
+            },
+            "modules": [
+                "custom/notifications",
+                "custom/system-synology",
+                "custom/system-updates"
+            ]
+        },
+
+        "custom/notifications": {
+            "format": "󰂚",
+            "tooltip": true,
+            "tooltip-format": "System Benachrichtigungen"
+        },
+
+        "custom/system-synology": {
+            "format": "  󰣳  Synology",
+            "tooltip": true,
+            "tooltip-format": "Synology Drive Status",
+            "on-click": "synology-drive"
+        },
+
+        "custom/system-updates": {
+            "format": "  󰚰  APOLLO OS Update",
+            "interval": 3600,
+            "tooltip": true,
+            "tooltip-format": "Apollo OS von GitHub aktualisieren",
+            "on-click": "alacritty -e bash -c '$HOME/.local/bin/apollo-os-update.sh'"
+        }
+    }
+]

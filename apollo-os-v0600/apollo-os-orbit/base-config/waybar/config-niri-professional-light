@@ -53,8 +53,8 @@
 
         "custom/btop": {
             "format": "󰍛",
-            "tooltip": "System Monitor",
-            "on-click": "gnome-terminal -e btop"
+            "tooltip": true, "tooltip-format": "System Monitor",
+            "on-click": "gnome-terminal -- btop"
         },
 
         "tray": {

@@ -14,8 +14,8 @@ if [ -z "$query" ]; then
     exit 0
 fi
 
-# URL encode the query
-encoded_query=$(echo "$query" | sed 's/ /%20/g')
+# URL encode the query (handle special characters)
+encoded_query=$(printf '%s' "$query" | python3 -c "import sys, urllib.parse; print(urllib.parse.quote(sys.stdin.read()))" 2>/dev/null || printf '%s' "$query" | sed 's/ /%20/g')
 
 # Default browser (try to find installed browser)
 if command -v google-chrome-stable &>/dev/null; then

@@ -1,6 +1,8 @@
 [Unit]
 Description=Apollo OS Right Ctrl Voice Input Trigger
 After=graphical-session.target
+StartLimitBurst=5
+StartLimitIntervalSec=60
 
 [Service]
 Type=simple

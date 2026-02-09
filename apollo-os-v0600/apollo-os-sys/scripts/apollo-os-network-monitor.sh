@@ -41,7 +41,7 @@ sleep 3
 SLEEP_MARKER="$RUNTIME_DIR/apollo-os-sleeping"
 
 while true; do
-    sleep 2
+    sleep 10
 
     # Skip network notifications if system is going to sleep or waking
     if [ -f "$SLEEP_MARKER" ]; then
@@ -55,11 +55,11 @@ while true; do
     if [ "$CURRENT_STATE" != "$LAST_STATE" ]; then
         if [ "$CURRENT_STATE" = "1" ]; then
             # Network connected
-            "$TTS_SCRIPT" wifi-connected
+            [ -x "$TTS_SCRIPT" ] && "$TTS_SCRIPT" wifi-connected || true
             notify-send "Apollo OS" "Network connected"
         else
             # Network disconnected
-            "$TTS_SCRIPT" wifi-disconnected
+            [ -x "$TTS_SCRIPT" ] && "$TTS_SCRIPT" wifi-disconnected || true
             notify-send "Apollo OS" "Network disconnected"
         fi
         LAST_STATE="$CURRENT_STATE"

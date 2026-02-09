@@ -9,11 +9,12 @@
 #####################################################################
 
 # Configuration
-FIFO_PATH="/tmp/apollo-notification-actions"
+FIFO_PATH="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/apollo-notification-actions"
 
 # Create FIFO if it doesn't exist
 if [[ ! -p "$FIFO_PATH" ]]; then
-    mkfifo "$FIFO_PATH" 2>/dev/null || true
+    rm -f "$FIFO_PATH" 2>/dev/null
+    mkfifo -m 600 "$FIFO_PATH" 2>/dev/null || true
 fi
 
 # Function to handle notification action
@@ -39,7 +40,7 @@ handle_action() {
             ;;
         *)
             # Log unknown action
-            echo "[$(date)] Unknown action: $action" >> /tmp/apollo-notification.log
+            echo "[$(date)] Unknown action: $action" >> ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/apollo-notification.log
             ;;
     esac
 }
@@ -57,7 +58,7 @@ monitor_mako() {
 }
 
 # Main
-echo "[$(date)] Apollo Notification Handler started" >> /tmp/apollo-notification.log
+echo "[$(date)] Apollo Notification Handler started" >> ${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/apollo-notification.log
 
 # Method 1: Monitor FIFO for manual triggers
 while true; do

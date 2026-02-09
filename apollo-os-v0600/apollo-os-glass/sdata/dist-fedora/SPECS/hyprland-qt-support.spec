@@ -37,8 +37,8 @@ BuildRequires:  pkgconfig(hyprlang)
 %files
 %license LICENSE
 %doc README.md
-%{_prefix}/lib/libhyprland-quick-style-impl.so
-%{_prefix}/lib/libhyprland-quick-style.so
+%{_libdir}/libhyprland-quick-style-impl.so
+%{_libdir}/libhyprland-quick-style.so
 %{_qt6_qmldir}/org/hyprland/
 
 %changelog

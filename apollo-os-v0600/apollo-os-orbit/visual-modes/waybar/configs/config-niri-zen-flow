@@ -1,0 +1,77 @@
+[
+    {
+        "layer": "top",
+        "position": "left",
+        "width": 38,
+        "margin-top": 0,
+        "margin-bottom": 0,
+        "margin-left": 0,
+        "spacing": 0,
+
+        "modules-left": ["custom/launcher"],
+        "modules-center": ["niri/workspaces"],
+        "modules-right": ["network", "bluetooth", "battery", "custom/clock-hours", "custom/clock-minutes", "custom/clock-seconds"],
+
+        "custom/launcher": {
+            "format": "󰍉",
+            "on-click": "~/.local/bin/apollo-os-rofi-launcher.sh",
+            "tooltip": false
+        },
+
+        "niri/workspaces": {
+            "format": "{icon}",
+            "format-icons": {
+                "active": "●",
+                "default": "○"
+            }
+        },
+
+        "network": {
+            "format-wifi": "󰖩",
+            "format-ethernet": "󰈀",
+            "format-disconnected": "󰤮",
+            "tooltip-format": "{essid} ({signalStrength}%)\n{ipaddr}",
+            "interval": 5,
+            "on-click": "~/.local/bin/apollo-os-wifi.sh"
+        },
+
+        "bluetooth": {
+            "format": "󰂯",
+            "format-connected": "󰂱",
+            "format-disabled": "󰂲",
+            "tooltip-format": "{controller_alias}\n{num_connections} connected",
+            "on-click": "~/.local/bin/apollo-os-bluetooth.sh"
+        },
+
+        "battery": {
+            "format": "{icon}",
+            "format-charging": "󰂄",
+            "format-plugged": "󱐥",
+            "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+            "tooltip-format": "{capacity}% - {timeTo}",
+            "states": { "warning": 30, "critical": 10 },
+            "on-click": "~/.local/bin/apollo-os-power-profile.sh"
+        },
+
+        "custom/clock-hours": {
+            "format": "{}",
+            "exec": "date +'%H'",
+            "interval": 60,
+            "tooltip": false
+        },
+
+        "custom/clock-minutes": {
+            "format": "{}",
+            "exec": "date +'%M'",
+            "interval": 60,
+            "tooltip": false
+        },
+
+        "custom/clock-seconds": {
+            "format": "{}",
+            "exec": "date +'%S'",
+            "interval": 1,
+            "tooltip": false
+        }
+    }
+]

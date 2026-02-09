@@ -13,7 +13,7 @@ done
 
 [ -z "$EDGE_TTS" ] && exit 1
 
-TMPFILE="/tmp/apollo-sample-$$.mp3"
+TMPFILE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/apollo-sample-$$.mp3"
 "$EDGE_TTS" -t "Ich bin Amala, deine Apollo OS Systemstimme." -v "de-DE-AmalaNeural" --write-media "$TMPFILE" 2>/dev/null
 
 if [ -f "$TMPFILE" ]; then

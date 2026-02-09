@@ -102,24 +102,37 @@ apollo_acquire_lock() {
     # Erstelle Lock-Verzeichnis falls nötig
     mkdir -p "$lockdir" 2>/dev/null
 
-    # Prüfe ob bereits gelockt
-    if [[ -f "$lockfile" ]]; then
-        local pid=$(cat "$lockfile" 2>/dev/null)
-        if [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null; then
-            log_debug "Lock held by PID $pid"
-            return 1
-        fi
-        # Stale lock, entfernen
-        rm -f "$lockfile"
+    # Atomic lock via mkdir (cannot race)
+    local lockmark="${lockfile}.lk"
+    if mkdir "$lockmark" 2>/dev/null; then
+        # Got lock atomically — check for stale PID
+        echo $$ > "$lockfile"
+        chmod 600 "$lockfile" 2>/dev/null
+        rmdir "$lockmark" 2>/dev/null
+        trap "rm -f '$lockfile'" EXIT INT TERM
+        return 0
     fi
 
-    # Sichere Lockfile-Erstellung
-    echo $$ > "$lockfile"
-    chmod 600 "$lockfile" 2>/dev/null
+    # Lock dir exists — check if holder is still alive
+    if [[ -f "$lockfile" ]]; then
+        local pid
+        pid=$(cat "$lockfile" 2>/dev/null)
+        if [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null; then
+            log_debug "Lock held by PID $pid"
+            rmdir "$lockmark" 2>/dev/null
+            return 1
+        fi
+        # Stale lock — reclaim
+        rm -f "$lockfile"
+        echo $$ > "$lockfile"
+        chmod 600 "$lockfile" 2>/dev/null
+        rmdir "$lockmark" 2>/dev/null
+        trap "rm -f '$lockfile'" EXIT INT TERM
+        return 0
+    fi
 
-    # Cleanup bei Exit
-    trap "rm -f '$lockfile'" EXIT INT TERM
-    return 0
+    rmdir "$lockmark" 2>/dev/null
+    return 1
 }
 
 apollo_release_lock() {
@@ -159,10 +172,11 @@ validate_path() {
 validate_visual_mode() {
     local mode="$1"
     local valid_modes=(
-        "classic" "developer" "enterprise" "i3" "i3-retro" "i3-contrast"
-        "macos" "minimal" "modern" "nova" "orbit" "professional"
-        "professional-lite" "professional-light" "professional-next"
-        "professional-plus" "sgi" "tech-blue"
+        "apollo-core" "code-forge" "command-center" "pixel-grid"
+        "retro-wave" "neon-edge" "zen-flow" "nova-pulse"
+        "crystal-bay" "star-deck" "deep-space" "command-deck"
+        "command-deck-clean" "light-bridge" "cyber-matrix"
+        "quantum-flux" "silicon-dawn" "frost-byte"
     )
 
     for valid in "${valid_modes[@]}"; do
@@ -261,7 +275,7 @@ apollo_get_visual_mode() {
     if [[ -f "$APOLLO_VISUAL_MODE_FILE" ]]; then
         cat "$APOLLO_VISUAL_MODE_FILE"
     else
-        echo "professional"
+        echo "command-deck"
     fi
 }
 

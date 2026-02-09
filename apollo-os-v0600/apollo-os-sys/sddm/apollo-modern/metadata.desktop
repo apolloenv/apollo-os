@@ -1,15 +1,15 @@
 [SddmGreeterTheme]
-Name=Where is my SDDM theme?
-Description=That feeling when your SDDM theme suddenly disappeared
+Name=Apollo OS Modern
+Description=Apollo OS SDDM Login Theme - Cybersecurity Edition
 Screenshot=screenshot.png
-Website=https://github.com/stepanzubkov/where-is-my-sddm-theme
-Author=stepanzubkov
-Copyright=(c) 2023, stepanzubkov
+Website=https://github.com/apolloenv/apollo-os
+Author=Manuel Kraibacher
+Copyright=(c) 2025-2026, Manuel Kraibacher
 License=MIT
-Version=1.12.0
+Version=0.6.0
 MainScript=Main.qml
 ConfigFile=theme.conf
 TranslationsDirectory=translations
-Theme-Id=where-is-my-sddm-theme
+Theme-Id=apollo-os-modern
 Theme-API=2.2
 QtVersion=6

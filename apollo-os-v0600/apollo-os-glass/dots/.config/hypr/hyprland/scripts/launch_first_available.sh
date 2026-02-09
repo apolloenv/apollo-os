@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
+# Launch the first available command from the arguments
 for cmd in "$@"; do
     [[ -z "$cmd" ]] && continue
-    eval "command -v ${cmd%% *}" >/dev/null 2>&1 || continue
-    eval "$cmd" &
+    local_cmd="${cmd%% *}"
+    command -v "$local_cmd" >/dev/null 2>&1 || continue
+    $cmd &
     exit
 done

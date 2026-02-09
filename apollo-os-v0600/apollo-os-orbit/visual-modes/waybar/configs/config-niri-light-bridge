@@ -1,0 +1,121 @@
+[
+    {
+        "layer": "top",
+        "position": "top",
+        "height": 42,
+        "spacing": 0,
+
+        "modules-left": ["niri/workspaces"],
+        "modules-center": [],
+        "modules-right": [
+            "group/drawer",
+            "bluetooth",
+            "network",
+            "pulseaudio",
+            "backlight",
+            "custom/power-profile",
+            "battery",
+            "custom/hostname",
+            "clock"
+        ],
+
+        "niri/workspaces": {
+            "format": "{index}",
+            "format-icons": {
+                "active": "",
+                "default": ""
+            }
+        },
+
+        "group/drawer": {
+            "orientation": "horizontal",
+            "drawer": {
+                "transition-duration": 500,
+                "transition-left-to-right": false
+            },
+            "modules": ["custom/synology", "custom/btop", "tray"]
+        },
+
+        "custom/hostname": {
+            "format": "  󰌢  {}  ",
+            "exec": "hostnamectl hostname",
+            "interval": 3600,
+            "tooltip": false
+        },
+
+
+        "custom/synology": {
+            "format": "",
+            "tooltip": true,
+            "tooltip-format": "Synology Drive",
+            "on-click": "synology-drive"
+        },
+
+        "custom/btop": {
+            "format": "󰍛",
+            "tooltip": true, "tooltip-format": "System Monitor",
+            "on-click": "gnome-terminal -- btop"
+        },
+
+        "tray": {
+            "icon-size": 18,
+            "spacing": 10
+        },
+
+        "clock": {
+            "format": "󰥔  {:%H:%M:%S   APOLLO OS}",
+            "format-alt": "  {:%d. %b %Y   󰥔  %H:%M:%S   APOLLO OS}",
+            "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+            "interval": 1
+        },
+
+        "battery": {
+            "format": "{icon}  {capacity}%",
+            "format-discharging": "{icon}  {capacity}%",
+            "format-charging": "󰂄  {capacity}%",
+            "format-plugged": "󱐥  {capacity}%",
+            "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+            "tooltip-format": "{power}W",
+            "states": { "warning": 30, "critical": 10 },
+            "on-click": "~/.local/bin/apollo-os-power-profile.sh"
+        },
+
+        "network": {
+            "format-wifi": "󰖩",
+            "format-ethernet": "󰈀",
+            "format-disconnected": "󰤮",
+            "tooltip-format": "{essid} ({signalStrength}%)\n{ipaddr}",
+            "interval": 5,
+            "on-click": "~/.local/bin/apollo-os-wifi.sh"
+        },
+
+        "bluetooth": {
+            "format": "󰂯",
+            "format-connected": "󰂱  {num_connections}",
+            "format-disabled": "󰂲",
+            "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+            "on-click": "~/.local/bin/apollo-os-bluetooth.sh"
+        },
+
+        "pulseaudio": {
+            "format": "{icon}  {volume}%",
+            "format-muted": "󰝟  Muted",
+            "format-icons": { "default": ["󰕿", "󰖀", "󰕾"] },
+            "on-click": "pavucontrol"
+        },
+
+        "backlight": {
+            "format": "{icon}  {percent}%",
+            "format-icons": ["󰃞", "󰃝", "󰃟", "󰃠"]
+        },
+
+        "custom/power-profile": {
+            "format": "{}",
+            "exec": "powerprofilesctl get 2>/dev/null | sed 's/power-saver/󰌪/;s/balanced/󰗑/;s/performance/󰓅/' || echo '󰂄'",
+            "interval": 5,
+            "tooltip": true,
+            "tooltip-format": "Power Profile wechseln",
+            "on-click": "~/.local/bin/apollo-os-power-profile.sh"
+        }
+    }
+]

@@ -136,7 +136,7 @@
             "format-alt": "󰻠  {avg_frequency} GHz",
             "tooltip-format": "CPU: {usage}%\nFrequenz: {avg_frequency} GHz\nKerne: {load}",
             "interval": 2,
-            "on-click": "gnome-terminal -e btop"
+            "on-click": "gnome-terminal -- btop"
         },
 
         "memory": {
@@ -144,7 +144,7 @@
             "format-alt": "󰍛  {used:0.1f}G/{total:0.1f}G",
             "tooltip-format": "RAM: {used:0.2f}GB / {total:0.2f}GB ({percentage}%)\nSwap: {swapUsed:0.2f}GB / {swapTotal:0.2f}GB",
             "interval": 5,
-            "on-click": "gnome-terminal -e btop"
+            "on-click": "gnome-terminal -- btop"
         },
 
         "disk": {
@@ -160,14 +160,14 @@
             "tooltip-format": "Temperatur: {temperatureC}°C",
             "critical-threshold": 80,
             "interval": 5,
-            "on-click": "gnome-terminal -e 'watch -n 1 sensors'"
+            "on-click": "gnome-terminal -- 'watch -n 1 sensors'"
         },
 
         "custom/notifications": {
             "format": "󰂚",
             "tooltip": true,
             "tooltip-format": "System Benachrichtigungen",
-            "on-click": "swaync-client -t"
+            "on-click": "makoctl dismiss -a"
         },
 
         "custom/synology": {
@@ -179,8 +179,8 @@
 
         "custom/btop": {
             "format": "󰍛",
-            "tooltip": "System Monitor",
-            "on-click": "gnome-terminal -e btop"
+            "tooltip": true, "tooltip-format": "System Monitor",
+            "on-click": "gnome-terminal -- btop"
         },
 
         "tray": {
@@ -212,7 +212,7 @@
             "format-disconnected": "󰤮",
             "tooltip-format": "{essid} ({signalStrength}%)\n{ipaddr}",
             "interval": 5,
-            "on-click": "nm-connection-editor"
+            "on-click": "~/.local/bin/apollo-os-wifi.sh"
         },
 
         "bluetooth": {
@@ -220,7 +220,7 @@
             "format-connected": "󰂱  {num_connections}",
             "format-disabled": "󰂲",
             "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
-            "on-click": "blueman-manager"
+            "on-click": "~/.local/bin/apollo-os-bluetooth.sh"
         },
 
         "pulseaudio": {

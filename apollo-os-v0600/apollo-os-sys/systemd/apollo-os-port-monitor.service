@@ -1,0 +1,17 @@
+[Unit]
+Description=Apollo OS Port & Security Monitor
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/apollo-os-port-monitor.sh
+Nice=15
+IOSchedulingClass=idle
+ProtectHome=read-only
+ProtectSystem=strict
+ReadWritePaths=%h/.local/state/apollo-os
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

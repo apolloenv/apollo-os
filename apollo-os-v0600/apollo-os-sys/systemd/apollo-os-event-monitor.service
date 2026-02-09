@@ -2,6 +2,8 @@
 Description=Apollo OS System Event Monitor
 Documentation=https://github.com/apolloenv/apollo-os
 After=graphical-session.target
+StartLimitBurst=5
+StartLimitIntervalSec=60
 
 [Service]
 Type=simple
@@ -17,7 +19,6 @@ ProtectHome=read-only
 
 # Environment
 Environment="XDG_RUNTIME_DIR=/run/user/%U"
-Environment="WAYLAND_DISPLAY=wayland-1"
 
 [Install]
 WantedBy=graphical-session.target

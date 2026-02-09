@@ -14,5 +14,5 @@ elif [[ "$1" =~ ^[0-9]+$ ]]; then ## Is this just a number?
   hyprctl dispatch "${dispatcher}" "${target_workspace}"
 else
   hyprctl dispatch "${dispatcher}" "$1" ## In case the target in a string, required for special workspaces.
-  exit 1
+  exit 0
 fi

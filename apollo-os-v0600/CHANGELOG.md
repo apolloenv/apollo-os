@@ -1,10 +1,10 @@
-# Apollo OS v5.1.0 - Release Notes
+# Apollo OS v0.6.0 - Release Notes
 
-**Release-Datum:** 28. Januar 2026
+**Release-Datum:** 09. Februar 2026
 
 ## 🎯 Überblick
 
-Apollo OS v5.1.0 ist ein Major Release mit kritischen Bugfixes, kompletter Feature-Integration, sauberer Directory-Struktur und Production-Ready Status für Fedora 43.
+Apollo OS v0.6.0 ist ein Major Release mit kritischen Bugfixes, kompletter Feature-Integration, sauberer Directory-Struktur und Production-Ready Status für Fedora 43.
 
 ---
 
@@ -22,7 +22,7 @@ scripts/              # Alle Scripts
 assets/               # Alle Assets
 ```
 
-**Nachher (v5.1.0):**
+**Nachher (v0.6.0):**
 ```
 apollo-os-orbit/      # Niri-spezifisch (99 files)
 apollo-os-glass/      # Hyprland-spezifisch (1105 files)
@@ -206,10 +206,10 @@ apollo-os-sys/        # Systemkomponenten (112 files)
 ## 📁 Projekt-Struktur
 
 ```
-apollo-os-dev/v5.1.0/
+apollo-os-dev/v0.6.0/
 ├── apollo-os-install.sh       # Haupt-Installer (94 KB)
-├── README-v5.1.0.md          # Dokumentation
-├── CHANGELOG-v5.1.0.md       # Dieses Dokument
+├── README-v0.6.0.md          # Dokumentation
+├── CHANGELOG-v0.6.0.md       # Dieses Dokument
 ├── config-data/              # Basis-Configs
 │   ├── niri/                 # 7 Niri Configs
 │   ├── waybar/               # Waybar Main Config
@@ -236,7 +236,7 @@ apollo-os-dev/v5.1.0/
 ## 🚀 Installation
 
 ```bash
-cd /home/apollo/AIQSAN01/apollo/apollo-os-dev/v5.1.0
+cd /home/apollo/AIQSAN01/apollo/apollo-os-dev/v0.6.0
 chmod +x apollo-os-install.sh
 ./apollo-os-install.sh
 ```
@@ -329,4 +329,4 @@ Keine erforderlich. Der Installer überschreibt alle Configs mit den neuen Versi
 
 ---
 
-**Apollo OS v5.1.0 - Enterprise Ready** 🚀
+**Apollo OS v0.6.0 - Enterprise Ready** 🚀

@@ -38,7 +38,7 @@ done
 # TTS function - Amala only
 speak() {
     local text="$1"
-    local tmpfile="/tmp/apollo-tts-$$.mp3"
+    local tmpfile="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/apollo-tts-$$.mp3"
     
     if [ -z "$EDGE_TTS" ]; then
         return 1

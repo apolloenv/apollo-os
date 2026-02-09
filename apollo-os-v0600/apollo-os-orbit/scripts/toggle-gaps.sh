@@ -16,6 +16,9 @@ GAPS=(0 8 18 24 36)
 
 # Get current gap value
 CURRENT_GAP=$(grep -oP 'gaps \K\d+' "$NIRI_CONFIG" | head -1)
+if [[ -z "$CURRENT_GAP" ]]; then
+    CURRENT_GAP=12
+fi
 
 # Find current index in array
 CURRENT_INDEX=-1

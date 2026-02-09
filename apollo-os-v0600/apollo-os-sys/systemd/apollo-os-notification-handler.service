@@ -8,9 +8,9 @@ Type=simple
 ExecStart=%h/.local/bin/apollo-os-notification-handler.sh
 Restart=on-failure
 RestartSec=5
-
-# Environment
-Environment="DISPLAY=:0"
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=%h/.local/state/apollo-os
 
 [Install]
 WantedBy=default.target

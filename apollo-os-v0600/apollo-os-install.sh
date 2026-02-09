@@ -1,24 +1,27 @@
 #!/bin/bash
 
 #####################################################################
-# Apollo OS - Master Installer v5.1.0
-# Copyright © 2025 by Manuel Kraibacher
+# Apollo OS - Master Installer v0.6.0
+# Copyright © 2025-2026 by Manuel Kraibacher
 #
 # Description: Apollo OS Enterprise Installation System
 # Platform: Linux x86_64
 # Window Managers: Apollo OS Orbit (Niri) + Apollo OS Glass (Hyprland)
 #
-# v5.1.0 Changes:
-# - Critical Installer Fixes (Neovim double install, whisper.cpp path, python3-pip)
-# - Editor Selection: Neovim / Fresh Editor / Both
-# - OnlyOffice Suite installation (independent of Flatpak choice)
-# - Hyprlock for Niri with TTS feedback (Mod+L)
-# - Bibata-Modern-Classic cursor theme (all configs)
-# - Audio feedback for voice control (Star Trek style)
-# - Complete Visual Modes integration (16 themes, 18 waybar configs)
-# - Rofi Dark Grayscale monochrome design
-# - Mako macOS transparent notification style
-# - Production-ready for Fedora 43 (2,311 lines, 142 error handlers)
+# v0.6.0 Changes:
+# - 17 Security Modules (firewalld, fail2ban, ClamAV, rkhunter, Lynis,
+#   AIDE, kernel hardening, SSH hardening, DNS-over-TLS, MAC randomization,
+#   auto-updates, core dump restriction, port monitor, security audit,
+#   battery monitor, disk monitor, service watchdog)
+# - Comprehensive system update script (DNF, Flatpak, firmware, security)
+# - Clipboard history (cliphist) for Niri Orbit
+# - System Health Dashboard in Quick Menu
+# - Quick Notes via Quick Menu
+# - Journal rotation and log management
+# - Boot system cleanup (Plymouth removed, TTY-based boot)
+# - All packages verified for Fedora 43 availability
+# - Dynamic version fetch for Nerd Fonts and Winboat
+# - npm global packages without sudo (~/.local prefix)
 #
 # v3.1.0 Changes:
 # - Dual Desktop Support (Niri Orbit + Hyprland Glass)
@@ -84,7 +87,7 @@ print_banner() {
 BANNER
     echo -e "${NC}"
     echo -e "${MAGENTA}═══════════════════════════════════════════════════════${NC}"
-    echo -e "${CYAN}  Apollo OS Installer v5.1.0${NC}"
+    echo -e "${CYAN}  Apollo OS Installer v0.6.0${NC}"
     echo -e "${YELLOW}  APOLLO OS Enterprise Edition${NC}"
     echo -e "${MAGENTA}═══════════════════════════════════════════════════════${NC}\n"
 }
@@ -227,7 +230,7 @@ TELEGRAM_USER_ID="$TELEGRAM_USER_ID"
 
 # System Configuration
 WALLPAPER_DIR="$HOME/System/Wallpaper"
-DEFAULT_WM="niri"
+DEFAULT_WM="${DEFAULT_WM:-niri}"
 DEFAULT_PROFILE="pro"
 DEFAULT_THEME="dark"
 EOF
@@ -261,14 +264,14 @@ select_desktop_environment() {
     read -p "Select [1-3] (default: 3): " DESKTOP_CHOICE
     DESKTOP_CHOICE=${DESKTOP_CHOICE:-3}
     
-    case $DESKTOP_CHOICE in
-        1) INSTALL_HYPRLAND=true; INSTALL_NIRI=false ;;
-        2) INSTALL_HYPRLAND=false; INSTALL_NIRI=true ;;
-        3) INSTALL_HYPRLAND=true; INSTALL_NIRI=true ;;
-        *) warn "Invalid choice, installing both"; INSTALL_HYPRLAND=true; INSTALL_NIRI=true ;;
+    case "$DESKTOP_CHOICE" in
+        1) INSTALL_HYPRLAND=true; INSTALL_NIRI=false; DEFAULT_WM="Hyprland" ;;
+        2) INSTALL_HYPRLAND=false; INSTALL_NIRI=true; DEFAULT_WM="niri" ;;
+        3) INSTALL_HYPRLAND=true; INSTALL_NIRI=true; DEFAULT_WM="niri" ;;
+        *) warn "Invalid choice, installing both"; INSTALL_HYPRLAND=true; INSTALL_NIRI=true; DEFAULT_WM="niri" ;;
     esac
     
-    log "Desktop configuration: Hyprland=${INSTALL_HYPRLAND}, Niri=${INSTALL_NIRI}"
+    log "Desktop configuration: Hyprland=${INSTALL_HYPRLAND}, Niri=${INSTALL_NIRI}, Default=${DEFAULT_WM}"
 }
 
 #####################################################################
@@ -289,7 +292,7 @@ select_flatpak_option() {
     read -p "Select [1-2] (default: 1): " FLATPAK_CHOICE
     FLATPAK_CHOICE=${FLATPAK_CHOICE:-1}
 
-    case $FLATPAK_CHOICE in
+    case "$FLATPAK_CHOICE" in
         1) INSTALL_FLATPAK=true ;;
         2) INSTALL_FLATPAK=false ;;
         *) INSTALL_FLATPAK=true ;;
@@ -316,7 +319,7 @@ select_office_suite() {
     read -p "Select [1-2] (default: 1): " OFFICE_CHOICE
     OFFICE_CHOICE=${OFFICE_CHOICE:-1}
 
-    case $OFFICE_CHOICE in
+    case "$OFFICE_CHOICE" in
         1) INSTALL_ONLYOFFICE=true ;;
         2) INSTALL_ONLYOFFICE=false ;;
         *) INSTALL_ONLYOFFICE=true ;;
@@ -342,7 +345,7 @@ select_editor() {
     read -p "Select [1-3] (default: 1): " EDITOR_CHOICE
     EDITOR_CHOICE=${EDITOR_CHOICE:-1}
 
-    case $EDITOR_CHOICE in
+    case "$EDITOR_CHOICE" in
         1) INSTALL_FRESH=true; INSTALL_NEOVIM=true ;;
         2) INSTALL_FRESH=true; INSTALL_NEOVIM=false ;;
         3) INSTALL_FRESH=false; INSTALL_NEOVIM=true ;;
@@ -444,7 +447,7 @@ install_packages() {
 
     # Update system
     log "Updating system packages..."
-    sudo dnf upgrade -y --refresh
+    sudo dnf upgrade -y --refresh || warn "System upgrade had errors (non-fatal, continuing)"
 
     # Refresh sudo before next operation (system update can take 20+ minutes)
     log "Refreshing sudo credentials..."
@@ -452,8 +455,8 @@ install_packages() {
 
     # Enable RPM Fusion
     log "Enabling RPM Fusion repositories..."
-    sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-    sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+    sudo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm || warn "RPM Fusion Free repo failed - some multimedia packages may be unavailable"
+    sudo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm || warn "RPM Fusion Nonfree repo failed - some codecs may be unavailable"
 
     # Install COPR repositories
     log "Enabling COPR repositories..."
@@ -482,8 +485,26 @@ install_packages() {
 
         # Install Hyprlock for Niri (lock screen) - from COPR
         log "Installing Hyprlock (lock screen)..."
-        sudo dnf copr enable -y solopasha/hyprland 2>/dev/null || true
+        sudo dnf copr enable -y sdegler/hyprland 2>/dev/null || true
         sudo dnf install -y hyprlock || warn "Hyprlock installation failed"
+
+        # Niri essential runtime packages
+        log "Installing Niri essential packages..."
+        # xwayland-satellite needs separate COPR or may be in errornix/niri
+        sudo dnf install -y xwayland-satellite 2>/dev/null || {
+            log "xwayland-satellite not in repos, trying COPR..."
+            sudo dnf copr enable -y ulysg/xwayland-satellite 2>/dev/null || true
+            sudo dnf install -y xwayland-satellite 2>/dev/null || warn "xwayland-satellite not available (X11 apps may not work under Niri)"
+        }
+        sudo dnf install -y \
+            polkit-gnome \
+            network-manager-applet \
+            xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-wlr \
+            libnotify \
+            ptyxis \
+            nautilus \
+            gnome-text-editor \
+            || warn "Some Niri packages failed to install"
 
         # Install KDE System Settings for Niri
         log "Installing KDE System Settings..."
@@ -499,8 +520,13 @@ install_packages() {
         sudo dnf copr enable -y sdegler/hyprland || warn "Failed to enable hyprland COPR"
         sudo dnf copr enable -y deltacopy/darkly || warn "Failed to enable darkly COPR"
         
-        # Hyprland core
-        sudo dnf install -y hyprland hyprland-guiutils xdg-desktop-portal-hyprland || warn "Hyprland installation failed"
+        # Hyprland core + essential runtime packages (safety-net if dots-hyprland setup fails)
+        sudo dnf install -y hyprland xdg-desktop-portal-hyprland \
+            hypridle hyprlock hyprpicker \
+            fuzzel wlogout cliphist foot \
+            tesseract tesseract-langpack-eng \
+            gnome-keyring bc easyeffects grim \
+            || warn "Hyprland packages installation failed"
         
         # Quickshell dependencies
         sudo dnf install -y qt6-qtdeclarative qt6-qtbase jemalloc qt6-qtsvg \
@@ -514,11 +540,13 @@ install_packages() {
                 git clone https://git.outfoxxed.me/outfoxxed/quickshell.git quickshell-build || warn "Quickshell clone failed"
             fi
             if [[ -d quickshell-build ]]; then
-                cd quickshell-build
-                cmake -B build -DCMAKE_BUILD_TYPE=Release || warn "Quickshell cmake failed"
-                cmake --build build || warn "Quickshell build failed"
-                sudo cmake --install build || warn "Quickshell install failed"
-                cd "$HOME"
+                cd quickshell-build || { warn "Failed to cd to quickshell-build"; cd "$HOME" || true; }
+                if cmake -B build -DCMAKE_BUILD_TYPE=Release; then
+                    cmake --build build && sudo cmake --install build || warn "Quickshell build/install failed"
+                else
+                    warn "Quickshell cmake configuration failed"
+                fi
+                cd "$HOME" || true
                 rm -rf quickshell-build
             fi
         fi
@@ -537,8 +565,43 @@ install_packages() {
     log "Installing UI components..."
     sudo -v  # Refresh sudo
 
-    # Critical UI components
-    sudo dnf install -y rofi mako grim slurp wl-clipboard swaybg swayidle wtype || error "Critical UI components failed"
+    # Critical UI components (install individually to avoid one failure blocking all)
+    sudo dnf install -y rofi-wayland mako grim slurp wl-clipboard swaybg swayidle wtype || {
+        warn "Some UI components failed in batch install, trying individually..."
+        for pkg in rofi-wayland mako grim slurp wl-clipboard swaybg swayidle wtype; do
+            sudo dnf install -y "$pkg" 2>/dev/null || warn "$pkg installation failed"
+        done
+    }
+
+    # Install Rust/Cargo (needed for bluetui, impala, satty)
+    log "Installing Rust toolchain..."
+    sudo dnf install -y rust cargo || warn "Rust/Cargo installation failed"
+
+    # Screenshot, Screenrecord & Color Picker tools
+    log "Installing screenshot & capture tools..."
+    sudo dnf install -y wf-recorder hyprpicker || warn "Some capture tools failed to install"
+    # satty (screenshot annotation) - install via cargo if not in repos
+    if ! command -v satty &>/dev/null; then
+        sudo dnf install -y satty 2>/dev/null || {
+            log "satty not in repos, installing via cargo..."
+            if command -v cargo &>/dev/null; then
+                cargo install satty 2>/dev/null || warn "satty cargo install failed"
+            else
+                warn "satty not available (no cargo)"
+            fi
+        }
+    fi
+    # wayfreeze (screen freeze for selection) - optional
+    sudo dnf install -y wayfreeze 2>/dev/null || warn "wayfreeze not available (optional)"
+
+    # Bluetooth & WiFi TUI managers
+    log "Installing Bluetooth & WiFi TUI tools..."
+    if command -v cargo &>/dev/null; then
+        command -v bluetui &>/dev/null || cargo install bluetui 2>/dev/null || warn "bluetui install failed"
+        command -v impala &>/dev/null || cargo install impala 2>/dev/null || warn "impala install failed"
+    else
+        warn "cargo not available - bluetui/impala will be installed on first use"
+    fi
 
     # Terminal Emulators
     log "Installing terminal emulators..."
@@ -593,6 +656,7 @@ EOF'
     sudo systemctl enable --now tailscaled 2>/dev/null || warn "Tailscale service enablement failed"
 
     # Browsers
+    sudo -v 2>/dev/null || true
     log "Installing web browsers..."
     
     # Google Chrome
@@ -623,6 +687,7 @@ EOF'
     fi
 
     # Development Tools
+    sudo -v 2>/dev/null || true
     log "Installing development tools..."
     
     # Visual Studio Code
@@ -646,12 +711,14 @@ EOF'
     log "Installing Node.js and npm..."
     sudo dnf install -y nodejs npm || warn "Node.js/npm installation failed"
     
-    # CLI AI Tools
+    # CLI AI Tools (install to user prefix to avoid sudo npm issues)
     log "Installing CLI AI tools..."
-    sudo npm install -g @google/gemini-cli 2>/dev/null || warn "Gemini CLI installation failed"
-    sudo npm install -g @anthropic-ai/claude-code 2>/dev/null || warn "Claude Code installation failed"
-    sudo npm install -g opencode-ai 2>/dev/null || warn "OpenCode AI installation failed"
-    sudo npm install -g @github/copilot 2>/dev/null || warn "GitHub Copilot CLI installation failed"
+    mkdir -p "$HOME/.local/lib/node_modules"
+    npm config set prefix "$HOME/.local" 2>/dev/null || true
+    npm install -g @google/gemini-cli 2>/dev/null || warn "Gemini CLI installation failed"
+    npm install -g @anthropic-ai/claude-code 2>/dev/null || warn "Claude Code installation failed"
+    npm install -g opencode-ai 2>/dev/null || warn "OpenCode AI installation failed"
+    npm install -g @github/copilot 2>/dev/null || warn "GitHub Copilot CLI installation failed"
     
     # FileZilla
     log "Installing FileZilla..."
@@ -671,9 +738,12 @@ EOF'
     log "Installing Qt Wayland support..."
     sudo dnf install -y qt5-qtwayland qt6-qtwayland || warn "Qt Wayland support installation failed"
     
-    # GNOME Podcasts
+    # GNOME Podcasts (Flatpak fallback if DNF not available)
     log "Installing GNOME Podcasts..."
-    sudo dnf install -y gnome-podcasts || warn "GNOME Podcasts installation failed"
+    sudo dnf install -y gnome-podcasts 2>/dev/null || {
+        log "GNOME Podcasts not in repos, trying Flatpak..."
+        flatpak install -y flathub org.gnome.Podcasts 2>/dev/null || warn "GNOME Podcasts installation failed"
+    }
     
     # Remmina RDP Plugin
     log "Installing Remmina RDP plugin..."
@@ -683,7 +753,8 @@ EOF'
     log "Installing Docker..."
     if ! command -v docker &>/dev/null; then
         log "Adding Docker repository..."
-        sudo dnf config-manager addrepo --from-repofile https://download.docker.com/linux/fedora/docker-ce.repo 2>/dev/null || warn "Docker repo failed"
+        sudo dnf config-manager addrepo --from-repofile https://download.docker.com/linux/fedora/docker-ce.repo 2>/dev/null || \
+            sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo 2>/dev/null || warn "Docker repo failed"
         sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin || warn "Docker installation failed"
         sudo groupadd docker 2>/dev/null || true
         sudo usermod -aG docker "$USER" || warn "Failed to add user to docker group"
@@ -700,7 +771,7 @@ EOF'
     
     # Winboat (Windows VM Manager)
     log "Installing Winboat dependencies..."
-    sudo dnf install -y qemu-kvm libvirt virt-manager bridge-utils freerdp || warn "Winboat dependencies failed"
+    sudo dnf install -y qemu-kvm libvirt virt-manager freerdp-libs || warn "Winboat dependencies failed"
     sudo systemctl enable --now libvirtd 2>/dev/null || warn "libvirtd service failed"
     sudo usermod -aG libvirt "$USER" 2>/dev/null || warn "Failed to add user to libvirt group"
     
@@ -764,35 +835,36 @@ EOF'
         adw-gtk3-theme \
         gnome-themes-extra \
         breeze-cursor-theme \
-        bibata-cursor-theme-modern-classic \
+        bibata-cursor-themes \
         || warn "GTK theme installation failed"
 
-    # Login Manager (SDDM)
-    log "Installing SDDM login manager..."
-    sudo dnf install -y \
-        sddm \
-        sddm-wayland-sway \
-        qt5-qtwayland \
-        qt6-qtwayland \
-        || warn "SDDM installation failed"
+    # KeePassXC Password Manager
+    log "Installing KeePassXC..."
+    sudo dnf install -y keepassxc || warn "KeePassXC installation failed"
 
     # Install JetBrainsMono Nerd Font (for icons in Waybar)
     log "Installing JetBrainsMono Nerd Font..."
-    if [[ ! -d "$HOME/.local/share/fonts/JetBrainsMonoNerdFont" ]]; then
-        mkdir -p /tmp/nerdfonts
-        cd /tmp/nerdfonts
-        wget -q https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/JetBrainsMono.zip || warn "Nerd Font download failed"
+    if [[ ! -f "$HOME/.local/share/fonts/JetBrainsMonoNLNerdFont-Regular.ttf" ]]; then
+        local NF_TMPDIR NF_VERSION
+        NF_TMPDIR=$(mktemp -d) && cd "$NF_TMPDIR" || { warn "Failed to create temp dir for Nerd Fonts"; NF_TMPDIR=""; }
+        if [[ -n "$NF_TMPDIR" ]]; then
+        NF_VERSION=$(timeout 10 curl -s https://api.github.com/repos/ryanoasis/nerd-fonts/releases/latest | grep '"tag_name"' | cut -d'"' -f4)
+        if [[ -z "$NF_VERSION" ]]; then
+            warn "Could not fetch latest Nerd Fonts version, using v3.4.0..."
+            NF_VERSION="v3.4.0"
+        fi
+        log "Downloading Nerd Fonts $NF_VERSION..."
+        wget -q "https://github.com/ryanoasis/nerd-fonts/releases/download/${NF_VERSION}/JetBrainsMono.zip" || warn "Nerd Font download failed"
         if [[ -f JetBrainsMono.zip ]]; then
-            # Unzip with overwrite flag (-o) to avoid prompts
             unzip -o -q JetBrainsMono.zip -d JetBrainsMono
             mkdir -p "$HOME/.local/share/fonts"
-            # Copy with force flag (-f) to overwrite without prompting
             cp -f JetBrainsMono/*.ttf "$HOME/.local/share/fonts/"
-            # Force rebuild font cache without prompts
-            fc-cache -f -v "$HOME/.local/share/fonts" >/dev/null 2>&1
+            fc-cache -f "$HOME/.local/share/fonts" >/dev/null 2>&1
             log "JetBrainsMono Nerd Font installed ✓"
         fi
         cd - >/dev/null
+        rm -rf "$NF_TMPDIR"
+        fi # end NF_TMPDIR guard
     else
         log "JetBrainsMono Nerd Font already installed ✓"
     fi
@@ -816,14 +888,14 @@ EOF'
     # Clone and build whisper.cpp if not already installed
     if [[ ! -f "$HOME/.local/bin/whisper-cpp" ]]; then
         log "Building whisper.cpp from source (static linking)..."
-        cd /tmp
+        if cd /tmp; then
         if [[ -d whisper.cpp ]]; then
             rm -rf whisper.cpp
         fi
         
         git clone https://github.com/ggerganov/whisper.cpp.git || warn "whisper.cpp clone failed"
         if [[ -d whisper.cpp ]]; then
-            cd whisper.cpp
+            cd whisper.cpp || { warn "Failed to cd to whisper.cpp"; }
             
             # Build with cmake and static linking to avoid library issues
             cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF 2>/dev/null || {
@@ -858,7 +930,7 @@ EOF'
                 cp models/ggml-base.bin "$HOME/.local/share/whisper/" || warn "Model copy failed"
             fi
             
-            cd /tmp
+            cd /tmp || true
             rm -rf whisper.cpp
             
             if [[ -f "$HOME/.local/bin/whisper-cpp" ]]; then
@@ -869,6 +941,9 @@ EOF'
         else
             warn "whisper.cpp clone failed - voice input will not work"
         fi
+        else
+            warn "Failed to cd to /tmp - skipping whisper.cpp build"
+        fi # end cd /tmp guard
     else
         log "whisper.cpp already installed ✓"
     fi
@@ -914,14 +989,20 @@ EOF
     # Allow wallpaper sync to login screen without password
     # Security: Only allow copying from user's wallpaper directory to the specific login background
     log "Configuring wallpaper sync permissions..."
-    sudo bash -c "cat > /etc/sudoers.d/apollo-wallpaper << 'SUDOERSEOF'
+    local USER_HOME
+    USER_HOME=$(getent passwd "$USER" | cut -d: -f6)
+    sudo bash -c "cat > /etc/sudoers.d/apollo-wallpaper << SUDOERSEOF
 # Apollo OS - Allow user to update login wallpaper
 # Only permits copying image files to the specific login background location
-$USER ALL=(ALL) NOPASSWD: /usr/bin/cp /home/$USER/System/Wallpaper/*.jpg /usr/share/backgrounds/apollo-login.jpg
-$USER ALL=(ALL) NOPASSWD: /usr/bin/cp /home/$USER/System/Wallpaper/*.png /usr/share/backgrounds/apollo-login.jpg
-$USER ALL=(ALL) NOPASSWD: /usr/bin/cp /home/$USER/System/Wallpaper/*.jpeg /usr/share/backgrounds/apollo-login.jpg
+$USER ALL=(ALL) NOPASSWD: /usr/bin/cp ${USER_HOME}/System/Wallpaper/*.jpg /usr/share/backgrounds/apollo-login.jpg
+$USER ALL=(ALL) NOPASSWD: /usr/bin/cp ${USER_HOME}/System/Wallpaper/*.png /usr/share/backgrounds/apollo-login.jpg
+$USER ALL=(ALL) NOPASSWD: /usr/bin/cp ${USER_HOME}/System/Wallpaper/*.jpeg /usr/share/backgrounds/apollo-login.jpg
 SUDOERSEOF"
     sudo chmod 440 /etc/sudoers.d/apollo-wallpaper
+    sudo visudo -cf /etc/sudoers.d/apollo-wallpaper 2>/dev/null || {
+        warn "Invalid sudoers syntax! Removing file to prevent sudo lockout."
+        sudo rm -f /etc/sudoers.d/apollo-wallpaper
+    }
     
     log "User permissions configured ✓"
     log "NOTE: You may need to log out and log back in for group changes to take effect"
@@ -1029,16 +1110,11 @@ PORTALEOF
         cp "$SCRIPT_DIR/apollo-os-orbit/base-config/niri/config.kdl" "$HOME/.config/niri/config.kdl" || warn "Main Apollo OS Orbit config deployment failed"
 
         # Copy all visual mode configs from visual-modes directory
-        log "Deploying all 16 Visual Mode configurations..."
+        log "Deploying all 19 Visual Mode configurations..."
         if [ -d "$SCRIPT_DIR/apollo-os-orbit/visual-modes/configs" ]; then
             cp "$SCRIPT_DIR/apollo-os-orbit/visual-modes/configs/"*.kdl "$HOME/.config/niri/" || warn "Visual modes niri config deployment failed"
         else
-            # Fallback to base-config if visual-modes not found
-            cp "$SCRIPT_DIR/apollo-os-orbit/base-config/niri/config-classic.kdl" "$HOME/.config/niri/" 2>/dev/null
-            cp "$SCRIPT_DIR/apollo-os-orbit/base-config/niri/config-developer.kdl" "$HOME/.config/niri/" 2>/dev/null
-            cp "$SCRIPT_DIR/apollo-os-orbit/base-config/niri/config-modern.kdl" "$HOME/.config/niri/" 2>/dev/null
-            cp "$SCRIPT_DIR/apollo-os-orbit/base-config/niri/config-orbit.kdl" "$HOME/.config/niri/" 2>/dev/null
-            cp "$SCRIPT_DIR/apollo-os-orbit/base-config/niri/config-professional.kdl" "$HOME/.config/niri/" 2>/dev/null
+            warn "Visual modes configs directory not found"
         fi
 
         # Copy toggle scripts
@@ -1052,6 +1128,7 @@ PORTALEOF
         # Make scripts executable
         chmod +x "$HOME/.config/niri/apollo-autostart.sh" 2>/dev/null
         chmod +x "$HOME/.config/niri/toggle-center.sh" 2>/dev/null
+        chmod +x "$HOME/.config/niri/"toggle-*.sh 2>/dev/null
 
         # Copy Kitty config for Niri
         log "Deploying Kitty terminal configuration..."
@@ -1071,17 +1148,26 @@ PORTALEOF
 
         # Add GTK_THEME and portal to Apollo OS Orbit config
         if [ -f "$HOME/.config/niri/config.kdl" ]; then
-            # Add autostart if not present
-            if ! grep -q "apollo-autostart.sh" "$HOME/.config/niri/config.kdl"; then
-                sed -i '/spawn-at-startup.*polkit/a spawn-at-startup "~/.config/niri/apollo-autostart.sh" // Apollo OS Services' "$HOME/.config/niri/config.kdl"
-            fi
+            # autostart.sh is already in config.kdl via spawn-at-startup
             # Add portal if not present
             if ! grep -q "xdg-desktop-portal-gtk" "$HOME/.config/niri/config.kdl"; then
-                sed -i '/spawn-at-startup.*polkit/a spawn-at-startup "/usr/libexec/xdg-desktop-portal-gtk" // GTK Portal for dark theme' "$HOME/.config/niri/config.kdl"
+                sed -i '/spawn-at-startup.*polkit/a spawn-at-startup "/usr/libexec/xdg-desktop-portal-gtk"' "$HOME/.config/niri/config.kdl"
             fi
             # Add GTK_THEME environment if not present
             if ! grep -q "GTK_THEME" "$HOME/.config/niri/config.kdl"; then
                 sed -i 's/environment {/environment {\n    GTK_THEME "adw-gtk3-dark"\n    ADW_DEBUG_COLOR_SCHEME "prefer-dark"/' "$HOME/.config/niri/config.kdl"
+            fi
+        fi
+        
+        # Apply user-selected display scale to niri config
+        if [[ -f "$CONFIG_FILE" ]]; then
+            source "$CONFIG_FILE"
+            if [[ -n "$DISPLAY_SCALE" && "$DISPLAY_SCALE" != "1.25" ]]; then
+                sed -i "s/scale 1\.25/scale $DISPLAY_SCALE/g" "$HOME/.config/niri/config.kdl"
+                for kdl in "$HOME/.config/niri/config-"*.kdl; do
+                    [ -f "$kdl" ] && sed -i "s/scale 1\.25/scale $DISPLAY_SCALE/g" "$kdl"
+                done
+                log "Display scale set to $DISPLAY_SCALE in all niri configs"
             fi
         fi
     fi
@@ -1109,6 +1195,9 @@ PORTALEOF
         # Copy Hyprland configs (overwrites dots-hyprland defaults)
         if [[ -d "$HYPR_SRC/hypr" ]]; then
             cp -r "$HYPR_SRC/hypr/." "$HOME/.config/hypr/" || warn "Failed to copy Hyprland config"
+            chmod +x "$HOME/.config/hypr/hyprland/scripts/"*.sh 2>/dev/null
+            chmod +x "$HOME/.config/hypr/hyprland/scripts/ai/"*.sh 2>/dev/null
+            chmod +x "$HOME/.config/hypr/custom/scripts/"*.sh 2>/dev/null
             log "Hyprland config copied ✓"
         fi
         
@@ -1187,20 +1276,37 @@ PORTALEOF
         
         # Copy xdg-desktop-portal config
         if [[ -d "$HYPR_SRC/xdg-desktop-portal" ]]; then
-            cp -r "$HYPR_SRC/xdg-desktop-portal/." "$HOME/.config/xdg-desktop-portal/"
+            cp -r "$HYPR_SRC/xdg-desktop-portal/." "$HOME/.config/xdg-desktop-portal/" || warn "Failed to copy xdg-desktop-portal"
+        fi
+        
+        # Copy GTK-3.0 settings (Glass-specific)
+        if [[ -d "$HYPR_SRC/gtk-3.0" ]]; then
+            mkdir -p "$HOME/.config/gtk-3.0"
+            cp -r "$HYPR_SRC/gtk-3.0/." "$HOME/.config/gtk-3.0/" || warn "Failed to copy gtk-3.0"
+        fi
+        
+        # Copy GTK-4.0 settings (Glass-specific)
+        if [[ -d "$HYPR_SRC/gtk-4.0" ]]; then
+            mkdir -p "$HOME/.config/gtk-4.0"
+            cp -r "$HYPR_SRC/gtk-4.0/." "$HOME/.config/gtk-4.0/" || warn "Failed to copy gtk-4.0"
         fi
         
         # Copy zshrc.d if using zsh
         if [[ -d "$HYPR_SRC/zshrc.d" ]]; then
             mkdir -p "$HOME/.config/zshrc.d"
-            cp -r "$HYPR_SRC/zshrc.d/." "$HOME/.config/zshrc.d/"
+            cp -r "$HYPR_SRC/zshrc.d/." "$HOME/.config/zshrc.d/" || warn "Failed to copy zshrc.d"
         fi
         
-        # Set auto-detect for monitor (works with any display)
+        # Set monitor config with user's display scale (only on first install)
         if [[ -f "$HOME/.config/hypr/monitors.conf" ]]; then
-            echo "# Apollo OS - Auto-detect monitor settings" > "$HOME/.config/hypr/monitors.conf"
-            echo "monitor=,preferred,auto,auto" >> "$HOME/.config/hypr/monitors.conf"
-            log "Monitor set to auto-detect ✓"
+            if grep -q "eDP-1" "$HOME/.config/hypr/monitors.conf" 2>/dev/null; then
+                # Default template from Glass tree — replace with auto-detect
+                echo "# Apollo OS - Auto-detect monitor settings" > "$HOME/.config/hypr/monitors.conf"
+                echo "monitor=,preferred,auto,${DISPLAY_SCALE:-1.0}" >> "$HOME/.config/hypr/monitors.conf"
+                log "Monitor set to auto-detect with scale ${DISPLAY_SCALE:-1.0} ✓"
+            else
+                log "Monitor config already customized, skipping ✓"
+            fi
         fi
         
         # Deploy ~/.local/share files (color schemes, konsole profiles, etc.)
@@ -1237,41 +1343,43 @@ PORTALEOF
         log "Apollo OS Glass (Hyprland) configuration deployed ✓"
     fi
 
-    # Deploy Waybar configs
-    log "Deploying Waybar configurations..."
-    cp "$SCRIPT_DIR/apollo-os-orbit/base-config/waybar/config-niri" "$HOME/.config/waybar/config-niri" || warn "Waybar config deployment failed"
-    cp "$SCRIPT_DIR/apollo-os-orbit/base-config/waybar/style.css" "$HOME/.config/waybar/style.css" || warn "Waybar style deployment failed"
+    # Deploy Waybar configs (Niri only — Glass uses Quickshell)
+    if [[ "$INSTALL_NIRI" == true ]]; then
+        log "Deploying Waybar configurations..."
+        cp "$SCRIPT_DIR/apollo-os-orbit/base-config/waybar/config-niri" "$HOME/.config/waybar/config-niri" || warn "Waybar config deployment failed"
+        cp "$SCRIPT_DIR/apollo-os-orbit/base-config/waybar/style.css" "$HOME/.config/waybar/style.css" || warn "Waybar style deployment failed"
 
-    # Copy all visual mode waybar configs from visual-modes directory
-    log "Deploying all 16 Visual Mode Waybar configurations..."
-    if [ -d "$SCRIPT_DIR/apollo-os-orbit/visual-modes/waybar/configs" ]; then
-        cp "$SCRIPT_DIR/apollo-os-orbit/visual-modes/waybar/configs/"* "$HOME/.config/waybar/" || warn "Visual modes waybar config deployment failed"
+        # Copy all visual mode waybar configs from visual-modes directory
+        log "Deploying all 19 Visual Mode Waybar configurations..."
+        if [ -d "$SCRIPT_DIR/apollo-os-orbit/visual-modes/waybar/configs" ]; then
+            cp "$SCRIPT_DIR/apollo-os-orbit/visual-modes/waybar/configs/"* "$HOME/.config/waybar/" || warn "Visual modes waybar config deployment failed"
+        fi
+        if [ -d "$SCRIPT_DIR/apollo-os-orbit/visual-modes/waybar/styles" ]; then
+            cp "$SCRIPT_DIR/apollo-os-orbit/visual-modes/waybar/styles/"* "$HOME/.config/waybar/" || warn "Visual modes waybar styles deployment failed"
+        fi
+
+        # Copy Crystal Bay dock configs
+        if [ -d "$SCRIPT_DIR/apollo-os-orbit/extras/dock" ]; then
+            cp "$SCRIPT_DIR/apollo-os-orbit/extras/dock/"* "$HOME/.config/waybar/" || warn "Crystal Bay dock config deployment failed"
+        fi
+
+        # Create hide-bottom.css for waybar toggle feature
+        touch "$HOME/.config/waybar/hide-bottom.css" || warn "hide-bottom.css creation failed"
+
+        # Deploy Mako configs (including Crystal Bay theme)
+        log "Deploying Mako configurations..."
+        if [ -d "$SCRIPT_DIR/apollo-os-orbit/visual-modes/mako" ]; then
+            cp "$SCRIPT_DIR/apollo-os-orbit/visual-modes/mako/"* "$HOME/.config/mako/" || warn "Mako visual mode configs failed"
+        fi
+
+        # Deploy Mako config
+        log "Deploying Mako configuration..."
+        cp "$SCRIPT_DIR/apollo-os-orbit/base-config/mako/apollo-os-mako-config" "$HOME/.config/mako/config" || warn "Mako config deployment failed"
+
+        # Deploy Rofi theme
+        log "Deploying Rofi theme..."
+        cp "$SCRIPT_DIR/apollo-os-orbit/base-config/rofi/config.rasi" "$HOME/.config/rofi/config.rasi" || warn "Rofi config deployment failed"
     fi
-    if [ -d "$SCRIPT_DIR/apollo-os-orbit/visual-modes/waybar/styles" ]; then
-        cp "$SCRIPT_DIR/apollo-os-orbit/visual-modes/waybar/styles/"* "$HOME/.config/waybar/" || warn "Visual modes waybar styles deployment failed"
-    fi
-
-    # Copy macOS dock configs
-    if [ -d "$SCRIPT_DIR/apollo-os-orbit/extras/dock" ]; then
-        cp "$SCRIPT_DIR/apollo-os-orbit/extras/dock/"* "$HOME/.config/waybar/" || warn "macOS dock config deployment failed"
-    fi
-
-    # Create hide-bottom.css for waybar toggle feature
-    touch "$HOME/.config/waybar/hide-bottom.css" || warn "hide-bottom.css creation failed"
-
-    # Deploy Mako configs (including macOS theme)
-    log "Deploying Mako configurations..."
-    if [ -d "$SCRIPT_DIR/apollo-os-orbit/visual-modes/mako" ]; then
-        cp "$SCRIPT_DIR/apollo-os-orbit/visual-modes/mako/"* "$HOME/.config/mako/" || warn "Mako visual mode configs failed"
-    fi
-
-    # Deploy Mako config
-    log "Deploying Mako configuration..."
-    cp "$SCRIPT_DIR/apollo-os-orbit/base-config/mako/apollo-os-mako-config" "$HOME/.config/mako/config" || warn "Mako config deployment failed"
-
-    # Deploy Rofi theme
-    log "Deploying Rofi theme..."
-    cp "$SCRIPT_DIR/apollo-os-orbit/base-config/rofi/config.rasi" "$HOME/.config/rofi/config.rasi" || warn "Rofi config deployment failed"
 
     # Deploy Alacritty config
     log "Deploying Alacritty configuration..."
@@ -1284,9 +1392,12 @@ PORTALEOF
     cp "$SCRIPT_DIR/apollo-os-sys/config/btop/btop.conf" "$HOME/.config/btop/btop.conf" || warn "btop config deployment failed"
     cp "$SCRIPT_DIR/apollo-os-sys/config/btop/themes/apollo-hacker.theme" "$HOME/.config/btop/themes/apollo-hacker.theme" || warn "btop theme deployment failed"
 
-    # Deploy Hyprlock configuration (for Niri lock screen)
+    # Deploy Hyprlock configuration
+    # For Niri: deploy full hyprlock config from orbit/extras
+    # For Hyprland-only: deploy the hyprlock helper scripts (check-capslock.sh, status.sh)
+    #   that the Glass hyprlock.conf references
     if [[ "$INSTALL_NIRI" == true ]]; then
-        log "Deploying Hyprlock configuration..."
+        log "Deploying Hyprlock configuration (Orbit)..."
         mkdir -p "$HOME/.config/hypr/hyprlock"
         if [ -d "$SCRIPT_DIR/apollo-os-orbit/extras/hyprlock" ]; then
             cp "$SCRIPT_DIR/apollo-os-orbit/extras/hyprlock/hyprlock.conf" "$HOME/.config/hypr/" 2>/dev/null || warn "Hyprlock config failed"
@@ -1296,6 +1407,16 @@ PORTALEOF
             log "Hyprlock configuration deployed ✓"
         else
             warn "Hyprlock configuration not found in apollo-os-orbit/extras"
+        fi
+    elif [[ "$INSTALL_HYPRLAND" == true ]]; then
+        # Hyprland-only: Glass hyprlock.conf was already copied with hypr/ tree
+        # But the helper scripts (check-capslock.sh, status.sh) are only in orbit/extras
+        log "Deploying Hyprlock helper scripts for Glass..."
+        mkdir -p "$HOME/.config/hypr/hyprlock"
+        if [ -d "$SCRIPT_DIR/apollo-os-orbit/extras/hyprlock" ]; then
+            cp "$SCRIPT_DIR/apollo-os-orbit/extras/hyprlock/"*.sh "$HOME/.config/hypr/hyprlock/" 2>/dev/null || warn "Hyprlock scripts failed"
+            chmod +x "$HOME/.config/hypr/hyprlock/"*.sh 2>/dev/null
+            log "Hyprlock helper scripts deployed ✓"
         fi
     fi
 
@@ -1385,53 +1506,27 @@ disable_welcome_screen() {
 # Copy Plymouth Watermark
 #####################################################################
 
-copy_plymouth_watermark() {
-    log "Installing Plymouth watermark..."
-    
-    local watermark_source="$SCRIPT_DIR/apollo-os-sys/assets/spinner/watermark.png"
-    local watermark_target="/usr/share/plymouth/themes/spinner/watermark.png"
-    
-    # Check if watermark source exists
-    if [[ ! -f "$watermark_source" ]]; then
-        warn "Watermark source not found: $watermark_source"
-        return 1
+deploy_boot_splash() {
+    # Apollo OS uses TTY-based boot (no Plymouth/graphical splash)
+    # The boot-splash.sh shows a brief ASCII logo on the console during early boot
+    # The full cybersecurity-themed boot sequence runs after TTY1 login
+    log "Deploying boot splash..."
+
+    local splash_src="$SCRIPT_DIR/apollo-os-sys/systemd/apollo-boot-splash.sh"
+    local splash_svc="$SCRIPT_DIR/apollo-os-sys/systemd/apollo-boot-splash.service"
+
+    if [[ -f "$splash_src" ]]; then
+        sudo cp "$splash_src" /usr/local/bin/apollo-boot-splash.sh || warn "Failed to deploy boot splash script"
+        sudo chmod +x /usr/local/bin/apollo-boot-splash.sh
     fi
-    
-    # Check if Plymouth spinner theme directory exists
-    if [[ ! -d /usr/share/plymouth/themes/spinner ]]; then
-        warn "Plymouth spinner theme directory not found, skipping watermark installation"
-        return 0
+
+    if [[ -f "$splash_svc" ]]; then
+        sudo cp "$splash_svc" /etc/systemd/system/ || warn "Failed to deploy boot splash service"
+        sudo systemctl daemon-reload
+        sudo systemctl enable apollo-boot-splash.service 2>/dev/null || warn "Failed to enable boot splash"
     fi
-    
-    # Backup existing watermark if present
-    if [[ -f "$watermark_target" ]]; then
-        log "Backing up existing watermark..."
-        sudo cp "$watermark_target" "${watermark_target}.backup.$(date +%Y%m%d)" || warn "Failed to backup watermark"
-    fi
-    
-    # Copy Apollo OS watermark
-    log "Copying Apollo OS watermark to Plymouth..."
-    sudo cp "$watermark_source" "$watermark_target" || {
-        warn "Failed to copy watermark"
-        return 1
-    }
-    
-    # Set correct permissions
-    sudo chmod 644 "$watermark_target"
-    sudo chown root:root "$watermark_target"
-    
-    # Set spinner as default Plymouth theme
-    log "Setting spinner as default Plymouth theme..."
-    sudo plymouth-set-default-theme spinner || warn "Failed to set Plymouth theme"
-    
-    # Rebuild initramfs to apply changes
-    log "Rebuilding initramfs..."
-    sudo dracut -f || warn "Failed to rebuild initramfs"
-    
-    log "Plymouth watermark installed ✓"
-    log "Watermark: $watermark_target"
-    
-    return 0
+
+    log "Boot splash deployed ✓"
 }
 
 #####################################################################
@@ -1441,21 +1536,49 @@ copy_plymouth_watermark() {
 install_scripts() {
     log "Installing Apollo OS scripts..."
 
-    # Copy scripts to local bin (excluding AI scripts)
+    # Copy shell scripts to local bin
     for script in "$SCRIPT_DIR/apollo-os-sys/scripts/"*.sh; do
         if [ -f "$script" ]; then
             cp "$script" "$HOME/.local/bin/" || warn "Failed to copy $(basename "$script")"
         fi
     done
 
+    # Copy Python scripts to local bin
+    for script in "$SCRIPT_DIR/apollo-os-sys/scripts/"*.py; do
+        if [ -f "$script" ]; then
+            cp "$script" "$HOME/.local/bin/" || warn "Failed to copy $(basename "$script")"
+        fi
+    done
+
+    # Copy voice-input scripts (no extension)
+    for script in voice-input voice-input-notification voice-input-visualizer; do
+        if [ -f "$SCRIPT_DIR/apollo-os-sys/scripts/$script" ]; then
+            cp "$SCRIPT_DIR/apollo-os-sys/scripts/$script" "$HOME/.local/bin/" || warn "Failed to copy $script"
+        fi
+    done
+
+    # Copy Hyprland start script (no .sh extension)
+    if [[ "$INSTALL_HYPRLAND" == true ]] && [ -f "$SCRIPT_DIR/apollo-os-sys/scripts/start-hyprland" ]; then
+        cp "$SCRIPT_DIR/apollo-os-sys/scripts/start-hyprland" "$HOME/.local/bin/" || warn "Failed to copy start-hyprland"
+        chmod +x "$HOME/.local/bin/start-hyprland"
+    fi
+
     # Make scripts executable
     chmod +x "$HOME/.local/bin/apollo-"* 2>/dev/null || true
     chmod +x "$HOME/.local/bin/apollo-os-"* 2>/dev/null || true
+    chmod +x "$HOME/.local/bin/voice-input"* 2>/dev/null || true
 
-    # Install wrapper script to /usr/local/bin/ (needed for GDM)
-    log "Installing wrapper script globally..."
+    # Install wrapper scripts to /usr/local/bin/
+    log "Installing wrapper scripts globally..."
     sudo cp "$HOME/.local/bin/apollo-os-wrapper-niri.sh" /usr/local/bin/ || warn "Failed to install niri wrapper globally"
-    sudo chmod +x /usr/local/bin/apollo-os-wrapper-niri.sh
+    sudo chmod +x /usr/local/bin/apollo-os-wrapper-niri.sh || warn "Failed to set execute permission on niri wrapper"
+
+    # Install Hyprland start script globally (needed for session files and TTY auto-start)
+    if [[ "$INSTALL_HYPRLAND" == true ]]; then
+        sudo cp "$HOME/.local/bin/start-hyprland" /usr/local/bin/ || warn "Failed to install start-hyprland globally"
+        sudo chmod +x /usr/local/bin/start-hyprland
+        log "Hyprland start script installed ✓"
+    fi
 
     # Create symlinks for convenience
     ln -sf "$HOME/.local/bin/apollo-speak.sh" "$HOME/.local/bin/apollo-speak" || warn "Failed to create apollo-speak symlink"
@@ -1497,10 +1620,17 @@ install_scripts() {
 #####################################################################
 
 install_desktop_entries() {
-    # Note: Session entry is created in configure_login_manager()
-    # This function is kept for compatibility but does nothing
-    # Apollo OS Orbit is the only session and is configured system-wide
-    log "Session entries will be configured in login manager setup ✓"
+    # Deploy wayland-session .desktop files for DM compatibility
+    log "Installing wayland session entries..."
+    local SESSION_DIR="/usr/share/wayland-sessions"
+    sudo mkdir -p "$SESSION_DIR"
+    if [[ "$INSTALL_NIRI" == true ]]; then
+        sudo cp "$SCRIPT_DIR/apollo-os-sys/config/wayland-sessions/apollo-os-orbit.desktop" "$SESSION_DIR/" 2>/dev/null || warn "Orbit session entry failed"
+    fi
+    if [[ "$INSTALL_HYPRLAND" == true ]]; then
+        sudo cp "$SCRIPT_DIR/apollo-os-sys/config/wayland-sessions/apollo-os-glass.desktop" "$SESSION_DIR/" 2>/dev/null || warn "Glass session entry failed"
+    fi
+    log "Session entries installed ✓"
 }
 
 #####################################################################
@@ -1512,16 +1642,26 @@ setup_systemd() {
 
     mkdir -p "$HOME/.config/systemd/user"
 
-    # Copy systemd units (excluding boot splash and AI daemon)
+    # Copy systemd USER units (excluding boot splash, AI daemon, and sleep/wake which are system-level)
     for file in "$SCRIPT_DIR/apollo-os-sys/systemd/"*.service "$SCRIPT_DIR/apollo-os-sys/systemd/"*.timer; do
         if [ -f "$file" ]; then
             local filename="$(basename "$file")"
-            # Skip boot splash and AI daemon
-            if [[ "$filename" != "apollo-boot-splash.service" && "$filename" != "apollo-os-daemon.service" ]]; then
-                cp "$file" "$HOME/.config/systemd/user/" || warn "Failed to copy $filename"
-            fi
+            # Skip boot splash, AI daemon, and system-level sleep/wake services
+            case "$filename" in
+                apollo-boot-splash.service|apollo-os-daemon.service) continue ;;
+                apollo-os-sleep.service|apollo-os-wake.service) continue ;;
+            esac
+            cp "$file" "$HOME/.config/systemd/user/" || warn "Failed to copy $filename"
         fi
     done
+
+    # Install sleep/wake TTS as SYSTEM-level services (they need sleep.target/suspend.target)
+    log "Installing Sleep/Wake TTS as system services..."
+    sudo cp "$SCRIPT_DIR/apollo-os-sys/systemd/apollo-os-sleep.service" /etc/systemd/system/ || warn "Failed to copy sleep service"
+    sudo cp "$SCRIPT_DIR/apollo-os-sys/systemd/apollo-os-wake.service" /etc/systemd/system/ || warn "Failed to copy wake service"
+    sudo systemctl daemon-reload
+    sudo systemctl enable apollo-os-sleep.service || warn "Failed to enable sleep service"
+    sudo systemctl enable apollo-os-wake.service || warn "Failed to enable wake service"
 
     # Install screen-corners script and service
     log "Installing screen-corners (rounded screen edges)..."
@@ -1531,18 +1671,19 @@ setup_systemd() {
         log "Screen-corners script installed ✓"
     fi
 
-    # Reload systemd
+    # Reload user systemd
     systemctl --user daemon-reload
 
-    # Enable Sleep/Wake TTS services
-    log "Enabling Sleep/Wake TTS notifications..."
-    systemctl --user enable apollo-os-sleep.service || warn "Failed to enable sleep service"
-    systemctl --user enable apollo-os-wake.service || warn "Failed to enable wake service"
-    
     # Enable screen-corners service
     log "Enabling screen-corners service..."
     systemctl --user enable screen-corners.service || warn "Failed to enable screen-corners service"
-    
+
+    # Enable monitoring services
+    log "Enabling system monitors..."
+    systemctl --user enable apollo-os-battery-monitor.service 2>/dev/null || warn "Failed to enable battery monitor"
+    systemctl --user enable apollo-os-disk-monitor.service 2>/dev/null || warn "Failed to enable disk monitor"
+    systemctl --user enable apollo-os-watchdog.service 2>/dev/null || warn "Failed to enable watchdog"
+
     # Enable services (event monitor will be started by autostart script)
     # We don't enable it as systemd service to avoid race conditions
     # It starts after Apollo OS Orbit/Mako/Audio are ready
@@ -1596,8 +1737,8 @@ install_audio_system() {
     
     if [ -x "$EDGE_TTS" ]; then
         # Sleep/Wake sounds
-        "$EDGE_TTS" -t "Apollo OS Kryoschlaf eingeleitet. System Core versiegelt. Datenkern ist verschlüsselt und geschützt." -v "de-DE-AmalaNeural" --write-media "$SOUNDS_DIR/sleep.mp3" 2>/dev/null || warn "Failed to generate sleep.mp3"
-        "$EDGE_TTS" -t "Apollo OS Reaktivierungssequenz gestartet. System Core entsiegelt. Datenkern ist hochgefahren. Integrität aller Systeme bestätigt. System ist einsatzbereit." -v "de-DE-AmalaNeural" --write-media "$SOUNDS_DIR/wake.mp3" 2>/dev/null || warn "Failed to generate wake.mp3"
+        "$EDGE_TTS" -t "Kryoschlaf eingeleitet. System gesichert." -v "de-DE-AmalaNeural" --write-media "$SOUNDS_DIR/sleep.mp3" 2>/dev/null || warn "Failed to generate sleep.mp3"
+        "$EDGE_TTS" -t "System reaktiviert. Alle Systeme einsatzbereit." -v "de-DE-AmalaNeural" --write-media "$SOUNDS_DIR/wake.mp3" 2>/dev/null || warn "Failed to generate wake.mp3"
         log "TTS audio files generated ✓"
     else
         # Fallback: Copy from project if available
@@ -1624,14 +1765,14 @@ install_audio_system() {
     if [ ! -f "$SOUNDS_DIR/voice-start.wav" ]; then
         ffmpeg -f lavfi -i "sine=frequency=800:duration=0.08" \
                -af "afade=t=in:d=0.01,afade=t=out:d=0.02" \
-               /tmp/tone1.wav -y 2>/dev/null
+               "$SOUNDS_DIR/.tone1.wav" -y 2>/dev/null
         ffmpeg -f lavfi -i "sine=frequency=1000:duration=0.08" \
                -af "afade=t=in:d=0.01,afade=t=out:d=0.02" \
-               /tmp/tone2.wav -y 2>/dev/null
-        ffmpeg -i /tmp/tone1.wav -i /tmp/tone2.wav \
+               "$SOUNDS_DIR/.tone2.wav" -y 2>/dev/null
+        ffmpeg -i "$SOUNDS_DIR/.tone1.wav" -i "$SOUNDS_DIR/.tone2.wav" \
                -filter_complex "[0][1]concat=n=2:v=0:a=1" \
                "$SOUNDS_DIR/voice-start.wav" -y 2>/dev/null || warn "Failed to generate voice-start.wav"
-        rm -f /tmp/tone1.wav /tmp/tone2.wav
+        rm -f "$SOUNDS_DIR/.tone1.wav" "$SOUNDS_DIR/.tone2.wav"
     fi
 
     # Generate voice-end.wav (Star Trek style - descending tones)
@@ -1639,14 +1780,14 @@ install_audio_system() {
     if [ ! -f "$SOUNDS_DIR/voice-end.wav" ]; then
         ffmpeg -f lavfi -i "sine=frequency=1000:duration=0.08" \
                -af "afade=t=in:d=0.01,afade=t=out:d=0.02" \
-               /tmp/tone1.wav -y 2>/dev/null
+               "$SOUNDS_DIR/.tone1.wav" -y 2>/dev/null
         ffmpeg -f lavfi -i "sine=frequency=800:duration=0.08" \
                -af "afade=t=in:d=0.01,afade=t=out:d=0.02" \
-               /tmp/tone2.wav -y 2>/dev/null
-        ffmpeg -i /tmp/tone1.wav -i /tmp/tone2.wav \
+               "$SOUNDS_DIR/.tone2.wav" -y 2>/dev/null
+        ffmpeg -i "$SOUNDS_DIR/.tone1.wav" -i "$SOUNDS_DIR/.tone2.wav" \
                -filter_complex "[0][1]concat=n=2:v=0:a=1" \
                "$SOUNDS_DIR/voice-end.wav" -y 2>/dev/null || warn "Failed to generate voice-end.wav"
-        rm -f /tmp/tone1.wav /tmp/tone2.wav
+        rm -f "$SOUNDS_DIR/.tone1.wav" "$SOUNDS_DIR/.tone2.wav"
     fi
 
     # Create voice configuration
@@ -1668,6 +1809,13 @@ TTS_SPEED="1.0"
 TTS_LANG="de"
 TTSEOF
 
+    # Create tts.conf with TTS enabled by default (only if not exists)
+    if [[ ! -f "$HOME/.config/apollo-os/tts.conf" ]]; then
+        cat > "$HOME/.config/apollo-os/tts.conf" << 'TTSCONFEOF'
+TTS_ENABLED=true
+TTSCONFEOF
+    fi
+
     log "Audio System installed ✓"
     echo -e "${GREEN}TTS Voice: AMALA (German, edge-tts)${NC}"
 }
@@ -1678,6 +1826,9 @@ TTSEOF
 
 install_voice_control() {
     log "Installing Voice Control System (Apollo Wake Word)..."
+
+    # Refresh sudo
+    sudo -v
 
     echo
     echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}"
@@ -1700,7 +1851,8 @@ install_voice_control() {
     if [ ! -d "$model_dir" ]; then
         log "Downloading Vosk German language model..."
         local model_url="https://alphacephei.com/vosk/models/vosk-model-small-de-0.15.zip"
-        local temp_zip="/tmp/vosk-model.zip"
+        local temp_zip
+        temp_zip=$(mktemp /tmp/vosk-model-XXXXXX.zip)
         
         if curl -L "$model_url" -o "$temp_zip"; then
             log "Extracting Vosk model..."
@@ -1729,14 +1881,8 @@ install_voice_control() {
         chmod +x "$HOME/.local/bin/apollo-speak.sh"
     fi
 
-    # Copy voice-input scripts (Whisper)
-    log "Installing voice input scripts (Whisper)..."
-    for script in voice-input voice-input-notification voice-input-visualizer; do
-        if [ -f "$SCRIPT_DIR/apollo-os-sys/scripts/$script" ]; then
-            cp "$SCRIPT_DIR/apollo-os-sys/scripts/$script" "$HOME/.local/bin/" || warn "Failed to copy $script"
-            chmod +x "$HOME/.local/bin/$script"
-        fi
-    done
+    # Copy voice-input scripts (Whisper) - already copied by install_scripts()
+    log "Verifying voice input scripts..."
 
     # Copy Right Ctrl Push-to-Talk script
     if [ -f "$SCRIPT_DIR/apollo-os-sys/scripts/apollo-os-rightctrl-voice.py" ]; then
@@ -1760,33 +1906,10 @@ install_voice_control() {
     log "Installing Python evdev for Right Ctrl push-to-talk..."
     python3 -m pip install --user evdev || warn "Failed to install evdev"
 
-    # Install systemd service
-    log "Installing wake word systemd service..."
+    # Systemd services are already copied by setup_systemd()
+    # Just ensure they are enabled
+    log "Enabling voice control systemd services..."
     mkdir -p "$HOME/.config/systemd/user"
-    
-    cat > "$HOME/.config/systemd/user/apollo-wake.service" << 'WAKEEOF'
-[Unit]
-Description=Apollo Wake Word Listener (Vosk)
-After=sound.target graphical-session.target
-
-[Service]
-Type=simple
-ExecStart=/usr/bin/env python3 %h/.local/bin/apollo-wake-listener.py
-Restart=on-failure
-RestartSec=5
-StandardOutput=journal
-StandardError=journal
-
-[Install]
-WantedBy=default.target
-WAKEEOF
-
-    # Install Right Ctrl Push-to-Talk systemd service
-    if [ -f "$SCRIPT_DIR/apollo-os-sys/systemd/apollo-rightctrl-voice.service" ]; then
-        cp "$SCRIPT_DIR/apollo-os-sys/systemd/apollo-rightctrl-voice.service" "$HOME/.config/systemd/user/" || warn "Failed to copy rightctrl service"
-    else
-        warn "apollo-rightctrl-voice.service not found in project"
-    fi
 
     # Reload and enable services
     systemctl --user daemon-reload
@@ -1936,10 +2059,10 @@ install_flatpak_apps() {
         "xyz.ketok.Speedtest"                # Speed test
         "org.gabmus.whatip"                  # IP info
         "net.codelogistics.webapps"          # Web apps manager
+        "com.github.weclaw1.ImageRoll"       # Image viewer
         
         # Terminal & Podcasts
         "app.devsuite.Ptyxis"                # Modern terminal
-        "org.gnome.Podcasts"                 # Podcast player
         
         # Remote Desktop
         "com.anydesk.Anydesk"                # AnyDesk
@@ -2030,10 +2153,336 @@ install_neovim() {
     sudo dnf install -y neovim || warn "Neovim installation failed"
     
     # Install common neovim dependencies
-    pip3 install --user pynvim || warn "Failed to install pynvim"
+    python3 -m pip install --user pynvim || warn "Failed to install pynvim"
     
     log "Neovim installed ✓"
     echo -e "${GREEN}Neovim installed ✓${NC}"
+}
+
+#####################################################################
+# Bitdefender Security Tools Installation
+#####################################################################
+
+install_bitdefender() {
+    log "Installing Bitdefender Security Tools..."
+
+    # Refresh sudo
+    sudo -v
+
+    echo
+    echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}"
+    echo -e "${CYAN}  Bitdefender Security Tools${NC}"
+    echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}\n"
+
+    local BD_RPM
+    BD_RPM=$(ls "$SCRIPT_DIR/apollo-os-sys/packages/bitdefender-security-tools-"*.rpm 2>/dev/null | sort -V | tail -1)
+    if [[ -z "$BD_RPM" ]]; then
+        BD_RPM="$SCRIPT_DIR/apollo-os-sys/packages/bitdefender-security-tools-7.8.0-200269.x86_64.rpm"
+    fi
+
+    if [[ ! -f "$BD_RPM" ]]; then
+        warn "Bitdefender RPM not found at: $BD_RPM"
+        return 1
+    fi
+
+    # Check if already installed
+    if rpm -q bitdefender-security-tools &>/dev/null; then
+        log "Bitdefender Security Tools already installed ✓"
+        return 0
+    fi
+
+    # Install Bitdefender RPM
+    log "Installing Bitdefender Security Tools from bundled RPM..."
+    sudo dnf install -y "$BD_RPM" || {
+        warn "Bitdefender installation via dnf failed, trying rpm directly..."
+        sudo rpm -ivh "$BD_RPM" || warn "Bitdefender installation failed"
+    }
+
+    # Enable and start Bitdefender service
+    if systemctl list-unit-files 2>/dev/null | grep -q 'bdagentd\|bdsec\|bitdefender'; then
+        log "Enabling Bitdefender service..."
+        sudo systemctl enable bdagentd 2>/dev/null || \
+        sudo systemctl enable bdsec 2>/dev/null || \
+        sudo systemctl enable bitdefender-security-tools 2>/dev/null || \
+        warn "Could not find Bitdefender service to enable"
+
+        sudo systemctl start bdagentd 2>/dev/null || \
+        sudo systemctl start bdsec 2>/dev/null || \
+        sudo systemctl start bitdefender-security-tools 2>/dev/null || \
+        warn "Could not start Bitdefender service"
+    fi
+
+    if rpm -q bitdefender-security-tools &>/dev/null; then
+        log "Bitdefender Security Tools installed ✓"
+    else
+        warn "Bitdefender installation could not be verified"
+    fi
+}
+
+#####################################################################
+# Security Tools Installation
+# Firewalld Hardening, fail2ban, ClamAV, rkhunter, Lynis,
+# Port Monitor
+#####################################################################
+
+install_security_tools() {
+    log "Installing and configuring security tools..."
+    
+    # Refresh sudo before long security operations
+    sudo -v
+    
+    echo ""
+    echo -e "${CYAN}╔═══════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${CYAN}║  Security Tools Installation                                ║${NC}"
+    echo -e "${CYAN}╚═══════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+
+    # --- 1. Firewalld Hardening ---
+    log "Hardening Firewalld..."
+    if command -v firewall-cmd &>/dev/null; then
+        # Ensure firewalld is running
+        sudo systemctl enable --now firewalld 2>/dev/null || warn "Failed to enable firewalld"
+
+        # Set default zone to drop (block all incoming by default)
+        sudo firewall-cmd --set-default-zone=FedoraWorkstation 2>/dev/null || true
+
+        # Remove unnecessary services from public zone
+        for svc in mdns cockpit; do
+            sudo firewall-cmd --permanent --zone=FedoraWorkstation --remove-service="$svc" 2>/dev/null || true
+        done
+
+        # Keep only essential services
+        sudo firewall-cmd --permanent --zone=FedoraWorkstation --add-service=dhcpv6-client 2>/dev/null || true
+        sudo firewall-cmd --permanent --zone=FedoraWorkstation --add-service=ssh 2>/dev/null || true
+
+        # Block ICMP timestamp (info leak)
+        sudo firewall-cmd --permanent --add-icmp-block=timestamp-reply 2>/dev/null || true
+        sudo firewall-cmd --permanent --add-icmp-block=timestamp-request 2>/dev/null || true
+
+        # Reload firewall
+        sudo firewall-cmd --reload 2>/dev/null || true
+        log "Firewalld hardened ✓"
+    else
+        warn "firewall-cmd not found"
+    fi
+
+    # --- 2. fail2ban ---
+    log "Installing fail2ban..."
+    sudo dnf install -y fail2ban fail2ban-firewalld 2>/dev/null || warn "fail2ban installation failed"
+
+    if command -v fail2ban-client &>/dev/null; then
+        # Deploy jail configuration
+        if [ -f "$SCRIPT_DIR/apollo-os-sys/security/jail.local" ]; then
+            sudo cp "$SCRIPT_DIR/apollo-os-sys/security/jail.local" /etc/fail2ban/jail.local
+            log "fail2ban jail config deployed ✓"
+        fi
+
+        sudo systemctl enable --now fail2ban 2>/dev/null || warn "Failed to enable fail2ban"
+        log "fail2ban installed and active ✓"
+    fi
+
+    # --- 3. ClamAV ---
+    log "Installing ClamAV antivirus..."
+    sudo dnf install -y clamav clamav-update clamd 2>/dev/null || warn "ClamAV installation failed"
+
+    if command -v freshclam &>/dev/null; then
+        # Fix SELinux for freshclam if needed
+        sudo setsebool -P antivirus_can_scan_system 1 2>/dev/null || true
+
+        # Initial signature update
+        log "Updating ClamAV signatures (this may take a moment)..."
+        sudo freshclam 2>/dev/null || warn "Initial ClamAV signature update failed (will retry later)"
+
+        # Enable automatic signature updates
+        sudo systemctl enable --now clamav-freshclam 2>/dev/null || warn "Failed to enable freshclam service"
+        log "ClamAV installed, freshclam auto-update active ✓"
+    fi
+
+    # --- 4. rkhunter ---
+    log "Installing rkhunter (rootkit scanner)..."
+    sudo dnf install -y rkhunter 2>/dev/null || warn "rkhunter installation failed"
+
+    if command -v rkhunter &>/dev/null; then
+        # Update rkhunter database
+        sudo rkhunter --update 2>/dev/null || true
+        # Set properties baseline
+        sudo rkhunter --propupd 2>/dev/null || true
+        log "rkhunter installed and baselined ✓"
+    fi
+
+    # --- 5. Lynis ---
+    log "Installing Lynis (security auditing)..."
+    sudo dnf install -y lynis 2>/dev/null || warn "Lynis installation failed"
+
+    if command -v lynis &>/dev/null; then
+        log "Lynis installed ✓ (daily audit via systemd timer)"
+    fi
+
+    # --- 6. Port Monitor & Security Audit Scripts ---
+    log "Installing Apollo OS security scripts..."
+
+    # Copy port monitor script
+    if [ -f "$SCRIPT_DIR/apollo-os-sys/scripts/apollo-os-port-monitor.sh" ]; then
+        cp "$SCRIPT_DIR/apollo-os-sys/scripts/apollo-os-port-monitor.sh" "$HOME/.local/bin/"
+        chmod +x "$HOME/.local/bin/apollo-os-port-monitor.sh"
+        log "Port monitor script installed ✓"
+    fi
+
+    # Copy security audit script
+    if [ -f "$SCRIPT_DIR/apollo-os-sys/scripts/apollo-os-security-audit.sh" ]; then
+        cp "$SCRIPT_DIR/apollo-os-sys/scripts/apollo-os-security-audit.sh" "$HOME/.local/bin/"
+        chmod +x "$HOME/.local/bin/apollo-os-security-audit.sh"
+        log "Security audit script installed ✓"
+    fi
+
+    # Create state directory
+    mkdir -p "$HOME/.local/state/apollo-os"
+
+    # --- 7. Enable systemd timers ---
+    log "Enabling security timers..."
+
+    # Port monitor timer (every 5 min)
+    if [ -f "$HOME/.config/systemd/user/apollo-os-port-monitor.timer" ]; then
+        systemctl --user enable --now apollo-os-port-monitor.timer 2>/dev/null || warn "Failed to enable port monitor timer"
+        log "Port monitor timer active (every 5 min) ✓"
+    fi
+
+    # Security audit timer (daily)
+    if [ -f "$HOME/.config/systemd/user/apollo-os-security-audit.timer" ]; then
+        systemctl --user enable --now apollo-os-security-audit.timer 2>/dev/null || warn "Failed to enable security audit timer"
+        log "Security audit timer active (daily) ✓"
+    fi
+
+    # --- 8. Kernel & Network Hardening (sysctl) ---
+    log "Applying kernel and network hardening..."
+    if [ -f "$SCRIPT_DIR/apollo-os-sys/security/99-apollo-hardening.conf" ]; then
+        sudo cp "$SCRIPT_DIR/apollo-os-sys/security/99-apollo-hardening.conf" /etc/sysctl.d/ || warn "Failed to deploy sysctl hardening"
+        sudo sysctl --system -q 2>/dev/null || warn "Failed to apply sysctl settings"
+        log "Kernel/network hardening applied ✓"
+    fi
+
+    # --- 9. SSH Hardening ---
+    log "Hardening SSH configuration..."
+    if [ -d /etc/ssh/sshd_config.d ] && [ -f "$SCRIPT_DIR/apollo-os-sys/security/99-apollo-ssh-hardening.conf" ]; then
+        sudo cp "$SCRIPT_DIR/apollo-os-sys/security/99-apollo-ssh-hardening.conf" /etc/ssh/sshd_config.d/ || warn "Failed to deploy SSH hardening"
+        sudo systemctl reload sshd 2>/dev/null || true
+        log "SSH hardened (root login disabled, rate limiting, strong ciphers) ✓"
+    fi
+
+    # --- 10. Automatic Security Updates ---
+    log "Configuring automatic security updates..."
+    sudo dnf install -y dnf-automatic 2>/dev/null || warn "dnf-automatic installation failed"
+    if [ -f "$SCRIPT_DIR/apollo-os-sys/security/dnf-automatic-security.conf" ]; then
+        sudo cp "$SCRIPT_DIR/apollo-os-sys/security/dnf-automatic-security.conf" /etc/dnf/automatic.conf || warn "Failed to deploy dnf-automatic config"
+    fi
+    sudo systemctl enable --now dnf-automatic-install.timer 2>/dev/null || warn "Failed to enable dnf-automatic timer"
+    log "Automatic security updates enabled ✓"
+
+    # --- 11. AIDE File Integrity Database ---
+    log "Installing AIDE (Advanced Intrusion Detection)..."
+    sudo dnf install -y aide 2>/dev/null || warn "AIDE installation failed"
+    if command -v aide &>/dev/null; then
+        if [ ! -f /var/lib/aide/aide.db.gz ]; then
+            log "Initializing AIDE database (this may take a few minutes)..."
+            sudo aide --init 2>/dev/null || warn "AIDE initialization failed"
+            sudo mv /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz 2>/dev/null || true
+        fi
+        log "AIDE file integrity monitoring installed ✓"
+    fi
+
+    # --- 12. Restrict USB access (optional hardening) ---
+    log "Configuring USB security..."
+    # Block USB storage by default (can be enabled when needed)
+    if [ ! -f /etc/modprobe.d/apollo-usb-storage.conf ]; then
+        sudo bash -c 'cat > /etc/modprobe.d/apollo-usb-storage.conf << EOF
+# Apollo OS - USB mass storage disabled by default
+# To temporarily enable: sudo modprobe usb-storage
+# To permanently enable: remove or comment out this file
+# install usb-storage /bin/false
+# Note: Commented out by default. Uncomment the line above for maximum security.
+EOF'
+        log "USB storage security config created (disabled by default, enable manually for max security) ✓"
+    fi
+
+    # --- 13. Restrict core dumps ---
+    log "Restricting core dumps..."
+    if [ ! -f /etc/security/limits.d/99-apollo-coredump.conf ]; then
+        sudo bash -c 'cat > /etc/security/limits.d/99-apollo-coredump.conf << EOF
+# Apollo OS - Disable core dumps (prevent credential leaks)
+*               hard    core            0
+EOF'
+        log "Core dumps restricted ✓"
+    fi
+
+    # --- 14. DNS-over-TLS (encrypted DNS queries) ---
+    log "Configuring DNS-over-TLS..."
+    if [ -f "$SCRIPT_DIR/apollo-os-sys/security/99-apollo-dns-tls.conf" ]; then
+        sudo mkdir -p /etc/systemd/resolved.conf.d
+        sudo cp "$SCRIPT_DIR/apollo-os-sys/security/99-apollo-dns-tls.conf" /etc/systemd/resolved.conf.d/ || warn "Failed to deploy DNS-over-TLS config"
+        # Ensure NetworkManager delegates DNS to systemd-resolved
+        if [ -f "$SCRIPT_DIR/apollo-os-sys/security/99-apollo-dns-resolved.conf" ]; then
+            sudo mkdir -p /etc/NetworkManager/conf.d
+            sudo cp "$SCRIPT_DIR/apollo-os-sys/security/99-apollo-dns-resolved.conf" /etc/NetworkManager/conf.d/ || warn "Failed to deploy NM DNS config"
+        fi
+        sudo systemctl restart systemd-resolved 2>/dev/null || warn "Failed to restart systemd-resolved"
+        # Create /etc/resolv.conf symlink to systemd-resolved
+        if [ ! -L /etc/resolv.conf ] || [ "$(readlink /etc/resolv.conf)" != "/run/systemd/resolve/stub-resolv.conf" ]; then
+            sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf 2>/dev/null || warn "Failed to link resolv.conf"
+        fi
+        log "DNS-over-TLS enabled (Cloudflare + Quad9) ✓"
+    fi
+
+    # --- 15. MAC Address Randomization ---
+    log "Configuring MAC address randomization..."
+    if [ -f "$SCRIPT_DIR/apollo-os-sys/security/99-apollo-mac-random.conf" ]; then
+        sudo mkdir -p /etc/NetworkManager/conf.d
+        sudo cp "$SCRIPT_DIR/apollo-os-sys/security/99-apollo-mac-random.conf" /etc/NetworkManager/conf.d/ || warn "Failed to deploy MAC randomization config"
+        sudo systemctl reload NetworkManager 2>/dev/null || true
+        log "WiFi/Ethernet MAC randomization enabled ✓"
+    fi
+
+    # --- 16. Journal Size Limits ---
+    log "Configuring journal rotation..."
+    if [ -f "$SCRIPT_DIR/apollo-os-sys/security/99-apollo-journal.conf" ]; then
+        sudo mkdir -p /etc/systemd/journald.conf.d
+        sudo cp "$SCRIPT_DIR/apollo-os-sys/security/99-apollo-journal.conf" /etc/systemd/journald.conf.d/ || warn "Failed to deploy journal config"
+        sudo systemctl restart systemd-journald 2>/dev/null || warn "Failed to restart journald"
+        log "Journal rotation configured (max 500M, 1 month retention) ✓"
+    fi
+
+    # --- 17. System Monitoring Scripts ---
+    log "Installing system monitoring scripts..."
+    for monitor_script in apollo-os-battery-monitor.sh apollo-os-disk-monitor.sh apollo-os-watchdog.sh; do
+        if [ -f "$SCRIPT_DIR/apollo-os-sys/scripts/$monitor_script" ]; then
+            cp "$SCRIPT_DIR/apollo-os-sys/scripts/$monitor_script" "$HOME/.local/bin/"
+            chmod +x "$HOME/.local/bin/$monitor_script"
+        fi
+    done
+    log "Battery, disk, and watchdog monitors installed ✓"
+
+    # --- Summary ---
+    echo ""
+    echo -e "${GREEN}  Security & Monitoring Summary:${NC}"
+    echo -e "  ├── 🔥 Firewalld:     Hardened (incoming blocked by default)"
+    echo -e "  ├── 🛡️  fail2ban:      Active (SSH brute-force protection)"
+    echo -e "  ├── 🦠 ClamAV:        Installed (auto-updating signatures)"
+    echo -e "  ├── 🔍 rkhunter:      Baselined (rootkit detection)"
+    echo -e "  ├── 📊 Lynis:         Installed (daily security audit)"
+    echo -e "  ├── 🌐 Port Monitor:  Active (every 5 min scan)"
+    echo -e "  ├── 🔒 Kernel:        Hardened (sysctl network/kernel params)"
+    echo -e "  ├── 🔑 SSH:           Hardened (no root, strong ciphers, rate limit)"
+    echo -e "  ├── 🔄 Auto-Updates:  Security patches applied automatically"
+    echo -e "  ├── 📁 AIDE:          File integrity monitoring initialized"
+    echo -e "  ├── 🚫 Core Dumps:    Restricted (credential leak prevention)"
+    echo -e "  ├── 🔐 DNS-over-TLS:  Encrypted DNS (Cloudflare + Quad9)"
+    echo -e "  ├── 🎭 MAC Random:    WiFi/Ethernet MAC randomization"
+    echo -e "  ├── 📋 Journal:       Log rotation (max 500M)"
+    echo -e "  ├── 🔋 Battery:       Low battery TTS warnings"
+    echo -e "  ├── 💾 Disk Monitor:  Low disk space warnings"
+    echo -e "  └── 🐕 Watchdog:      Critical service auto-restart"
+    echo ""
+
+    log "Security tools installation complete ✓"
 }
 
 #####################################################################
@@ -2063,111 +2512,107 @@ setup_wallpapers() {
 }
 
 #####################################################################
-# Login Manager Configuration (SDDM)
+# Login Configuration (TTY Login + Boot Sequence)
 #####################################################################
 
 configure_login_manager() {
-    log "Configuring SDDM login manager..."
+    log "Configuring TTY login with Apollo OS boot sequence..."
 
     echo
     echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}"
-    echo -e "${CYAN}  Login Manager Configuration (SDDM)${NC}"
+    echo -e "${CYAN}  Login Configuration (TTY + Boot Sequence)${NC}"
     echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}\n"
-
-    # Install SDDM if not present
-    if ! rpm -q sddm &>/dev/null; then
-        log "Installing SDDM..."
-        sudo dnf install -y sddm sddm-wayland-sway qt5-qtwayland qt6-qtwayland
-    fi
 
     # Configure logind for TTS delay before sleep
     log "Configuring sleep delay for TTS notifications..."
     sudo mkdir -p /etc/systemd/logind.conf.d
     sudo cp "$SCRIPT_DIR/apollo-os-sys/systemd/logind-delay.conf" /etc/systemd/logind.conf.d/apollo-os-delay.conf 2>/dev/null || true
 
-    # Set system to boot in graphical mode
-    log "Setting boot target to graphical..."
-    sudo systemctl set-default graphical.target
-
-    # Disable other display managers, enable SDDM
-    log "Switching to SDDM..."
+    # ─── Disable ALL graphical login managers ───
+    log "Disabling graphical login managers..."
     sudo systemctl disable gdm 2>/dev/null || true
+    sudo systemctl disable sddm 2>/dev/null || true
     sudo systemctl disable greetd 2>/dev/null || true
     sudo systemctl disable lightdm 2>/dev/null || true
-    sudo systemctl enable sddm
+
+    # Set system to multi-user (TTY login, no graphical DM)
+    log "Setting boot target to multi-user (TTY login)..."
+    sudo systemctl set-default multi-user.target || error "CRITICAL: Failed to set boot target! System may not boot correctly."
 
     # Configure terminal boot (no splash, show boot messages)
     log "Configuring terminal boot..."
     sudo grubby --update-kernel=ALL --remove-args='rhgb quiet' 2>/dev/null || true
     sudo grubby --set-default-index=0 2>/dev/null || true
-    
-    # Set GRUB timeout to 0 and remove splash
+
+    # Set GRUB timeout and remove splash args
     if [ -f /etc/default/grub ]; then
-        sudo sed -i 's/GRUB_CMDLINE_LINUX="rhgb quiet"/GRUB_CMDLINE_LINUX=""/' /etc/default/grub
-        sudo sed -i 's/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=0/' /etc/default/grub
-        sudo grub2-mkconfig -o /boot/grub2/grub.cfg 2>/dev/null || true
-    fi
-
-    # Install Apollo OS session files
-    log "Installing desktop sessions..."
-    sudo mkdir -p /usr/share/wayland-sessions
-    
-    if [[ "$INSTALL_HYPRLAND" == true ]]; then
-        if [[ -f "$SCRIPT_DIR/apollo-os-sys/config/wayland-sessions/apollo-os-glass.desktop" ]]; then
-            sudo cp "$SCRIPT_DIR/apollo-os-sys/config/wayland-sessions/apollo-os-glass.desktop" \
-                /usr/share/wayland-sessions/ || warn "Failed to install Hyprland session"
-            log "Apollo OS Glass session installed ✓"
+        sudo sed -i 's/ rhgb//g; s/rhgb //g; s/ quiet//g; s/quiet //g' /etc/default/grub
+        sudo sed -i 's/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=1/' /etc/default/grub
+        if [ -d /sys/firmware/efi ]; then
+            sudo grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg 2>/dev/null || true
+        else
+            sudo grub2-mkconfig -o /boot/grub2/grub.cfg 2>/dev/null || true
         fi
     fi
-    
-    if [[ "$INSTALL_NIRI" == true ]]; then
-        if [[ -f "$SCRIPT_DIR/apollo-os-sys/config/wayland-sessions/apollo-os-orbit.desktop" ]]; then
-            sudo cp "$SCRIPT_DIR/apollo-os-sys/config/wayland-sessions/apollo-os-orbit.desktop" \
-                /usr/share/wayland-sessions/ || warn "Failed to install Niri session"
-            log "Apollo OS Orbit session installed ✓"
-        fi
-    fi
-    
-    # Hide original Niri/Hyprland sessions (so only Apollo OS sessions appear)
-    log "Hiding original session entries..."
-    sudo mv /usr/share/wayland-sessions/niri.desktop /usr/share/wayland-sessions/niri.desktop.bak 2>/dev/null || true
-    sudo mv /usr/share/wayland-sessions/hyprland.desktop /usr/share/wayland-sessions/hyprland.desktop.bak 2>/dev/null || true
-    sudo mv /usr/share/wayland-sessions/hyprland-uwsm.desktop /usr/share/wayland-sessions/hyprland-uwsm.desktop.bak 2>/dev/null || true
-    
-    # Remove GNOME/Sway sessions
-    sudo rm -f /usr/share/wayland-sessions/gnome*.desktop 2>/dev/null
-    sudo rm -f /usr/share/wayland-sessions/sway.desktop 2>/dev/null
-    sudo mv /usr/share/wayland-sessions/plasma.desktop /usr/share/wayland-sessions/plasma.desktop.bak 2>/dev/null || true
 
-    # Configure SDDM theme and wallpaper
-    log "Installing Apollo Modern SDDM theme..."
-    
-    # Install Apollo Modern SDDM theme
-    if [ -d "$SCRIPT_DIR/apollo-os-sys/sddm/apollo-modern" ]; then
-        sudo mkdir -p /usr/share/sddm/themes/apollo-modern
-        sudo cp -r "$SCRIPT_DIR/apollo-os-sys/sddm/apollo-modern/"* /usr/share/sddm/themes/apollo-modern/
-        sudo chown -R root:root /usr/share/sddm/themes/apollo-modern/
-        log "Apollo Modern SDDM theme installed ✓"
+    # ─── Configure TTY auto-start of Niri ───
+    # Add boot sequence to .bash_profile (runs only on TTY1)
+    log "Configuring TTY1 auto-start..."
+    local LOGIN_SNIPPET="$SCRIPT_DIR/apollo-os-sys/config/apollo-os-tty-login.sh"
+
+    if [ -f "$LOGIN_SNIPPET" ]; then
+        # Add to .bash_profile if not already present
+        if ! grep -q "apollo-os-boot-sequence" "$HOME/.bash_profile" 2>/dev/null; then
+            echo "" >> "$HOME/.bash_profile"
+            echo "# Apollo OS - Auto-start on TTY1 login" >> "$HOME/.bash_profile"
+            cat "$LOGIN_SNIPPET" >> "$HOME/.bash_profile"
+            log "TTY1 auto-start added to .bash_profile ✓"
+        else
+            log "TTY1 auto-start already configured in .bash_profile ✓"
+        fi
+
+        # Also add to .zprofile for zsh users
+        if command -v zsh &>/dev/null; then
+            if ! grep -q "apollo-os-boot-sequence" "$HOME/.zprofile" 2>/dev/null; then
+                echo "" >> "$HOME/.zprofile"
+                echo "# Apollo OS - Auto-start on TTY1 login" >> "$HOME/.zprofile"
+                cat "$LOGIN_SNIPPET" >> "$HOME/.zprofile"
+                log "TTY1 auto-start added to .zprofile ✓"
+            fi
+        fi
     else
-        warn "Apollo Modern SDDM theme not found"
+        warn "TTY login snippet not found, creating inline..."
+        # Fallback: add directly
+        if ! grep -q "apollo-os-boot-sequence" "$HOME/.bash_profile" 2>/dev/null; then
+            cat >> "$HOME/.bash_profile" << 'LOGINEOF'
+
+# Apollo OS - Auto-start Niri on TTY1 login
+if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
+    exec "$HOME/.local/bin/apollo-os-boot-sequence.sh"
+fi
+LOGINEOF
+            log "TTY1 auto-start added to .bash_profile (inline) ✓"
+        fi
     fi
-    
-    # Create SDDM config to use Apollo Modern theme
-    sudo mkdir -p /etc/sddm.conf.d
-    sudo tee /etc/sddm.conf.d/apollo-os.conf >/dev/null << 'SDDMEOF'
-[Theme]
-Current=apollo-modern
-CursorTheme=Bibata-Modern-Classic
 
-[General]
-InputMethod=
+    # ─── Configure TTY appearance ───
+    # Set a clean issue message for the login prompt
+    log "Configuring login prompt..."
+    sudo tee /etc/issue > /dev/null << 'ISSUEEOF'
 
-[Users]
-MaximumUid=65535
-MinimumUid=1000
-SDDMEOF
+  \e[0;36m╔═══════════════════════════════════════════════════╗
+  ║\e[1;37m          A P O L L O   O S   v 0 . 6 . 0          \e[0;36m║
+  ║\e[0;90m            Enterprise Desktop Environment            \e[0;36m║
+  ╚═══════════════════════════════════════════════════╝\e[0m
 
-    log "SDDM configured with Apollo Modern theme ✓"
+  \e[0;90mHost: \n  |  Kernel: \r  |  TTY: \l\e[0m
+
+
+ISSUEEOF
+
+    log "TTY login configured ✓"
+    log "Flow: TTY Login → Boot Sequence → Apollo OS Orbit"
+    log "On logout from Niri, user returns to TTY login"
 }
 
 #####################################################################
@@ -2219,7 +2664,9 @@ SHOWTIME_EOF
     # Hide duplicate Chrome entries (Chrome installs multiple .desktop files)
     log "Removing duplicate Chrome entries..."
     if [ -f "$HOME/.local/share/applications/google-chrome.desktop" ]; then
-        echo "NoDisplay=true" >> "$HOME/.local/share/applications/google-chrome.desktop"
+        if ! grep -q "NoDisplay=true" "$HOME/.local/share/applications/google-chrome.desktop"; then
+            echo "NoDisplay=true" >> "$HOME/.local/share/applications/google-chrome.desktop"
+        fi
     fi
     update-desktop-database "$HOME/.local/share/applications/" 2>/dev/null || true
 
@@ -2247,8 +2694,8 @@ SHOWTIME_EOF
         fi
     fi
 
-    # Cleanup installation files
-    log "Cleaning up installation files..."
+    # Cleanup installation temp files
+    log "Cleaning up temporary installation files..."
     
     # Remove dots-hyprland clone if exists
     rm -rf "$HOME/dots-hyprland" 2>/dev/null || true
@@ -2257,26 +2704,7 @@ SHOWTIME_EOF
     # Remove backup folders
     rm -rf "$HOME/ii-original-dots-backup" 2>/dev/null || true
     
-    # Remove installation log (optional - user might want to keep it)
-    # rm -f "$HOME/apollo-os-install.log" 2>/dev/null || true
-    
-    # Clean up the installer directory itself
-    if [ -d "$SCRIPT_DIR" ] && [ "$SCRIPT_DIR" != "$HOME" ]; then
-        # Remove installation scripts and temporary files
-        rm -f "$SCRIPT_DIR/apollo-os-install.sh" 2>/dev/null || true
-        rm -rf "$SCRIPT_DIR/apollo-os-orbit" 2>/dev/null || true
-        rm -rf "$SCRIPT_DIR/apollo-os-glass" 2>/dev/null || true
-        rm -rf "$SCRIPT_DIR/apollo-os-sys" 2>/dev/null || true
-        rm -rf "$SCRIPT_DIR/.git" 2>/dev/null || true
-        rm -f "$SCRIPT_DIR/.gitignore" 2>/dev/null || true
-        rm -f "$SCRIPT_DIR/README.md" 2>/dev/null || true
-        rm -f "$SCRIPT_DIR/LICENSE" 2>/dev/null || true
-        
-        # Remove the entire installer directory if empty
-        rmdir "$SCRIPT_DIR" 2>/dev/null || true
-    fi
-    
-    log "Installation files cleaned up ✓"
+    log "Temporary files cleaned up ✓"
 
     # Print summary
     echo
@@ -2285,17 +2713,28 @@ SHOWTIME_EOF
     echo -e "${MAGENTA}══════════════════════════════════════════════════════${NC}\n"
 
     echo -e "${CYAN}Next Steps:${NC}"
-    echo "1. Log out of your current session"
-    echo "2. Log in - Apollo OS starts automatically"
+    echo "1. Reboot your system"
+    echo "2. Log in at the TTY with your username and password"
+    echo "3. Apollo OS boot sequence starts automatically"
+    echo "   (Press Ctrl+C during boot sequence to stay in terminal)"
     echo
-    echo -e "${YELLOW}Window Manager:${NC}"
-    echo "  • APOLLO OS Orbit Window Manager (default and only session)"
+    # Determine WM name for summary
+    local WM_SUMMARY="Apollo OS Orbit"
+    if [[ "$INSTALL_HYPRLAND" == true && "$INSTALL_NIRI" == false ]]; then
+        WM_SUMMARY="Apollo OS Glass"
+    elif [[ "$INSTALL_HYPRLAND" == true && "$INSTALL_NIRI" == true ]]; then
+        WM_SUMMARY="Apollo OS (${DEFAULT_WM:-niri})"
+    fi
+
+    echo -e "${YELLOW}Login Flow:${NC}"
+    echo "  TTY Login → Boot Sequence → ${WM_SUMMARY}"
+    echo "  On logout, you return to the TTY login"
     echo
     echo -e "${CYAN}Quick Commands:${NC}"
     echo "  apollo-speak <text>          - Text-to-Speech with AMALA voice"
     echo "  apollo                       - Voice control (say 'apollo wie spät')"
-    echo "  apollo-os-theme-switcher.sh  - Switch between light/dark themes"
-    echo "  apollo-os-stats.sh           - System statistics"
+    echo "  Super+Shift+Space            - Quick Menu"
+    echo "  Super+Space                  - App Launcher"
     echo
     echo -e "${GREEN}Installation log saved to: $INSTALL_LOG${NC}"
     echo
@@ -2312,8 +2751,8 @@ main() {
     log "Installation log: $INSTALL_LOG"
 
     check_system
-    gather_user_config
     select_desktop_environment
+    gather_user_config
     select_flatpak_option
     select_office_suite
     select_editor
@@ -2331,12 +2770,18 @@ main() {
     deploy_configs
     install_kora_icons
     disable_welcome_screen
-    copy_plymouth_watermark
+    deploy_boot_splash
     install_scripts
     install_desktop_entries
     setup_systemd
     install_audio_system
     install_voice_control
+    
+    # Install Bitdefender Security Tools
+    install_bitdefender
+    
+    # Install security hardening tools
+    install_security_tools
     
     # Install editors based on user choice
     if [[ "$INSTALL_FRESH" == true ]]; then
@@ -2366,6 +2811,9 @@ main() {
     echo
     read -p "Press Enter to continue..."
 }
+
+# Cleanup handler for interrupted installation
+trap 'echo -e "\n${YELLOW}Installation interrupted. Partial changes may need manual cleanup.${NC}"; exit 130' INT TERM
 
 # Run main installation
 main

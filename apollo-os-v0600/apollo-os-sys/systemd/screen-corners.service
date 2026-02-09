@@ -1,6 +1,8 @@
 [Unit]
 Description=Screen Corners - Rounded Corner Effects for Wayland
 After=graphical-session.target
+StartLimitBurst=5
+StartLimitIntervalSec=60
 
 [Service]
 Type=simple

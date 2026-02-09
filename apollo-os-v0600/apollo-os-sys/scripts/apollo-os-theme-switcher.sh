@@ -61,22 +61,24 @@ reload_components() {
 
     echo "Switching to $theme theme..."
 
-    # Config paths (v0.5.0 simplified - single config files)
-    WAYBAR_CONFIG="$CONFIG_DIR/waybar/config"
+    # Config paths
+    WAYBAR_CONFIG="$CONFIG_DIR/waybar/config-niri"
     WAYBAR_STYLE="$CONFIG_DIR/waybar/style.css"
     MAKO_CONFIG="$CONFIG_DIR/mako/config"
 
     # Reload Waybar
-    if pgrep -x waybar >/dev/null; then
-        pkill waybar
+    WPID=$(pgrep -x waybar || true)
+    if [ -n "$WPID" ]; then
+        kill $WPID 2>/dev/null || true
         sleep 0.5
         waybar -c "$WAYBAR_CONFIG" -s "$WAYBAR_STYLE" &
         echo "  Waybar reloaded"
     fi
 
     # Reload Mako
-    if pgrep -x mako >/dev/null; then
-        pkill mako
+    MPID=$(pgrep -x mako || true)
+    if [ -n "$MPID" ]; then
+        kill $MPID 2>/dev/null || true
         sleep 0.5
         mako --config "$MAKO_CONFIG" &
         echo "  Mako reloaded"
@@ -85,10 +87,10 @@ reload_components() {
     # Update GTK theme
     if [[ "$theme" == "dark" ]]; then
         gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
-        gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark' 2>/dev/null || true
+        gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark' 2>/dev/null || true
     else
         gsettings set org.gnome.desktop.interface color-scheme 'prefer-light' 2>/dev/null || true
-        gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita' 2>/dev/null || true
+        gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3' 2>/dev/null || true
     fi
     echo "  GTK theme updated"
 

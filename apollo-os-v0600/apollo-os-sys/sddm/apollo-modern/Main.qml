@@ -230,7 +230,7 @@ Rectangle {
                 verticalCenter: parent.verticalCenter
                 horizontalCenter: parent.horizontalCenter
             }
-            echoMode: config.boolValue("passwordMask") ? TextInput.Password : null
+            echoMode: config.boolValue("passwordMask") ? TextInput.Password : TextInput.Normal
             color: config.stringValue("passwordTextColor") || textColor
             selectionColor: textColor
             selectedTextColor: "#000000"
@@ -242,7 +242,7 @@ Rectangle {
             onAccepted: {
                 if (text != "" || config.boolValue("passwordAllowEmpty")) {
                     sddm.login(userModel.data(userModel.index(currentUsersIndex, 0), usernameRole)
- || "123test", text, currentSessionsIndex);
+ || "", text, currentSessionsIndex);
                 }
             }
             Rectangle {

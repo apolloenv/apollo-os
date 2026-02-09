@@ -1,0 +1,16 @@
+# Apollo OS - fail2ban Local Jail Configuration
+# Deployed to: /etc/fail2ban/jail.local
+
+[DEFAULT]
+# Ban for 1 hour after 5 failed attempts within 10 minutes
+bantime = 3600
+findtime = 600
+maxretry = 5
+banaction = firewallcmd-rich-rules[actiontype=<multiport>]
+backend = systemd
+
+[sshd]
+enabled = true
+port = ssh
+maxretry = 3
+bantime = 7200

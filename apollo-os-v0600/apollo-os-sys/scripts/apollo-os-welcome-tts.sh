@@ -10,6 +10,12 @@ sleep 2
 # Ensure environment
 export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 
+# Check if TTS is disabled
+TTS_CONFIG="$HOME/.config/apollo-os/tts.conf"
+if [ -f "$TTS_CONFIG" ] && grep -q "^TTS_ENABLED=false" "$TTS_CONFIG"; then
+    exit 0
+fi
+
 # Fixed voice: Amala (German)
 VOICE_MODEL="de-DE-AmalaNeural"
 
@@ -32,7 +38,7 @@ fi
 MESSAGE="Apollo OS System Core gestartet. Alle Module initialisiert. Diagnose abgeschlossen. ${NETWORK_STATUS} Bereit für Einsatz."
 
 # Generate and play TTS
-TMPFILE="/tmp/apollo-welcome-$$.mp3"
+TMPFILE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/apollo-welcome-$$.mp3"
 "$EDGE_TTS" -t "$MESSAGE" -v "$VOICE_MODEL" --write-media "$TMPFILE" 2>/dev/null
 
 if [ -f "$TMPFILE" ]; then

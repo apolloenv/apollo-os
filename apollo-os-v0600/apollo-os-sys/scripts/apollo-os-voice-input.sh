@@ -10,6 +10,28 @@ WHISPER_MODEL="${WHISPER_MODEL:-$HOME/.local/share/whisper/ggml-base.bin}"
 WHISPER_BIN="${WHISPER_BIN:-$HOME/.local/bin/whisper-cpp}"
 LANGUAGE="de"
 
+# Handle --install before main logic
+if [ "$1" = "--install" ]; then
+    notify-send "📦 Whisper Installation" "Starte Installation..." -t 3000
+    mkdir -p "$HOME/.local/bin"
+    mkdir -p "$HOME/.local/share/whisper"
+    cd /tmp || exit 1
+    if [ ! -d "whisper.cpp" ]; then
+        git clone https://github.com/ggerganov/whisper.cpp.git
+    fi
+    cd whisper.cpp || exit 1
+    git pull
+    make -j$(nproc)
+    cp main "$HOME/.local/bin/whisper-cpp"
+    chmod +x "$HOME/.local/bin/whisper-cpp"
+    if [ ! -f "$HOME/.local/share/whisper/ggml-base.bin" ]; then
+        bash ./models/download-ggml-model.sh base
+        mv models/ggml-base.bin "$HOME/.local/share/whisper/"
+    fi
+    notify-send "✅ Installation abgeschlossen" "Whisper ist jetzt einsatzbereit!" -t 3000
+    exit 0
+fi
+
 # Prüfe ob bereits eine Aufnahme läuft
 if [ -f "$PID_FILE" ]; then
     # Stoppe die Aufnahme
@@ -66,34 +88,4 @@ else
     # Starte Aufnahme im Hintergrund
     parecord --channels=1 --rate=16000 --format=s16le "$AUDIO_FILE" &
     echo $! > "$PID_FILE"
-fi
-
-# Installations-Funktion
-if [ "$1" = "--install" ]; then
-    notify-send "📦 Whisper Installation" "Starte Installation..." -t 3000
-    
-    # Erstelle Verzeichnisse
-    mkdir -p "$HOME/.local/bin"
-    mkdir -p "$HOME/.local/share/whisper"
-    
-    # Clone und baue whisper.cpp
-    cd /tmp
-    if [ ! -d "whisper.cpp" ]; then
-        git clone https://github.com/ggerganov/whisper.cpp.git
-    fi
-    cd whisper.cpp
-    git pull
-    make -j$(nproc)
-    
-    # Kopiere Binary
-    cp main "$HOME/.local/bin/whisper-cpp"
-    chmod +x "$HOME/.local/bin/whisper-cpp"
-    
-    # Lade Modell herunter (base model - guter Kompromiss aus Geschwindigkeit und Qualität)
-    if [ ! -f "$HOME/.local/share/whisper/ggml-base.bin" ]; then
-        bash ./models/download-ggml-model.sh base
-        mv models/ggml-base.bin "$HOME/.local/share/whisper/"
-    fi
-    
-    notify-send "✅ Installation abgeschlossen" "Whisper ist jetzt einsatzbereit!" -t 3000
 fi

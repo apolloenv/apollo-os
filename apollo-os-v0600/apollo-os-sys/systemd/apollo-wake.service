@@ -1,10 +1,12 @@
 [Unit]
 Description=Apollo Wake Word Listener (Vosk)
-After=sound.target graphical-session.target
+After=graphical-session.target
+StartLimitBurst=5
+StartLimitIntervalSec=60
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/env python3 /home/apollo/.local/bin/apollo-wake-listener.py
+ExecStart=/usr/bin/env python3 %h/.local/bin/apollo-wake-listener.py
 Restart=on-failure
 RestartSec=5
 StandardOutput=journal

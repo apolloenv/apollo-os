@@ -3,10 +3,8 @@
 # Copyright 2025 by Manuel Kraibacher
 # Displays Apollo ASCII logo during boot sequence
 
-# Show splash in background and exit immediately
-(
-    clear
-    cat << 'EOF'
+clear
+cat << 'EOF'
 
      █████╗ ██████╗  ██████╗ ██╗     ██╗      ██████╗ 
     ██╔══██╗██╔══██╗██╔═══██╗██║     ██║     ██╔═══██╗
@@ -16,13 +14,10 @@
     ╚═╝  ╚═╝╚═╝      ╚═════╝ ╚══════╝╚══════╝ ╚═════╝ 
     
     ╔═══════════════════════════════════════════════════╗
-    ║          Apollo OS v1.0.2 - Booting...          ║
+    ║          Apollo OS v0.6.0 - Booting...          ║
     ║     Advanced Intelligence Quantum System         ║
     ╚═══════════════════════════════════════════════════╝
 
 EOF
-    sleep 2
-) &
-
-# Exit immediately, let splash run in background
+sleep 2
 exit 0

@@ -59,7 +59,7 @@
         "networkEthernet": "kcmshell6 kcm_networkmanagement",
         "taskManager": "plasma-systemmonitor --page-name Processes",
         "terminal": "kitty -1",
-        "update": "kitty -1 --hold=yes fish -i -c 'pkexec pacman -Syu'",
+        "update": "kitty -1 --hold=yes fish -i -c 'pkexec dnf upgrade --refresh'",
         "volumeMixer": "~/.config/hypr/hyprland/scripts/launch_first_available.sh \"pavucontrol-qt\" \"pavucontrol\""
     },
     "audio": {
@@ -80,7 +80,7 @@
             "workspaceZoom": 1
         },
         "thumbnailPath": "",
-        "wallpaperPath": "/home/apollo/System/Wallpaper/Art-Abstract-Lofi-Room.png",
+        "wallpaperPath": "~/System/Wallpaper/Art-Abstract-Lofi-Room.png",
         "widgets": {
             "clock": {
                 "cookie": {
@@ -361,7 +361,7 @@
         "updateInterval": 1000
     },
     "screenRecord": {
-        "savePath": "/home/apollo/Videos"
+        "savePath": "~/Videos"
     },
     "screenSnip": {
         "savePath": ""

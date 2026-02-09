@@ -24,7 +24,7 @@ if [[ "$EUID" -ne 0 ]]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-LOGO_FILE="$SCRIPT_DIR/assets/apollo-os-boot-logo.txt"
+LOGO_FILE="$SCRIPT_DIR/assets/boot/apollo-os-boot-logo.txt"
 
 echo -e "${CYAN}═══════════════════════════════════════════════════════${NC}"
 echo -e "${CYAN}  Apollo OS - Boot Splash Installer${NC}"
@@ -37,9 +37,10 @@ cp /etc/default/grub /etc/default/grub.backup.$(date +%Y%m%d)
 # Modify GRUB for verbose boot
 echo -e "${YELLOW}Configuring GRUB for verbose boot...${NC}"
 
-# Remove quiet and splash parameters
-sed -i 's/GRUB_CMDLINE_LINUX=".*quiet.*"/GRUB_CMDLINE_LINUX=""/' /etc/default/grub
-sed -i 's/GRUB_CMDLINE_LINUX=".*splash.*"/GRUB_CMDLINE_LINUX=""/' /etc/default/grub
+# Remove quiet and splash parameters (preserve other kernel args)
+sed -i 's/ quiet//g; s/quiet //g' /etc/default/grub
+sed -i 's/ splash//g; s/splash //g' /etc/default/grub
+sed -i 's/ rhgb//g; s/rhgb //g' /etc/default/grub
 
 # Set terminal output to console
 if ! grep -q "GRUB_TERMINAL_OUTPUT=console" /etc/default/grub; then
@@ -69,7 +70,7 @@ After=systemd-vconsole-setup.service
 Type=oneshot
 ExecStartPre=/usr/bin/sleep 1
 ExecStart=/usr/bin/bash -c 'clear && cat /usr/share/apollo-os/boot-logo.txt && sleep 3'
-StandardOutput=journal+console
+StandardOutput=tty
 StandardError=journal
 TTYPath=/dev/tty1
 TTYReset=yes

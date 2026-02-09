@@ -1,14 +1,14 @@
 #!/bin/bash
 
 #####################################################################
-# Apollo OS - Niri Wrapper Script v1.0.2
+# Apollo OS - Niri Wrapper Script v0.6.0
 # Copyright © 2025 by Manuel Kraibacher
 #
 # Description: Launches Niri with Apollo OS configuration
 # Services (Waybar, Mako, etc.) are started by apollo-autostart.sh
 #####################################################################
 
-set -e
+set -eo pipefail
 
 # Configuration directories
 CONFIG_DIR="$HOME/.config/niri"
@@ -21,7 +21,7 @@ fi
 
 # Config paths (simplified - configs are copied to standard locations)
 NIRI_CONFIG="$CONFIG_DIR/config.kdl"
-WAYBAR_CONFIG="$HOME/.config/waybar/config"
+WAYBAR_CONFIG="$HOME/.config/waybar/config-niri"
 WAYBAR_STYLE="$HOME/.config/waybar/style.css"
 MAKO_CONFIG="$HOME/.config/mako/config"
 ROFI_THEME="$HOME/.config/rofi/config.rasi"
@@ -31,14 +31,28 @@ if [[ ! -f "$NIRI_CONFIG" ]]; then
     NIRI_CONFIG="$CONFIG_DIR/apollo-os-niri-config.kdl"
     if [[ ! -f "$NIRI_CONFIG" ]]; then
         echo "ERROR: Niri configuration not found!"
-        exit 1
+        echo "Expected: $CONFIG_DIR/config.kdl"
+        echo ""
+        echo "Returning to login in 5 seconds..."
+        sleep 5
+        exit 0
     fi
+fi
+
+# Verify niri is installed
+if ! command -v niri &>/dev/null; then
+    echo "ERROR: Niri compositor not found!"
+    echo "Install with: sudo dnf install niri"
+    echo ""
+    echo "Returning to login in 5 seconds..."
+    sleep 5
+    exit 0
 fi
 
 # Export environment variables for the session
 # These are used by keybindings in niri config
 export APOLLO_WM="niri"
-export APOLLO_THEME="dark"
+export APOLLO_THEME="${APOLLO_THEME:-dark}"
 export WAYBAR_CONFIG_FILE="$WAYBAR_CONFIG"
 export WAYBAR_STYLE_FILE="$WAYBAR_STYLE"
 export MAKO_CONFIG_FILE="$MAKO_CONFIG"

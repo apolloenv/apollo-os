@@ -1,0 +1,17 @@
+[Unit]
+Description=Apollo OS Daily Security Audit (Lynis)
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/apollo-os-security-audit.sh
+Nice=19
+IOSchedulingClass=idle
+ProtectHome=read-only
+ProtectSystem=strict
+ReadWritePaths=%h/.local/state/apollo-os
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

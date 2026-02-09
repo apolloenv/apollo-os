@@ -59,7 +59,7 @@ default-timeout=0
 [grouped]
 format=<b>%s</b> (%g)\n%b
 
-# Filter volume/brightness notifications
+# Filter volume/brightness notifications (suppress all OSD-style popups)
 [app-name="Volume"]
 invisible=1
 
@@ -69,11 +69,44 @@ invisible=1
 [category="volume"]
 invisible=1
 
+[app-name="changevolume"]
+invisible=1
+
+[app-name="changebrightness"]
+invisible=1
+
+[app-name="Lautstärke"]
+invisible=1
+
+[summary~="^Lautstärke.*"]
+invisible=1
+
 [app-name="Brightness"]
 invisible=1
 
 [summary~="^Bright.*"]
 invisible=1
 
+[summary~="^Helligkeit.*"]
+invisible=1
+
+[app-name="Helligkeit"]
+invisible=1
+
 [category="brightness"]
+invisible=1
+
+[category="x-gnome.volume"]
+invisible=1
+
+[category="device.added"]
+invisible=1
+
+[app-name="avizo"]
+invisible=1
+
+[app-name="SwayOSD"]
+invisible=1
+
+[app-name="wob"]
 invisible=1

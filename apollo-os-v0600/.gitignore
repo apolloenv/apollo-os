@@ -1,0 +1,9 @@
+*.bak
+*.old
+*.swp
+*.swo
+*~
+.DS_Store
+__pycache__/
+*.pyc
+*.rpm

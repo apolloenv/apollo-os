@@ -96,7 +96,7 @@
 
         "custom/publicip": {
             "format": "󰞉  {}",
-            "exec": "curl -s ifconfig.me",
+            "exec": "curl -s --connect-timeout 3 --max-time 5 ifconfig.me || echo N/A",
             "interval": 300,
             "tooltip-format": "Öffentliche IP-Adresse"
         },
@@ -134,7 +134,7 @@
             "format-alt": "󰻠  {avg_frequency} GHz",
             "tooltip-format": "CPU: {usage}%\nFrequenz: {avg_frequency} GHz\nKerne: {load}",
             "interval": 2,
-            "on-click": "gnome-terminal -e btop"
+            "on-click": "gnome-terminal -- btop"
         },
 
         "memory": {
@@ -142,7 +142,7 @@
             "format-alt": "󰍛  {used:0.1f}G/{total:0.1f}G",
             "tooltip-format": "RAM: {used:0.2f}GB / {total:0.2f}GB ({percentage}%)\nSwap: {swapUsed:0.2f}GB / {swapTotal:0.2f}GB",
             "interval": 5,
-            "on-click": "gnome-terminal -e btop"
+            "on-click": "gnome-terminal -- btop"
         },
 
         "disk": {
@@ -158,14 +158,14 @@
             "tooltip-format": "Temperatur: {temperatureC}°C",
             "critical-threshold": 80,
             "interval": 5,
-            "on-click": "gnome-terminal -e 'watch -n 1 sensors'"
+            "on-click": "gnome-terminal -- 'watch -n 1 sensors'"
         },
 
         "custom/notifications": {
             "format": "󰂚",
             "tooltip": true,
             "tooltip-format": "System Benachrichtigungen",
-            "on-click": "swaync-client -t"
+            "on-click": "makoctl dismiss -a"
         },
 
         "custom/synology": {
@@ -177,8 +177,8 @@
 
         "custom/btop": {
             "format": "󰍛",
-            "tooltip": "System Monitor",
-            "on-click": "gnome-terminal -e btop"
+            "tooltip": true, "tooltip-format": "System Monitor",
+            "on-click": "gnome-terminal -- btop"
         },
 
         "tray": {

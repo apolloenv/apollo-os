@@ -15,7 +15,7 @@ Apollo OS bietet zwei verschiedene Boot-Splash Optionen:
 
 ### Installation
 ```bash
-cd ~/apollo-os-dev/v0.5.0
+cd ~/apollo-os-dev/apollo-os-v0600
 sudo ./scripts/apollo-os-boot-splash-installer.sh
 ```
 
@@ -49,7 +49,7 @@ Das Watermark wird im Hauptinstaller (`apollo-os-install.sh`) automatisch instal
 Falls das Watermark nicht während der Installation kopiert wurde (z.B. Plymouth wurde nachträglich installiert):
 
 ```bash
-cd ~/apollo-os-dev/v0.5.0
+cd ~/apollo-os-dev/apollo-os-v0600
 ./scripts/apollo-os-watermark-installer.sh
 ```
 
@@ -82,7 +82,7 @@ Das Watermark wird nur kopiert, wenn Plymouth installiert ist und das Spinner-Th
 ### Von Standard zu ASCII wechseln
 
 ```bash
-cd ~/apollo-os-dev/v0.5.0
+cd ~/apollo-os-dev/apollo-os-v0600
 sudo ./scripts/apollo-os-boot-splash-installer.sh
 sudo reboot
 ```
@@ -97,7 +97,7 @@ ASCII-Boot-Splash-Installer:
 Falls Plymouth später installiert wurde:
 
 ```bash
-cd ~/apollo-os-dev/v0.5.0
+cd ~/apollo-os-dev/apollo-os-v0600
 ./scripts/apollo-os-watermark-installer.sh
 ```
 
@@ -142,7 +142,7 @@ grep GRUB_CMDLINE_LINUX /etc/default/grub
 
 **Lösung:**
 ```bash
-cd ~/apollo-os-dev/v0.5.0
+cd ~/apollo-os-dev/apollo-os-v0600
 ./scripts/apollo-os-watermark-installer.sh
 ```
 

@@ -13,11 +13,11 @@ deps_data_file="${REPO_ROOT}/sdata/dist-fedora/feddeps.toml"
 
 # Recording DNF Transaction ID
 function r() {
-  original_id=$(dnf history info | grep -Po '^Transaction ID\s+:\s+\K\d+')
+  original_id=$(sudo dnf history info | grep -Po '^Transaction ID\s+:\s+\K\d+')
   "$@" || {
     echo -e "${STY_RED}[$0]: Stack Exception...${STY_RST}"
   }
-  last_id=$(dnf history info | grep -Po '^Transaction ID\s+:\s+\K\d+')
+  last_id=$(sudo dnf history info | grep -Po '^Transaction ID\s+:\s+\K\d+')
   [ -f "$user_config" ] || { touch "$user_config" && yq -i ".dnf.original_transaction_id = $original_id" "$user_config"; } || :
   [ "$original_id" == "$last_id" ] || yq -i ".dnf.transaction_ids += [ $last_id ]" "$user_config" || :
 }
@@ -105,7 +105,7 @@ while IFS= read -r deps_list_key; do
 done < <(echo "$deps_data" | yq '.groups | keys[]? | select(length > 0)')
 
 # Add back versionlock at the end
-[ -n $nolock_qs ] || v sudo dnf versionlock add quickshell-git || true
+[ -n "$nolock_qs" ] || v sudo dnf versionlock add quickshell-git || true
 
 echo -e "\n========================================"
 echo "All installations are completed."

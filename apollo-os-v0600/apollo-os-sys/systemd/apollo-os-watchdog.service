@@ -1,0 +1,12 @@
+[Unit]
+Description=Apollo OS Service Watchdog
+After=default.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/apollo-os-watchdog.sh
+Restart=on-failure
+RestartSec=15
+
+[Install]
+WantedBy=default.target

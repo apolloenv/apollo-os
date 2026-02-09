@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #####################################################################
-# Apollo OS - Visual Mode Switcher v1.0.2
+# Apollo OS - Visual Mode Switcher v2.0.0
 # Copyright © 2025 by Manuel Kraibacher
 #
-# Description: Switch between visual modes (Classic, Developer, Enterprise, Minimal, Modern, Nova, Orbit, Professional)
+# Description: Switch between visual modes with creative design names
 #####################################################################
 
 CONFIG_FILE="$HOME/.config/apollo-os/visual-mode"
@@ -12,117 +12,132 @@ NIRI_CONFIG="$HOME/.config/niri/config.kdl"
 WAYBAR_CONFIG="$HOME/.config/waybar/config-niri"
 WAYBAR_STYLE="$HOME/.config/waybar/style.css"
 
-# All available mode configs
 declare -A NIRI_CONFIGS=(
-    ["classic"]="$HOME/.config/niri/config-classic.kdl"
-    ["developer"]="$HOME/.config/niri/config-developer.kdl"
-    ["enterprise"]="$HOME/.config/niri/config-enterprise.kdl"
-    ["i3"]="$HOME/.config/niri/config-i3.kdl"
-    ["i3-retro"]="$HOME/.config/niri/config-i3-retro.kdl"
-    ["i3-contrast"]="$HOME/.config/niri/config-i3-contrast.kdl"
-    ["minimal"]="$HOME/.config/niri/config-minimal.kdl"
-    ["modern"]="$HOME/.config/niri/config-modern.kdl"
-    ["nova"]="$HOME/.config/niri/config-nova.kdl"
-    ["orbit"]="$HOME/.config/niri/config-orbit.kdl"
-    ["professional"]="$HOME/.config/niri/config-professional.kdl"
-    ["professional-light"]="$HOME/.config/niri/config-professional-light.kdl"
-    ["professional-next"]="$HOME/.config/niri/config-professional-next.kdl"
-    ["professional-plus"]="$HOME/.config/niri/config-professional-plus.kdl"
-    ["sgi"]="$HOME/.config/niri/config-sgi.kdl"
-    ["tech-blue"]="$HOME/.config/niri/config-tech-blue.kdl"
-    ["macos"]="$HOME/.config/niri/config-macos.kdl"
+    ["apollo-core"]="$HOME/.config/niri/config-apollo-core.kdl"
+    ["code-forge"]="$HOME/.config/niri/config-code-forge.kdl"
+    ["command-center"]="$HOME/.config/niri/config-command-center.kdl"
+    ["pixel-grid"]="$HOME/.config/niri/config-pixel-grid.kdl"
+    ["retro-wave"]="$HOME/.config/niri/config-retro-wave.kdl"
+    ["neon-edge"]="$HOME/.config/niri/config-neon-edge.kdl"
+    ["zen-flow"]="$HOME/.config/niri/config-zen-flow.kdl"
+    ["nova-pulse"]="$HOME/.config/niri/config-nova-pulse.kdl"
+    ["star-deck"]="$HOME/.config/niri/config-star-deck.kdl"
+    ["deep-space"]="$HOME/.config/niri/config-deep-space.kdl"
+    ["command-deck"]="$HOME/.config/niri/config-command-deck.kdl"
+    ["command-deck-clean"]="$HOME/.config/niri/config-command-deck-clean.kdl"
+    ["light-bridge"]="$HOME/.config/niri/config-light-bridge.kdl"
+    ["cyber-matrix"]="$HOME/.config/niri/config-cyber-matrix.kdl"
+    ["quantum-flux"]="$HOME/.config/niri/config-quantum-flux.kdl"
+    ["silicon-dawn"]="$HOME/.config/niri/config-silicon-dawn.kdl"
+    ["frost-byte"]="$HOME/.config/niri/config-frost-byte.kdl"
+    ["crystal-bay"]="$HOME/.config/niri/config-crystal-bay.kdl"
 )
 
 declare -A WAYBAR_CONFIGS=(
-    ["classic"]="$HOME/.config/waybar/config-niri-classic"
-    ["developer"]="$HOME/.config/waybar/config-niri-developer"
-    ["enterprise"]="$HOME/.config/waybar/config-niri-enterprise"
-    ["i3"]="$HOME/.config/waybar/config-niri-i3"
-    ["i3-retro"]="$HOME/.config/waybar/config-niri-i3-retro"
-    ["i3-contrast"]="$HOME/.config/waybar/config-niri-i3-contrast"
-    ["minimal"]="$HOME/.config/waybar/config-niri-minimal"
-    ["modern"]="$HOME/.config/waybar/config-niri-modern"
-    ["nova"]="$HOME/.config/waybar/config-niri-nova"
-    ["orbit"]="$HOME/.config/waybar/config-niri-orbit"
-    ["professional"]="$HOME/.config/waybar/config-niri-professional"
-    ["professional-light"]="$HOME/.config/waybar/config-niri-professional-light"
-    ["professional-next"]="$HOME/.config/waybar/config-niri-professional-next"
-    ["professional-plus"]="$HOME/.config/waybar/config-niri-professional-plus"
-    ["sgi"]="$HOME/.config/waybar/config-niri-sgi"
-    ["tech-blue"]="$HOME/.config/waybar/config-niri-tech-blue"
-    ["macos"]="$HOME/.config/waybar/config-niri-macos"
+    ["apollo-core"]="$HOME/.config/waybar/config-niri-apollo-core"
+    ["code-forge"]="$HOME/.config/waybar/config-niri-code-forge"
+    ["command-center"]="$HOME/.config/waybar/config-niri-command-center"
+    ["pixel-grid"]="$HOME/.config/waybar/config-niri-pixel-grid"
+    ["retro-wave"]="$HOME/.config/waybar/config-niri-retro-wave"
+    ["neon-edge"]="$HOME/.config/waybar/config-niri-neon-edge"
+    ["zen-flow"]="$HOME/.config/waybar/config-niri-zen-flow"
+    ["nova-pulse"]="$HOME/.config/waybar/config-niri-nova-pulse"
+    ["star-deck"]="$HOME/.config/waybar/config-niri-star-deck"
+    ["deep-space"]="$HOME/.config/waybar/config-niri-deep-space"
+    ["command-deck"]="$HOME/.config/waybar/config-niri-command-deck"
+    ["command-deck-clean"]="$HOME/.config/waybar/config-niri-command-deck-clean"
+    ["light-bridge"]="$HOME/.config/waybar/config-niri-light-bridge"
+    ["cyber-matrix"]="$HOME/.config/waybar/config-niri-cyber-matrix"
+    ["quantum-flux"]="$HOME/.config/waybar/config-niri-quantum-flux"
+    ["silicon-dawn"]="$HOME/.config/waybar/config-niri-silicon-dawn"
+    ["frost-byte"]="$HOME/.config/waybar/config-niri-frost-byte"
+    ["crystal-bay"]="$HOME/.config/waybar/config-niri-crystal-bay"
 )
 
 declare -A WAYBAR_STYLES=(
-    ["classic"]="$HOME/.config/waybar/style-classic.css"
-    ["developer"]="$HOME/.config/waybar/style-developer.css"
-    ["enterprise"]="$HOME/.config/waybar/style-enterprise.css"
-    ["i3"]="$HOME/.config/waybar/style-i3.css"
-    ["i3-retro"]="$HOME/.config/waybar/style-i3-retro.css"
-    ["i3-contrast"]="$HOME/.config/waybar/style-i3-contrast.css"
-    ["minimal"]="$HOME/.config/waybar/style-minimal.css"
-    ["modern"]="$HOME/.config/waybar/style-modern.css"
-    ["nova"]="$HOME/.config/waybar/style-nova.css"
-    ["orbit"]="$HOME/.config/waybar/style-orbit.css"
-    ["professional"]="$HOME/.config/waybar/style-professional.css"
-    ["professional-light"]="$HOME/.config/waybar/style-professional-light.css"
-    ["professional-next"]="$HOME/.config/waybar/style-professional-next.css"
-    ["professional-plus"]="$HOME/.config/waybar/style-professional-plus.css"
-    ["sgi"]="$HOME/.config/waybar/style-sgi.css"
-    ["tech-blue"]="$HOME/.config/waybar/style-tech-blue.css"
-    ["macos"]="$HOME/.config/waybar/style-macos.css"
+    ["apollo-core"]="$HOME/.config/waybar/style-apollo-core.css"
+    ["code-forge"]="$HOME/.config/waybar/style-code-forge.css"
+    ["command-center"]="$HOME/.config/waybar/style-command-center.css"
+    ["pixel-grid"]="$HOME/.config/waybar/style-pixel-grid.css"
+    ["retro-wave"]="$HOME/.config/waybar/style-retro-wave.css"
+    ["neon-edge"]="$HOME/.config/waybar/style-neon-edge.css"
+    ["zen-flow"]="$HOME/.config/waybar/style-zen-flow.css"
+    ["nova-pulse"]="$HOME/.config/waybar/style-nova-pulse.css"
+    ["star-deck"]="$HOME/.config/waybar/style-star-deck.css"
+    ["deep-space"]="$HOME/.config/waybar/style-deep-space.css"
+    ["command-deck"]="$HOME/.config/waybar/style-command-deck.css"
+    ["command-deck-clean"]="$HOME/.config/waybar/style-command-deck-clean.css"
+    ["light-bridge"]="$HOME/.config/waybar/style-light-bridge.css"
+    ["cyber-matrix"]="$HOME/.config/waybar/style-cyber-matrix.css"
+    ["quantum-flux"]="$HOME/.config/waybar/style-quantum-flux.css"
+    ["silicon-dawn"]="$HOME/.config/waybar/style-silicon-dawn.css"
+    ["frost-byte"]="$HOME/.config/waybar/style-frost-byte.css"
+    ["crystal-bay"]="$HOME/.config/waybar/style-crystal-bay.css"
 )
 
-# TTS function
+declare -A DISPLAY_NAMES=(
+    ["apollo-core"]="Apollo Core"
+    ["code-forge"]="Code Forge"
+    ["command-center"]="Command Center"
+    ["pixel-grid"]="Pixel Grid"
+    ["retro-wave"]="Retro Wave"
+    ["neon-edge"]="Neon Edge"
+    ["zen-flow"]="Zen Flow"
+    ["nova-pulse"]="Nova Pulse"
+    ["star-deck"]="Star Deck"
+    ["deep-space"]="Deep Space"
+    ["command-deck"]="Command Deck"
+    ["command-deck-clean"]="Command Deck Clean"
+    ["light-bridge"]="Light Bridge"
+    ["cyber-matrix"]="Cyber Matrix"
+    ["quantum-flux"]="Quantum Flux"
+    ["silicon-dawn"]="Silicon Dawn"
+    ["frost-byte"]="Frost Byte"
+    ["crystal-bay"]="Crystal Bay"
+)
+
 tts_notify() {
     local script="$HOME/.local/bin/apollo-os-tts-notify.sh"
     [ -x "$script" ] && "$script" "$@"
 }
 
-# Screen corners control
 SCREEN_CORNERS_SCRIPT="$HOME/.local/bin/screen-corners.py"
-
-# macOS Dock control
-DOCK_CONFIG="$HOME/.config/waybar/config-niri-macos-dock"
-DOCK_STYLE="$HOME/.config/waybar/style-macos-dock.css"
-DOCK_PIDFILE="/tmp/apollo-os-dock.pid"
+DOCK_CONFIG="$HOME/.config/waybar/config-niri-crystal-bay-dock"
+DOCK_STYLE="$HOME/.config/waybar/style-crystal-bay-dock.css"
+DOCK_PIDFILE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/apollo-os-dock.pid"
 
 manage_screen_corners() {
     local mode=$1
-
-    if [ "$mode" = "minimal" ] || [ "$mode" = "enterprise" ] || [ "$mode" = "tech-blue" ] || [ "$mode" = "i3" ] || [ "$mode" = "i3-retro" ] || [ "$mode" = "i3-contrast" ] || [ "$mode" = "professional-light" ] || [ "$mode" = "professional-next" ] || [ "$mode" = "professional-plus" ] || [ "$mode" = "sgi" ]; then
-        # Stop screen-corners for minimal/enterprise/tech-blue/i3/sgi modes
-        pkill -f "screen-corners.py" 2>/dev/null || true
-    else
-        # Start screen-corners for other modes (if not already running)
-        if ! pgrep -f "screen-corners.py" >/dev/null && [ -f "$SCREEN_CORNERS_SCRIPT" ]; then
-            python3 "$SCREEN_CORNERS_SCRIPT" >/dev/null 2>&1 &
-            disown
-        fi
-    fi
+    case "$mode" in
+        zen-flow|command-center|frost-byte|pixel-grid|retro-wave|neon-edge|light-bridge|cyber-matrix|quantum-flux|silicon-dawn)
+            pids=$(pgrep -f "screen-corners.py" 2>/dev/null)
+            [ -n "$pids" ] && echo "$pids" | xargs -r kill 2>/dev/null || true
+            ;;
+        *)
+            if ! pgrep -f "screen-corners.py" >/dev/null && [ -f "$SCREEN_CORNERS_SCRIPT" ]; then
+                python3 "$SCREEN_CORNERS_SCRIPT" >/dev/null 2>&1 &
+                disown
+            fi
+            ;;
+    esac
 }
 
-manage_macos_dock() {
+manage_dock() {
     local mode=$1
-
-    if [ "$mode" = "macos" ]; then
-        # Start dock for macOS mode (if not already running)
+    if [ "$mode" = "crystal-bay" ]; then
         if [ -f "$DOCK_PIDFILE" ]; then
             local pid=$(cat "$DOCK_PIDFILE")
             if ! kill -0 "$pid" 2>/dev/null; then
-                # PID file exists but process dead, start dock
                 waybar -c "$DOCK_CONFIG" -s "$DOCK_STYLE" >/dev/null 2>&1 &
                 echo $! > "$DOCK_PIDFILE"
                 disown
             fi
         else
-            # No PID file, start dock
             waybar -c "$DOCK_CONFIG" -s "$DOCK_STYLE" >/dev/null 2>&1 &
             echo $! > "$DOCK_PIDFILE"
             disown
         fi
     else
-        # Stop dock for non-macOS modes
         if [ -f "$DOCK_PIDFILE" ]; then
             local pid=$(cat "$DOCK_PIDFILE")
             kill "$pid" 2>/dev/null
@@ -134,100 +149,59 @@ manage_macos_dock() {
 manage_mako() {
     local mode=$1
     local mako_config="$HOME/.config/mako/config"
-
-    if [ "$mode" = "macos" ]; then
-        # Use macOS mako config
-        if [ -f "$HOME/.config/mako/config-macos" ]; then
-            cp "$HOME/.config/mako/config-macos" "$mako_config"
-        fi
+    if [ "$mode" = "crystal-bay" ]; then
+        [ -f "$HOME/.config/mako/config-crystal-bay" ] && cp "$HOME/.config/mako/config-crystal-bay" "$mako_config"
     else
-        # Use default mako config
-        if [ -f "$HOME/.config/mako/config-default" ]; then
-            cp "$HOME/.config/mako/config-default" "$mako_config"
-        fi
+        [ -f "$HOME/.config/mako/config-default" ] && cp "$HOME/.config/mako/config-default" "$mako_config"
     fi
-
-    # Reload mako
-    pkill mako 2>/dev/null || true
+    local mpids=$(pgrep -x mako 2>/dev/null)
+    [ -n "$mpids" ] && echo "$mpids" | xargs -r kill 2>/dev/null || true
     sleep 0.2
     mako --config "$mako_config" >/dev/null 2>&1 &
     disown
 }
 
-# Get current mode
 get_current_mode() {
-    if [ -f "$CONFIG_FILE" ]; then
-        cat "$CONFIG_FILE"
-    else
-        echo "classic"
-    fi
+    [ -f "$CONFIG_FILE" ] && cat "$CONFIG_FILE" || echo "apollo-core"
 }
 
-# Set mode
 set_mode() {
-    local mode=$1
     mkdir -p "$(dirname "$CONFIG_FILE")"
-    echo "$mode" > "$CONFIG_FILE"
+    echo "$1" > "$CONFIG_FILE"
 }
 
-# Validate mode
-is_valid_mode() {
-    local mode=$1
-    [[ -n "${NIRI_CONFIGS[$mode]}" ]]
-}
+is_valid_mode() { [[ -n "${NIRI_CONFIGS[$1]}" ]]; }
 
-# Switch to mode
 switch_to() {
     local mode=$1
-
-    # Validate mode
     if ! is_valid_mode "$mode"; then
         echo "Invalid mode: $mode"
-        echo "Available modes: classic, developer, enterprise, i3, i3-retro, i3-contrast, macos, minimal, modern, nova, orbit, professional, professional-light, professional-next, professional-plus, sgi, tech-blue"
+        echo "Available: apollo-core, code-forge, command-center, pixel-grid, retro-wave, neon-edge, zen-flow, nova-pulse, crystal-bay, star-deck, deep-space, command-deck, command-deck-clean, light-bridge, cyber-matrix, quantum-flux, silicon-dawn, frost-byte"
         return 1
     fi
-
-    # Check if config files exist
-    if [ ! -f "${NIRI_CONFIGS[$mode]}" ]; then
-        echo "Config not found: ${NIRI_CONFIGS[$mode]}"
-        return 1
-    fi
-
-    # Copy configs
+    [ ! -f "${NIRI_CONFIGS[$mode]}" ] && echo "Config not found: ${NIRI_CONFIGS[$mode]}" && return 1
+    [ ! -f "${WAYBAR_CONFIGS[$mode]}" ] && echo "Waybar config not found: ${WAYBAR_CONFIGS[$mode]}" && return 1
+    [ ! -f "${WAYBAR_STYLES[$mode]}" ] && echo "Waybar style not found: ${WAYBAR_STYLES[$mode]}" && return 1
     cp "${NIRI_CONFIGS[$mode]}" "$NIRI_CONFIG"
     cp "${WAYBAR_CONFIGS[$mode]}" "$WAYBAR_CONFIG"
     cp "${WAYBAR_STYLES[$mode]}" "$WAYBAR_STYLE"
-
     set_mode "$mode"
 }
 
-# Reload WM and Waybar
 reload_ui() {
     local mode=$(get_current_mode)
-
-    # Manage screen corners based on mode
     manage_screen_corners "$mode"
-
-    # Stop all waybars first
-    pkill waybar 2>/dev/null || true
+    local wpids=$(pgrep -x waybar 2>/dev/null)
+    [ -n "$wpids" ] && echo "$wpids" | xargs -r kill 2>/dev/null || true
     rm -f "$DOCK_PIDFILE"
     sleep 0.5
-
-    # Start main waybar
     waybar -c "$WAYBAR_CONFIG" -s "$WAYBAR_STYLE" >/dev/null 2>&1 &
     disown
-
-    # Manage macOS dock based on mode
-    manage_macos_dock "$mode"
-
-    # Manage mako notifications based on mode
+    manage_dock "$mode"
     manage_mako "$mode"
-
-    # Reload Niri config
     niri msg action load-config-file 2>/dev/null || true
 }
 
-# Main
 current_mode=$(get_current_mode)
 
 if [ "$1" = "status" ]; then
@@ -236,74 +210,45 @@ if [ "$1" = "status" ]; then
 fi
 
 if [ "$1" = "toggle" ] || [ -z "$1" ]; then
-    # Toggle between modes (classic -> developer -> enterprise -> i3 -> minimal -> modern -> nova -> orbit -> professional -> classic)
     case "$current_mode" in
-        classic)
-            new_mode="developer"
-            ;;
-        developer)
-            new_mode="enterprise"
-            ;;
-        enterprise)
-            new_mode="i3"
-            ;;
-        i3)
-            new_mode="i3-retro"
-            ;;
-        i3-retro)
-            new_mode="minimal"
-            ;;
-        minimal)
-            new_mode="modern"
-            ;;
-        modern)
-            new_mode="macos"
-            ;;
-        macos)
-            new_mode="nova"
-            ;;
-        nova)
-            new_mode="orbit"
-            ;;
-        orbit)
-            new_mode="professional"
-            ;;
-        professional)
-            new_mode="professional-light"
-            ;;
-        professional-light)
-            new_mode="professional-next"
-            ;;
-        professional-next)
-            new_mode="professional-plus"
-            ;;
-        professional-plus)
-            new_mode="sgi"
-            ;;
-        sgi)
-            new_mode="classic"
-            ;;
-        *)
-            new_mode="classic"
-            ;;
+        apollo-core)        new_mode="code-forge" ;;
+        code-forge)         new_mode="command-center" ;;
+        command-center)     new_mode="pixel-grid" ;;
+        pixel-grid)         new_mode="retro-wave" ;;
+        retro-wave)         new_mode="neon-edge" ;;
+        neon-edge)          new_mode="zen-flow" ;;
+        zen-flow)           new_mode="nova-pulse" ;;
+        nova-pulse)         new_mode="crystal-bay" ;;
+        crystal-bay)        new_mode="star-deck" ;;
+        star-deck)          new_mode="deep-space" ;;
+        deep-space)         new_mode="command-deck" ;;
+        command-deck)       new_mode="command-deck-clean" ;;
+        command-deck-clean) new_mode="light-bridge" ;;
+        light-bridge)       new_mode="cyber-matrix" ;;
+        cyber-matrix)       new_mode="quantum-flux" ;;
+        quantum-flux)       new_mode="silicon-dawn" ;;
+        silicon-dawn)       new_mode="frost-byte" ;;
+        frost-byte)         new_mode="apollo-core" ;;
+        *)                  new_mode="apollo-core" ;;
     esac
 
     switch_to "$new_mode"
-    notify-send "Apollo OS" "Visual Mode: ${new_mode^}"
+    display="${DISPLAY_NAMES[$new_mode]:-$new_mode}"
+    notify-send "Apollo OS" "Visual Mode: $display"
     tts_notify "visual-$new_mode" &
     reload_ui
     exit 0
 fi
 
-# Direct mode selection
 if is_valid_mode "$1"; then
     switch_to "$1"
-    notify-send "Apollo OS" "Visual Mode: ${1^}"
+    display="${DISPLAY_NAMES[$1]:-$1}"
+    notify-send "Apollo OS" "Visual Mode: $display"
     tts_notify "visual-$1" &
     reload_ui
 else
     echo "Usage: $0 [MODE|toggle|status]"
-    echo "Available modes: classic, developer, enterprise, i3, i3-retro, i3-contrast, macos, minimal, modern, nova, orbit, professional, professional-light, professional-next, professional-plus, sgi, tech-blue"
-    echo "Current mode: $current_mode"
+    echo "Available: apollo-core, code-forge, command-center, pixel-grid, retro-wave, neon-edge, zen-flow, nova-pulse, crystal-bay, star-deck, deep-space, command-deck, command-deck-clean, light-bridge, cyber-matrix, quantum-flux, silicon-dawn, frost-byte"
+    echo "Current: $current_mode"
     exit 1
 fi

@@ -5,11 +5,12 @@ Before=systemd-user-sessions.service
 After=systemd-vconsole-setup.service
 
 [Service]
-Type=forking
+Type=oneshot
 ExecStart=/usr/local/bin/apollo-boot-splash.sh
-StandardOutput=journal
+StandardOutput=tty
 StandardError=journal
-TimeoutStartSec=5s
+TTYPath=/dev/tty1
+TimeoutStartSec=10s
 
 [Install]
 WantedBy=sysinit.target

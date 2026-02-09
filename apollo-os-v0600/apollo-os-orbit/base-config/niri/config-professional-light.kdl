@@ -137,12 +137,18 @@ window-rule {
 // STARTUP (Programme die beim Start ausgeführt werden)
 // -----------------------------------------------------------------------------
 spawn-at-startup "xwayland-satellite" // XWayland Unterstützung
+spawn-at-startup "sh" "-c" "waybar -c $HOME/.config/waybar/config-niri" // Statusleiste
 spawn-at-startup "sh" "-c" "swaybg -i $HOME/System/Wallpaper/current.jpg -m fill" // Wallpaper
+spawn-at-startup "sh" "-c" "mako --config $HOME/.config/mako/config" // Benachrichtigungen
 spawn-at-startup "nm-applet" "--indicator"
 spawn-at-startup "blueman-applet"
 spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1" // Passwort-Dialoge
 spawn-at-startup "sh" "-c" "swayidle -w before-sleep 'hyprlock'"
 spawn-at-startup "sh" "-c" "sleep 4 && notify-send 'APOLLO OS' 'System initialized. All services operational.'"
+spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-welcome-tts.sh" // TTS Welcome
+spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-power-monitor.sh" // Power/Battery Monitor
+spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-network-monitor.sh" // Network Monitor
+spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-sleep-monitor.sh" // Sleep/Wake TTS Monitor
 
 // -----------------------------------------------------------------------------
 // LAYER-RULES (Waybar, Wallpaper, etc.)
@@ -321,8 +327,6 @@ environment {
     CLUTTER_BACKEND "wayland"
     SDL_VIDEODRIVER "wayland"
     MOZ_ENABLE_WAYLAND "1"
-    GTK_THEME "adw-gtk3-dark"
-    ADW_DEBUG_COLOR_SCHEME "prefer-dark"
-    GTK_THEME "adw-gtk3-dark"
-    ADW_DEBUG_COLOR_SCHEME "prefer-dark"
+    GTK_THEME "adw-gtk3"
+    ADW_DEBUG_COLOR_SCHEME "prefer-light"
 }

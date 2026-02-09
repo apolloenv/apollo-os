@@ -7,7 +7,7 @@
 
 export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 
-SLEEP_MARKER="/tmp/apollo-os-sleeping"
+SLEEP_MARKER="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/apollo-os-sleeping"
 SOUND_SLEEP="$HOME/.local/share/apollo-os/sounds/sleep.mp3"
 SOUND_WAKE="$HOME/.local/share/apollo-os/sounds/wake.mp3"
 

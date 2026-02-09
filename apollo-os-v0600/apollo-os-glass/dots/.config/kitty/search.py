@@ -316,6 +316,8 @@ def main(args: list[str]) -> None:
     error = ""
     if len(args) < 2 or not args[1].isdigit():
         error = "Error: Window id must be provided as the first argument."
+        print(error)
+        return
 
     window_id = int(args[1])
     window_ids = [window_id]

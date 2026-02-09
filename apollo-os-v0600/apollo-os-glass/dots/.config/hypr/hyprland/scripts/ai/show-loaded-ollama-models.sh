@@ -53,7 +53,7 @@ compare_running_models_and_modelfiles() {
     OLDIFS=$IFS
     for ((i=0; i<${#model_name_paths[@]}; i++)); do  # Iterate over the array of modelname,blob-path
         for blob in "${blobs[@]}"; do
-            IFS=',', read -ra fields <<< "${model_name_paths[i]}"    # Split the string into parts
+            IFS=',' read -ra fields <<< "${model_name_paths[i]}"    # Split the string into parts
             if [ "${fields[1]}" == "$blob" ]; then  # Check if current 'field' matches a blob
                 matching_models+=( '{ "model": "'"${fields[0]}"'", "path": "'"${fields[1]}"'"}') # Add to list of matching models
             fi
@@ -61,18 +61,18 @@ compare_running_models_and_modelfiles() {
     done
     
     if [ -z "$json_out" ]; then
-        echo -e "\nModel Found: \n $(echo ${matching_models[*]} | jq '.' | sed s/[{}]//g) \n"        
+        echo -e "\nModel Found: \n $(echo "${matching_models[*]}" | jq '.' | sed s/[{}]//g) \n"        
     else
         local json_match="${matching_models[*]}"
-        json_output=$(echo $json_match | jq -c -s .)
+        json_output=$(echo "$json_match" | jq -c -s .)
         echo "$json_output"
     fi
     IFS=$OLDIFS
 }
 
 get_running_model_paths() {
-    blobs=$(ps aux | grep -- '--model' | grep -v grep | grep -Po '(?<=--model\s).*' | cut -d ' ' -f1)
-    if [ -z "$blobs" ]; then
+    mapfile -t blobs < <(ps aux | grep -- '--model' | grep -v grep | grep -Po '(?<=--model\s).*' | cut -d ' ' -f1)
+    if [ ${#blobs[@]} -eq 0 ]; then
         echo -e "\n\n Warning: No running Ollama models detected!\n"
         exit 0
     fi

@@ -1,8 +1,8 @@
-# Apollo OS v5.1.0
+# Apollo OS v0.6.0
 
 ## 🏗️ Directory Structure
 
-Apollo OS v5.1.0 features a clean, organized directory structure:
+Apollo OS v0.6.0 features a clean, organized directory structure:
 
 ```
 apollo-os-v0600/
@@ -88,7 +88,7 @@ The macOS dock includes quick access to:
 ### Directory Structure
 
 ```
-v5.1.0/
+v0.6.0/
 ├── apollo-os-install.sh        # Main installer
 ├── visual-modes/               # NEW: All visual mode configs
 │   ├── niri/                   # Niri WM configurations

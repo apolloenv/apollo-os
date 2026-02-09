@@ -36,7 +36,7 @@ ln -sf "$next_wallpaper" "$CURRENT_LINK"
 sudo cp "$next_wallpaper" /usr/share/backgrounds/apollo-login.jpg 2>/dev/null || true
 
 # Kill old swaybg by PID
-SWAYBG_PID=$(pgrep -x swaybg)
+SWAYBG_PID=$(pgrep -x swaybg || true)
 if [ -n "$SWAYBG_PID" ]; then
     kill $SWAYBG_PID 2>/dev/null
     sleep 0.5

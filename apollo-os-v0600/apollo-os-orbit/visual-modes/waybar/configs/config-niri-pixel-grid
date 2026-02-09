@@ -1,0 +1,133 @@
+[
+    {
+        "layer": "top",
+        "position": "top",
+        "height": 28,
+        "spacing": 0,
+
+        "modules-left": [
+            "niri/workspaces"
+        ],
+        "modules-center": [],
+        "modules-right": [
+            "cpu",
+            "memory",
+            "disk",
+            "temperature",
+            "network#speed",
+            "custom/localip",
+            "custom/externalip",
+            "bluetooth",
+            "network",
+            "pulseaudio",
+            "backlight",
+            "battery",
+            "clock",
+            "tray"
+        ],
+
+        "niri/workspaces": {
+            "format": "{index}"
+        },
+
+        "cpu": {
+            "format": "CPU {usage}%",
+            "interval": 2,
+            "states": {
+                "warning": 70,
+                "critical": 90
+            }
+        },
+
+        "memory": {
+            "format": "RAM {percentage}%",
+            "interval": 5,
+            "states": {
+                "warning": 70,
+                "critical": 90
+            }
+        },
+
+        "disk": {
+            "format": "DSK {percentage_used}%",
+            "path": "/",
+            "interval": 30,
+            "states": {
+                "warning": 80,
+                "critical": 95
+            }
+        },
+
+        "temperature": {
+            "format": "{temperatureC}°C",
+            "critical-threshold": 80,
+            "interval": 5
+        },
+
+        "network#speed": {
+            "format": "↓{bandwidthDownBytes} ↑{bandwidthUpBytes}",
+            "format-disconnected": "",
+            "interval": 2
+        },
+
+        "custom/localip": {
+            "format": "LAN {}",
+            "exec": "ip -4 addr show $(ip route | grep default | awk '{print $5}' | head -n1) 2>/dev/null | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}' | head -n1 || echo 'N/A'",
+            "interval": 30
+        },
+
+        "custom/externalip": {
+            "format": "WAN {}",
+            "exec": "curl -s --max-time 2 ifconfig.me 2>/dev/null || echo 'N/A'",
+            "interval": 120
+        },
+
+        "bluetooth": {
+            "format": "BT",
+            "format-connected": "BT {num_connections}",
+            "format-disabled": "BT OFF",
+            "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+            "on-click": "~/.local/bin/apollo-os-bluetooth.sh"
+        },
+
+        "network": {
+            "format-wifi": " {essid}",
+            "format-ethernet": " ETH",
+            "format-disconnected": " OFF",
+            "interval": 5,
+            "on-click": "~/.local/bin/apollo-os-wifi.sh"
+        },
+
+        "pulseaudio": {
+            "format": "VOL {volume}%",
+            "format-muted": "MUTE",
+            "on-click": "pavucontrol"
+        },
+
+        "backlight": {
+            "format": "BRI {percent}%"
+        },
+
+        "battery": {
+            "format": "BAT {capacity}%",
+            "format-charging": "CHG {capacity}%",
+            "format-plugged": "AC {capacity}%",
+            "states": {
+                "warning": 30,
+                "critical": 15
+            }
+        },
+
+        "clock": {
+            "format": "{:%H:%M}",
+            "format-alt": "{:%a %d.%m.%Y %H:%M:%S}",
+            "locale": "de_DE.UTF-8",
+            "interval": 1
+        },
+
+        "tray": {
+            "icon-size": 14,
+            "spacing": 8
+        }
+    }
+]

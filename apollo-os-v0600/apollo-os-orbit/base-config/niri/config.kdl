@@ -153,6 +153,14 @@ window-rule {
     default-column-width { proportion 0.6; }
 }
 
+// Floating TUI windows (Bluetooth, WiFi)
+window-rule {
+    match app-id=r"^(apollo-bluetooth|apollo-wifi)$"
+    open-floating true
+    default-column-width { fixed 800; }
+    default-window-height { fixed 500; }
+}
+
 // -----------------------------------------------------------------------------
 // STARTUP
 // -----------------------------------------------------------------------------
@@ -164,11 +172,10 @@ spawn-at-startup "nm-applet" "--indicator"
 spawn-at-startup "blueman-applet"
 spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1"
 spawn-at-startup "sh" "-c" "swayidle -w before-sleep 'hyprlock'"
-spawn-at-startup "sh" "-c" "sleep 4 && notify-send 'APOLLO OS' 'Welcome to macOS Mode'"
-spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-welcome-tts.sh"
 spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-power-monitor.sh"
 spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-network-monitor.sh"
 spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-sleep-monitor.sh"
+spawn-at-startup "sh" "-c" "$HOME/.config/niri/apollo-autostart.sh"
 
 // -----------------------------------------------------------------------------
 // LAYER-RULES
@@ -248,8 +255,17 @@ binds {
     Mod+9 { focus-workspace 9; }
     Mod+0 { focus-workspace 10; }
 
-    // ─── Screenshot ────────────────────────────────────────────────────────
-    Mod+S { spawn "sh" "-c" "grim -g \"$(slurp)\" ~/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png && notify-send 'Screenshot' 'Saved to Screenshots'"; }
+    // ─── Screenshot & Capture ─────────────────────────────────────────────
+    Mod+S { spawn "sh" "-c" "$HOME/.local/bin/apollo-os-screenshot.sh smart edit"; }
+    Print { spawn "sh" "-c" "$HOME/.local/bin/apollo-os-screenshot.sh smart edit"; }
+    Shift+Print { spawn "sh" "-c" "$HOME/.local/bin/apollo-os-screenshot.sh smart clipboard"; }
+    Ctrl+Print { spawn "sh" "-c" "$HOME/.local/bin/apollo-os-screenshot.sh fullscreen edit"; }
+    Alt+Print { spawn "sh" "-c" "$HOME/.local/bin/apollo-os-screenrecord.sh"; }
+    Mod+Print { spawn "sh" "-c" "$HOME/.local/bin/apollo-os-colorpicker.sh"; }
+
+    // ─── Bluetooth & WiFi TUI ─────────────────────────────────────────────
+    Mod+Ctrl+B { spawn "sh" "-c" "$HOME/.local/bin/apollo-os-bluetooth.sh"; }
+    Mod+Ctrl+W { spawn "sh" "-c" "$HOME/.local/bin/apollo-os-wifi.sh"; }
 
     // ─── Voice Input ───────────────────────────────────────────────────────
     Mod+V { spawn "sh" "-c" "$HOME/.local/bin/voice-input"; }
@@ -259,8 +275,8 @@ binds {
     XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
     XF86AudioMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
     XF86AudioMicMute allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
-    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "set" "1%+"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "1%-"; }
+    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "set" "5%+"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "5%-"; }
     XF86AudioPlay allow-when-locked=true { spawn "playerctl" "play-pause"; }
     XF86AudioNext allow-when-locked=true { spawn "playerctl" "next"; }
     XF86AudioPrev allow-when-locked=true { spawn "playerctl" "previous"; }

@@ -9,6 +9,12 @@
 # Ensure environment is set for Wayland/PulseAudio
 export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 
+# Check if TTS is disabled
+TTS_CONFIG="$HOME/.config/apollo-os/tts.conf"
+if [ -f "$TTS_CONFIG" ] && grep -q "^TTS_ENABLED=false" "$TTS_CONFIG"; then
+    exit 0
+fi
+
 # Fixed voice: Amala (German)
 VOICE_MODEL="de-DE-AmalaNeural"
 
@@ -43,7 +49,7 @@ declare -A MESSAGES=(
 
 speak() {
     local text="$1"
-    local tmpfile="/tmp/apollo-tts-$$.mp3"
+    local tmpfile="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/apollo-tts-$$.mp3"
     
     # Check if edge-tts is available
     if [ -z "$EDGE_TTS" ]; then

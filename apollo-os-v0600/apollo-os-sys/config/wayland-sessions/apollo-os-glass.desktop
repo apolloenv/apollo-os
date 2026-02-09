@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Apollo OS Glass
 Comment=Apollo OS Professional - Hyprland-based Desktop (Transparent Design)
-Exec=start-hyprland
+Exec=/usr/local/bin/start-hyprland
 Type=Application
 DesktopNames=Hyprland

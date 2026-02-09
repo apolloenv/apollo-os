@@ -85,11 +85,11 @@ check_and_prompt_upscale() {
                     action2=$(notify-send \
                         -a "Wallpaper switcher" \
                         -c "im.error" \
-                        -A "install_upscayl=Install Upscayl (Arch)" \
+                        -A "install_upscayl=Install Upscayl (Flatpak)" \
                         "Install Upscayl?" \
-                        "yay -S upscayl-bin")
+                        "flatpak install flathub io.gitlab.theevilskeleton.Upscayl")
                     if [[ "$action2" == "install_upscayl" ]]; then
-                        kitty -1 yay -S upscayl-bin
+                        kitty -1 flatpak install -y flathub io.gitlab.theevilskeleton.Upscayl
                         if command -v upscayl &>/dev/null; then
                             nohup upscayl > /dev/null 2>&1 &
                         fi
@@ -199,15 +199,15 @@ switch() {
             fi
             if [ ${#missing_deps[@]} -gt 0 ]; then
                 echo "Missing deps: ${missing_deps[*]}"
-                echo "Arch: sudo pacman -S ${missing_deps[*]}"
+                echo "Fedora: sudo dnf install ${missing_deps[*]}"
                 action=$(notify-send \
                     -a "Wallpaper switcher" \
                     -c "im.error" \
-                    -A "install_arch=Install (Arch)" \
+                    -A "install_fedora=Install (Fedora)" \
                     "Can't switch to video wallpaper" \
                     "Missing dependencies: ${missing_deps[*]}")
-                if [[ "$action" == "install_arch" ]]; then
-                    kitty -1 sudo pacman -S "${missing_deps[*]}"
+                if [[ "$action" == "install_fedora" ]]; then
+                    kitty -1 sudo dnf install -y "${missing_deps[*]}"
                     if command -v mpvpaper &>/dev/null && command -v ffmpeg &>/dev/null; then
                         notify-send 'Wallpaper switcher' 'Alright, try again!' -a "Wallpaper switcher"
                     fi

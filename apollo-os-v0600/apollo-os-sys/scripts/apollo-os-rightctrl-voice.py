@@ -2,6 +2,7 @@
 """
 Apollo OS - Right Control Key Voice Input Trigger
 Push-to-Talk: Hold Right Ctrl to record, release to transcribe
+Uses select() for efficient event monitoring without busy-waiting.
 """
 
 import evdev
@@ -9,6 +10,7 @@ import subprocess
 import sys
 import os
 import time
+import select
 
 # Voice input script
 VOICE_SCRIPT = os.path.expanduser("~/.local/bin/voice-input")
@@ -43,13 +45,15 @@ def main():
     for dev in devices:
         print(f"  - {dev.name}")
     
-    # Monitor all keyboards
+    # Build fd→device map for select()
+    fd_map = {dev.fd: dev for dev in devices}
+    
     try:
         while True:
-            # Check all devices for events
-            for device in devices:
+            # Use select() to wait for events efficiently (no busy-wait)
+            r, _, _ = select.select(devices, [], [], 1.0)
+            for device in r:
                 try:
-                    # Non-blocking read
                     for event in device.read():
                         if event.type == evdev.ecodes.EV_KEY and event.code == evdev.ecodes.KEY_RIGHTCTRL:
                             if event.value == 1:  # Key press - START recording
@@ -62,9 +66,8 @@ def main():
                                     print("Right Ctrl released - STOP recording", flush=True)
                                     subprocess.Popen([VOICE_SCRIPT])
                                     recording = False
-                except BlockingIOError:
+                except (OSError, IOError):
                     pass
-            time.sleep(0.01)
     except KeyboardInterrupt:
         pass
     

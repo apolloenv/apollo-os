@@ -19,7 +19,7 @@ Source0:            %{url}/archive/%{commit}/quickshell-%{shortcommit}.tar.gz
 
 Conflicts:          quickshell <= %{tag}
 
-%if 0%{fedora} >= 43
+%if 0%{?fedora} >= 43
 BuildRequires:      breakpad-static
 %endif
 BuildRequires:      cmake

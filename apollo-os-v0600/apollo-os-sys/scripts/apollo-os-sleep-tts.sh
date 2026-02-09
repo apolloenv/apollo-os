@@ -6,15 +6,23 @@
 
 export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 
+# Check if TTS is disabled
+TTS_CONFIG="$HOME/.config/apollo-os/tts.conf"
+if [ -f "$TTS_CONFIG" ] && grep -q "^TTS_ENABLED=false" "$TTS_CONFIG"; then
+    exit 0
+fi
+
 VOICE_MODEL="de-DE-AmalaNeural"
-EDGE_TTS="$HOME/.local/bin/edge-tts"
-[ ! -x "$EDGE_TTS" ] && EDGE_TTS="/usr/local/bin/edge-tts"
+EDGE_TTS=""
+for p in "$HOME/.local/bin/edge-tts" "/usr/local/bin/edge-tts" "/usr/bin/edge-tts"; do
+    [ -x "$p" ] && EDGE_TTS="$p" && break
+done
 
 ACTION="$1"
 
 speak() {
     local text="$1"
-    local tmpfile="/tmp/apollo-sleep-tts-$$.mp3"
+    local tmpfile="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/apollo-sleep-tts-$$.mp3"
     
     if [ -x "$EDGE_TTS" ]; then
         "$EDGE_TTS" -t "$text" -v "$VOICE_MODEL" --write-media "$tmpfile" 2>/dev/null

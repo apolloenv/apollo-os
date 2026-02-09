@@ -1,0 +1,135 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 42,
+    "spacing": 0,
+    "modules-left": [
+        "niri/workspaces"
+    ],
+    "modules-center": [],
+    "modules-right": [
+        "group/drawer",
+        "bluetooth",
+        "network",
+        "pulseaudio",
+        "backlight",
+        "custom/power-profile",
+        "battery",
+        "custom/hostname",
+        "clock"
+    ],
+    "niri/workspaces": {
+        "format": "{index}",
+        "format-icons": {
+            "active": "",
+            "default": ""
+        }
+    },
+    "group/drawer": {
+        "orientation": "horizontal",
+        "drawer": {
+            "transition-duration": 500,
+            "transition-left-to-right": false
+        },
+        "modules": [
+            "custom/synology",
+            "custom/btop",
+            "tray"
+        ]
+    },
+    "custom/hostname": {
+        "format": "  \udb80\udf22  {}  ",
+        "exec": "hostnamectl hostname",
+        "interval": 3600,
+        "tooltip": false
+    },
+    "custom/synology": {
+        "format": "",
+        "tooltip": true,
+        "tooltip-format": "Synology Drive",
+        "on-click": "synology-drive"
+    },
+    "custom/btop": {
+        "format": "\udb80\udf5b",
+        "tooltip": true, "tooltip-format": "System Monitor",
+        "on-click": "gnome-terminal -- btop"
+    },
+    "tray": {
+        "icon-size": 18,
+        "spacing": 10
+    },
+    "clock": {
+        "format": "\udb82\udd54  {:%H:%M:%S   APOLLO OS}",
+        "format-alt": "\uf455  {:%d. %b %Y   \udb82\udd54  %H:%M:%S   APOLLO OS}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "interval": 1
+    },
+    "battery": {
+        "format": "{icon}  {capacity}%",
+        "format-discharging": "{icon}  {capacity}%",
+        "format-charging": "\udb80\udc84  {capacity}%",
+        "format-plugged": "\udb85\udc25  {capacity}%",
+        "format-icons": [
+            "\udb80\udc7a",
+            "\udb80\udc7b",
+            "\udb80\udc7c",
+            "\udb80\udc7d",
+            "\udb80\udc7e",
+            "\udb80\udc7f",
+            "\udb80\udc80",
+            "\udb80\udc81",
+            "\udb80\udc82",
+            "\udb80\udc79"
+        ],
+        "tooltip-format": "{power}W",
+        "states": {
+            "warning": 30,
+            "critical": 10
+        },
+        "on-click": "~/.local/bin/apollo-os-power-profile.sh"
+    },
+    "network": {
+        "format-wifi": "\udb81\udda9",
+        "format-ethernet": "\udb80\ude00",
+        "format-disconnected": "\udb82\udd2e",
+        "tooltip-format": "{essid} ({signalStrength}%)\n{ipaddr}",
+        "interval": 5,
+        "on-click": "~/.local/bin/apollo-os-wifi.sh"
+    },
+    "bluetooth": {
+        "format": "\udb80\udcaf",
+        "format-connected": "\udb80\udcb1  {num_connections}",
+        "format-disabled": "\udb80\udcb2",
+        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+        "on-click": "~/.local/bin/apollo-os-bluetooth.sh"
+    },
+    "pulseaudio": {
+        "format": "{icon}  {volume}%",
+        "format-muted": "\udb81\udf5f  Muted",
+        "format-icons": {
+            "default": [
+                "\udb81\udd7f",
+                "\udb81\udd80",
+                "\udb81\udd7e"
+            ]
+        },
+        "on-click": "pavucontrol"
+    },
+    "backlight": {
+        "format": "{icon}  {percent}%",
+        "format-icons": [
+            "\udb80\udcde",
+            "\udb80\udcdd",
+            "\udb80\udcdf",
+            "\udb80\udce0"
+        ]
+    },
+    "custom/power-profile": {
+        "format": "{}",
+        "exec": "powerprofilesctl get 2>/dev/null | sed 's/power-saver/\udb80\udf2a/;s/balanced/\udb81\uddd1/;s/performance/\udb81\udcc5/' || echo '\udb80\udc84'",
+        "interval": 5,
+        "tooltip": true,
+        "tooltip-format": "Power Profile wechseln",
+        "on-click": "~/.local/bin/apollo-os-power-profile.sh"
+    }
+}

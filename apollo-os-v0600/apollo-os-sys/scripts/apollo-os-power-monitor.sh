@@ -81,7 +81,7 @@ LAST_LOW_WARNING=0
 sleep 3
 
 while true; do
-    sleep 2
+    sleep 15
     
     CURRENT_STATE=$(get_power_state)
     BATTERY_LEVEL=$(get_battery_level)

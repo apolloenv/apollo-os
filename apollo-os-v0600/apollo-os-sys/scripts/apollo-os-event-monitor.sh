@@ -15,7 +15,7 @@ export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-1}"
 
 # Logging
-LOG_FILE="/tmp/apollo-event-monitor.log"
+LOG_FILE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/apollo-event-monitor.log"
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
 }

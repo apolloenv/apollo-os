@@ -15,7 +15,7 @@ Options for install:
       --skip-allsetups      Skip the whole process setting up permissions/services etc
       --skip-allfiles       Skip the whole process copying configuration files
       --ignore-outdate      Ignore outdate checking for community supported \"dist-*\".
-  -s, --skip-sysupdate      Skip system package upgrade e.g. \"sudo pacman -Syu\"
+  -s, --skip-sysupdate      Skip system package upgrade e.g. \"sudo dnf upgrade\"
       --skip-plasmaintg     Skip installing plasma-browser-integration
       --skip-backup         Skip backup conflicting files
       --skip-quickshell     Skip installing the config for Quickshell

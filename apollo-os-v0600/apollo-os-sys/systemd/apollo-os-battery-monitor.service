@@ -1,0 +1,13 @@
+[Unit]
+Description=Apollo OS Battery Monitor
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/apollo-os-battery-monitor.sh
+Restart=on-failure
+RestartSec=10
+Environment="XDG_RUNTIME_DIR=/run/user/%U"
+
+[Install]
+WantedBy=default.target

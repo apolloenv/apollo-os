@@ -136,7 +136,7 @@ window#waybar {
 
 /* Network Speed - Hellgrau wie Disk */
 #network.speed,
-#network#speed {
+#network.speed {
     padding: 0 10px;
     background-color: #666666;
     color: #ffffff;
@@ -269,4 +269,9 @@ tooltip {
 tooltip label {
     color: #ffffff;
     padding: 6px 10px;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
 }

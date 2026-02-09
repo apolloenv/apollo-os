@@ -1,16 +1,16 @@
 #!/bin/bash
 
 #####################################################################
-# Apollo OS - macOS Dock Toggle Script
+# Apollo OS - Crystal Bay Dock Toggle Script
 # Copyright © 2025 by Manuel Kraibacher
 #
 # Description: Toggles macOS-style Dock visibility in Niri
-# Keybinding: Super+J (only in macOS mode)
+# Keybinding: Super+J (only in Crystal Bay mode)
 #####################################################################
 
-DOCK_CONFIG="$HOME/.config/waybar/config-niri-macos-dock"
-DOCK_STYLE="$HOME/.config/waybar/style-macos-dock.css"
-DOCK_PIDFILE="/tmp/apollo-os-dock.pid"
+DOCK_CONFIG="$HOME/.config/waybar/config-niri-crystal-bay-dock"
+DOCK_STYLE="$HOME/.config/waybar/style-crystal-bay-dock.css"
+DOCK_PIDFILE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/apollo-os-dock.pid"
 
 # Check if dock is running
 is_dock_running() {
