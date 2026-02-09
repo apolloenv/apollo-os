@@ -21,6 +21,7 @@ fi
 
 # Define actions - text only, no icons
 actions=(
+    "Remote Connections"
     "Next Wallpaper"
     "Visual Mode"
     "Screenshot"
@@ -30,7 +31,6 @@ actions=(
     "Quick Note"
     "Bluetooth"
     "WiFi"
-    "Remote Connections"
     "Security Status"
     "System Health"
     "Display Scaling"
