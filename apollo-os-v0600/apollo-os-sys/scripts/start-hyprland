@@ -51,4 +51,4 @@ echo "[Apollo OS] Starting Hyprland session"
 echo "  Config: $HYPR_CONFIG"
 
 # Launch Hyprland
-exec Hyprland
+exec /usr/bin/start-hyprland
