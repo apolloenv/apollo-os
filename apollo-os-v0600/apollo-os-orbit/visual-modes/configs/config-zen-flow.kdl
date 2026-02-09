@@ -139,7 +139,7 @@ spawn-at-startup "sh" "-c" "swaybg -i $HOME/System/Wallpaper/current.jpg -m fill
 spawn-at-startup "nm-applet" "--indicator"
 spawn-at-startup "blueman-applet"
 spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1"
-spawn-at-startup "sh" "-c" "swayidle -w before-sleep 'swaylock -f'"
+spawn-at-startup "sh" "-c" "swayidle -w before-sleep 'hyprlock'"
 spawn-at-startup "sh" "-c" "sleep 4 && notify-send 'APOLLO OS' 'System initialized. All services operational.'"
 spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-power-monitor.sh"
 spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-network-monitor.sh"
