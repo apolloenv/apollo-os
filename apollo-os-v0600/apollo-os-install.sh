@@ -629,9 +629,21 @@ install_packages() {
         unzip \
         || warn "Some system tools failed to install"
     
-    # Power profiles daemon (may conflict with tuned-ppd)
+    # Power profiles daemon (conflicts with tuned)
     log "Installing power profiles daemon..."
+    sudo systemctl stop tuned 2>/dev/null
+    sudo systemctl disable tuned 2>/dev/null
+    sudo systemctl mask tuned 2>/dev/null
     sudo dnf install -y --allowerasing power-profiles-daemon || warn "Power profiles daemon installation failed"
+    # Fix sandbox restrictions that prevent startup on some systems
+    sudo mkdir -p /etc/systemd/system/power-profiles-daemon.service.d
+    printf '[Service]\nPrivateUsers=no\nProtectHome=no\nPrivateDevices=no\nSystemCallFilter=\nSystemCallFilter=~@obsolete\nCapabilityBoundingSet=\n' \
+        | sudo tee /etc/systemd/system/power-profiles-daemon.service.d/override.conf > /dev/null
+    # Allow wheel group to switch power profiles without auth
+    printf 'polkit.addRule(function(action, subject) {\n    if (action.id == "org.freedesktop.UPower.PowerProfiles.switch-profile" &&\n        subject.isInGroup("wheel")) {\n        return polkit.Result.YES;\n    }\n});\n' \
+        | sudo tee /etc/polkit-1/rules.d/99-apollo-power-profiles.rules > /dev/null
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now power-profiles-daemon || warn "Power profiles daemon failed to start"
     
     # Critical UI tools (separate to ensure installation)
     log "Installing critical UI tools..."
