@@ -48,11 +48,3 @@ if command -v notify-send &>/dev/null; then
         "$GREETING_EN, $USER_NAME!" \
         "It's $CURRENT_TIME\n$CURRENT_DATE\n\nWelcome to Apollo OS"
 fi
-
-# Wait a moment for audio system to be ready
-sleep 2
-
-# TTS greeting (German, NO username for privacy)
-if command -v apollo-speak &>/dev/null; then
-    apollo-speak "$TTS_GREETING. Systeme bereit." &
-fi

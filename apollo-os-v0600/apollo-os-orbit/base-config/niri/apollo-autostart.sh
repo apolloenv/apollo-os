@@ -35,17 +35,12 @@ fi
 gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Classic' 2>/dev/null
 gsettings set org.gnome.desktop.interface cursor-size 24 2>/dev/null
 
-# Login Greeting (with TTS - starts after audio is ready)
+# Login Greeting (notification only, no TTS)
 if [ -f "$HOME/.local/bin/apollo-os-greeting.sh" ]; then
     "$HOME/.local/bin/apollo-os-greeting.sh" &
 fi
 
-# Welcome notification + TTS (delay for desktop to be ready)
-(
-    sleep 3
-    notify-send "APOLLO OS" "Welcome to Orbit" 2>/dev/null
-) &
-
+# Welcome TTS (only "Willkommen zurück")
 if [ -f "$HOME/.local/bin/apollo-os-welcome-tts.sh" ]; then
     "$HOME/.local/bin/apollo-os-welcome-tts.sh" &
 fi

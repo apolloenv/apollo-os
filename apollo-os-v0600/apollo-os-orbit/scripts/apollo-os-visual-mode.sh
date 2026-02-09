@@ -109,15 +109,15 @@ DOCK_PIDFILE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/apollo-os-dock.pid"
 manage_screen_corners() {
     local mode=$1
     case "$mode" in
-        zen-flow|command-center|frost-byte|pixel-grid|retro-wave|neon-edge|light-bridge|cyber-matrix|quantum-flux|silicon-dawn)
-            pids=$(pgrep -f "screen-corners.py" 2>/dev/null)
-            [ -n "$pids" ] && echo "$pids" | xargs -r kill 2>/dev/null || true
-            ;;
-        *)
+        crystal-bay)
             if ! pgrep -f "screen-corners.py" >/dev/null && [ -f "$SCREEN_CORNERS_SCRIPT" ]; then
                 python3 "$SCREEN_CORNERS_SCRIPT" >/dev/null 2>&1 &
                 disown
             fi
+            ;;
+        *)
+            pids=$(pgrep -f "screen-corners.py" 2>/dev/null)
+            [ -n "$pids" ] && echo "$pids" | xargs -r kill 2>/dev/null || true
             ;;
     esac
 }

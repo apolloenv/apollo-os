@@ -27,15 +27,8 @@ done
 
 [ -z "$EDGE_TTS" ] && exit 0
 
-# Check network connection
-if nmcli -t -f STATE general 2>/dev/null | grep -q "connected"; then
-    NETWORK_STATUS="Netzwerkverbindung etabliert. Datenlink aktiv."
-else
-    NETWORK_STATUS="Kein Netzwerk verbunden. Offline-Modus aktiv."
-fi
-
 # Build message (German for Amala)
-MESSAGE="Apollo OS System Core gestartet. Alle Module initialisiert. Diagnose abgeschlossen. ${NETWORK_STATUS} Bereit für Einsatz."
+MESSAGE="Willkommen zurück."
 
 # Generate and play TTS
 TMPFILE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/apollo-welcome-$$.mp3"
