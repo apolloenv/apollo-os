@@ -2628,7 +2628,7 @@ LOGINEOF
 
   \e[0;36m╔═══════════════════════════════════════════════════╗
   ║\e[1;37m          A P O L L O   O S   v 0 . 6 . 0          \e[0;36m║
-  ║\e[0;90m            Enterprise Desktop Environment            \e[0;36m║
+  ║\e[0;90m          Enterprise Desktop Environment           \e[0;36m║
   ╚═══════════════════════════════════════════════════╝\e[0m
 
   \e[0;90mHost: \n  |  Kernel: \r  |  TTY: \l\e[0m
