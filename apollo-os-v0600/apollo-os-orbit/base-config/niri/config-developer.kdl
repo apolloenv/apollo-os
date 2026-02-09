@@ -143,7 +143,7 @@ spawn-at-startup "sh" "-c" "mako --config $HOME/.config/mako/config" // Benachri
 spawn-at-startup "nm-applet" "--indicator"
 spawn-at-startup "blueman-applet"
 spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1" // Passwort-Dialoge
-spawn-at-startup "sh" "-c" "swayidle -w before-sleep 'hyprlock'"
+spawn-at-startup "sh" "-c" "swayidle -w before-sleep 'swaylock -f'"
 spawn-at-startup "sh" "-c" "sleep 4 && notify-send 'APOLLO OS' 'Developer Mode activated. Happy coding!'"
 spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-welcome-tts.sh" // TTS Welcome
 spawn-at-startup "sh" "-c" "$HOME/.local/bin/apollo-os-power-monitor.sh" // Power/Battery Monitor

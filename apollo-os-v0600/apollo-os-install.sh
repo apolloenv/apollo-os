@@ -1663,7 +1663,7 @@ setup_systemd() {
     sudo systemctl enable apollo-os-sleep.service || warn "Failed to enable sleep service"
     sudo systemctl enable apollo-os-wake.service || warn "Failed to enable wake service"
 
-    # Install screen-corners script and service
+    # Install screen-corners script (optional - only works with GTK-based compositors)
     log "Installing screen-corners (rounded screen edges)..."
     if [ -f "$SCRIPT_DIR/apollo-os-sys/scripts/screen-corners/screen-corners.py" ]; then
         cp "$SCRIPT_DIR/apollo-os-sys/scripts/screen-corners/screen-corners.py" "$HOME/.local/bin/" || warn "Failed to copy screen-corners script"
@@ -1674,9 +1674,10 @@ setup_systemd() {
     # Reload user systemd
     systemctl --user daemon-reload
 
-    # Enable screen-corners service
-    log "Enabling screen-corners service..."
-    systemctl --user enable screen-corners.service || warn "Failed to enable screen-corners service"
+    # Note: screen-corners is NOT auto-enabled because it's incompatible with Niri.
+    # It only works with GTK-based compositors (Hyprland/Glass mode).
+    # Users can manually enable with: systemctl --user enable --now screen-corners.service
+    log "Screen-corners available but not auto-enabled (Niri incompatible) ✓"
 
     # Enable monitoring services
     log "Enabling system monitors..."
@@ -2552,14 +2553,19 @@ configure_login_manager() {
     log "Setting boot target to multi-user (TTY login)..."
     sudo systemctl set-default multi-user.target || error "CRITICAL: Failed to set boot target! System may not boot correctly."
 
-    # Configure terminal boot (no splash, show boot messages)
+    # Configure clean boot (quiet boot, then show Apollo OS login banner)
     log "Configuring terminal boot..."
-    sudo grubby --update-kernel=ALL --remove-args='rhgb quiet' 2>/dev/null || true
+    sudo grubby --update-kernel=ALL --remove-args='rhgb' 2>/dev/null || true
+    sudo grubby --update-kernel=ALL --args='quiet splash' 2>/dev/null || true
     sudo grubby --set-default-index=0 2>/dev/null || true
 
-    # Set GRUB timeout and remove splash args
+    # Set GRUB timeout and add quiet splash
     if [ -f /etc/default/grub ]; then
-        sudo sed -i 's/ rhgb//g; s/rhgb //g; s/ quiet//g; s/quiet //g' /etc/default/grub
+        sudo sed -i 's/ rhgb//g; s/rhgb //g' /etc/default/grub
+        # Ensure quiet splash is in CMDLINE
+        if ! grep -q 'quiet' /etc/default/grub; then
+            sudo sed -i 's/GRUB_CMDLINE_LINUX="\(.*\)"/GRUB_CMDLINE_LINUX="\1 quiet splash"/' /etc/default/grub
+        fi
         sudo sed -i 's/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=1/' /etc/default/grub
         if [ -d /sys/firmware/efi ]; then
             sudo grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg 2>/dev/null || true
@@ -2611,6 +2617,10 @@ LOGINEOF
     # ─── Configure TTY appearance ───
     # Set a clean issue message for the login prompt
     log "Configuring login prompt..."
+    # Remove symlink first (Fedora links /etc/issue -> /usr/lib/issue)
+    sudo rm -f /etc/issue
+    # Remove cockpit issue clutter
+    sudo rm -f /etc/issue.d/cockpit.issue
     sudo tee /etc/issue > /dev/null << 'ISSUEEOF'
 
   \e[0;36m╔═══════════════════════════════════════════════════╗

@@ -249,7 +249,7 @@ else
 fi
 
 # Package updates
-UPDATES=$(dnf check-update --quiet 2>/dev/null | grep -c "^[a-zA-Z]" || echo "0")
+UPDATES=$(timeout 5 dnf check-update --quiet 2>/dev/null | grep -c "^[a-zA-Z]" || echo "0")
 if [ "$UPDATES" -gt 0 ] 2>/dev/null; then
     check "Pending security updates: ${UPDATES} packages" "REVIEW" "$Y"
 else
