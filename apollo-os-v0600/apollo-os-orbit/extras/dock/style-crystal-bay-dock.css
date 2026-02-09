@@ -48,43 +48,43 @@ window#waybar.bottom #custom-google {
     border-radius: 10px;
 }
 
-/* --- Individual App Icons (Kora Theme) --- */
+/* --- Individual App Icons --- */
 window#waybar.bottom #custom-files {
-    background-image: url('/usr/share/icons/kora/apps/scalable/org.gnome.Nautilus.svg');
+    background-image: url('/usr/share/icons/hicolor/scalable/apps/org.gnome.Nautilus.svg');
 }
 
 window#waybar.bottom #custom-kitty {
-    background-image: url('/usr/share/icons/kora/apps/scalable/kitty.svg');
+    background-image: url('/usr/share/icons/hicolor/256x256/apps/kitty.png');
 }
 
 window#waybar.bottom #custom-terminal {
-    background-image: url('/usr/share/icons/kora/apps/scalable/kitty.svg');
+    background-image: url('/usr/share/pixmaps/Alacritty.svg');
 }
 
 window#waybar.bottom #custom-edge {
-    background-image: url('/usr/share/icons/kora/apps/scalable/microsoft-edge.svg');
+    background-image: url('/usr/share/icons/hicolor/128x128/apps/microsoft-edge.png');
 }
 
 window#waybar.bottom #custom-vscode {
-    background-image: url('/usr/share/icons/kora/apps/scalable/visual-studio-code.svg');
+    background-image: url('/usr/share/pixmaps/vscode.png');
 }
 
 window#waybar.bottom #custom-remmina {
-    background-image: url('/usr/share/icons/kora/apps/scalable/org.remmina.Remmina.svg');
+    background-image: url('/usr/share/icons/hicolor/256x256/apps/org.remmina.Remmina.png');
 }
 
 window#waybar.bottom #custom-neovim {
-    background-image: url('/usr/share/icons/kora/apps/scalable/neovim.svg');
+    background-image: url('/usr/share/icons/hicolor/128x128/apps/nvim.png');
 }
 
 window#waybar.bottom #custom-onlyoffice {
-    background-image: url('/usr/share/icons/kora/apps/scalable/libreoffice-main.svg');
+    background-image: url('/usr/share/icons/hicolor/128x128/apps/libreoffice-main.png');
 }
 
 window#waybar.bottom #custom-fresh {
-    background-image: url('/usr/share/icons/kora/apps/scalable/org.gnome.TextEditor.svg');
+    background-image: url('/usr/share/icons/hicolor/scalable/apps/org.gnome.TextEditor.svg');
 }
 
 window#waybar.bottom #custom-google {
-    background-image: url('/usr/share/icons/kora/apps/scalable/google.svg');
+    background-image: url('/usr/share/icons/hicolor/128x128/apps/google-chrome.png');
 }
