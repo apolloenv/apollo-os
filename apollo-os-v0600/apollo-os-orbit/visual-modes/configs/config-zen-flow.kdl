@@ -136,6 +136,7 @@ window-rule {
 // -----------------------------------------------------------------------------
 spawn-at-startup "xwayland-satellite"
 spawn-at-startup "sh" "-c" "swaybg -i $HOME/System/Wallpaper/current.jpg -m fill"
+spawn-at-startup "sh" "-c" "sleep 1 && waybar -c $HOME/.config/waybar/config-niri -s $HOME/.config/waybar/style.css"
 spawn-at-startup "nm-applet" "--indicator"
 spawn-at-startup "blueman-applet"
 spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1"

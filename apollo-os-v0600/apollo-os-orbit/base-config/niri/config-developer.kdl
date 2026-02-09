@@ -137,8 +137,8 @@ window-rule {
 // STARTUP (Programme die beim Start ausgeführt werden)
 // -----------------------------------------------------------------------------
 spawn-at-startup "xwayland-satellite" // XWayland Unterstützung
-spawn-at-startup "sh" "-c" "waybar -c $HOME/.config/waybar/config-niri" // Statusleiste
 spawn-at-startup "sh" "-c" "swaybg -i $HOME/System/Wallpaper/current.jpg -m fill" // Wallpaper
+spawn-at-startup "sh" "-c" "sleep 1 && waybar -c $HOME/.config/waybar/config-niri -s $HOME/.config/waybar/style.css"
 spawn-at-startup "sh" "-c" "mako --config $HOME/.config/mako/config" // Benachrichtigungen
 spawn-at-startup "nm-applet" "--indicator"
 spawn-at-startup "blueman-applet"
